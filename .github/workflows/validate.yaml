@@ -1,0 +1,14 @@
+name: Pull Request validation
+
+on: [pull_request]
+
+
+jobs:
+  gigpay-contracts-ci:
+    name: Run gigpay-contracts validation
+    uses: ./.github/workflows/gigpay-contracts-ci.yaml
+
+  gigpay-frontend-ci:
+    name: Run gigpay-frontend validation
+    uses: ./.github/workflows/gigpay-frontend-ci.yaml
+

@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
+      - '.vscode/**'
+      - '.idea/**'
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  gigpay-contracts-validate:
+    name: Run gigpay-contracts release
+    secrets: inherit
+    uses: ./.github/workflows/gigpay-contracts-ci.yaml
+
+  gigpay-contracts-release:
+    name: Run gigpay-contracts release
+    secrets: inherit
+    uses: ./.github/workflows/gigpay-contracts-cd.yaml
+    needs: gigpay-contracts-validate
+
+  gigpay-frontend-validate:
+    name: Run gigpay-frontend release
+    secrets: inherit
+    uses: ./.github/workflows/gigpay-frontend-ci.yaml
+
+  gigpay-frontend-release:
+    name: Run gigpay-frontend release
+    secrets: inherit
+    uses: ./.github/workflows/gigpay-frontend-cd.yaml
+    needs: gigpay-frontend-validate
