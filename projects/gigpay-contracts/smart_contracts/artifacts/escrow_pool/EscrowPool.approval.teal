@@ -1,0 +1,400 @@
+#pragma version 11
+#pragma typetrack false
+
+// algopy.arc4.ARC4Contract.approval_program() -> uint64:
+main:
+    intcblock 0 1 8 4
+    bytecblock "usdc_asset_id" "total_deposited" "total_released" "platform"
+    txn ApplicationID
+    bnz main_after_if_else@2
+    // smart_contracts/escrow_pool/contract.py:29
+    // self.usdc_asset_id = UInt64(0)
+    bytec_0 // "usdc_asset_id"
+    intc_0 // 0
+    app_global_put
+    // smart_contracts/escrow_pool/contract.py:30
+    // self.total_deposited = UInt64(0)
+    bytec_1 // "total_deposited"
+    intc_0 // 0
+    app_global_put
+    // smart_contracts/escrow_pool/contract.py:31
+    // self.total_released = UInt64(0)
+    bytec_2 // "total_released"
+    intc_0 // 0
+    app_global_put
+
+main_after_if_else@2:
+    // smart_contracts/escrow_pool/contract.py:22
+    // class EscrowPool(ARC4Contract):
+    txn NumAppArgs
+    bz main___algopy_default_create@14
+    txn OnCompletion
+    !
+    assert
+    txn ApplicationID
+    assert
+    pushbytess 0xee2a0f0b 0xc5d43fb9 0x7f409e35 0xeccc6937 0xb910c77b // method "initialize(uint64,pay)void", method "deposit_funds(axfer,uint64)void", method "release_payment(address,uint64,uint64)void", method "withdraw_unused(uint64)void", method "get_balance()uint64"
+    txna ApplicationArgs 0
+    match initialize deposit_funds release_payment withdraw_unused get_balance
+    err
+
+main___algopy_default_create@14:
+    txn OnCompletion
+    !
+    txn ApplicationID
+    !
+    &&
+    return
+
+
+// smart_contracts.escrow_pool.contract.EscrowPool.initialize[routing]() -> void:
+initialize:
+    // smart_contracts/escrow_pool/contract.py:33
+    // @arc4.abimethod
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    txn GroupIndex
+    intc_1 // 1
+    -
+    dup
+    gtxns TypeEnum
+    intc_1 // pay
+    ==
+    assert // transaction type is pay
+    // smart_contracts/escrow_pool/contract.py:36
+    // assert Txn.sender == Global.creator_address
+    txn Sender
+    global CreatorAddress
+    ==
+    assert
+    // smart_contracts/escrow_pool/contract.py:37
+    // assert self.usdc_asset_id == 0
+    intc_0 // 0
+    bytec_0 // "usdc_asset_id"
+    app_global_get_ex
+    assert // check self.usdc_asset_id exists
+    !
+    assert
+    // smart_contracts/escrow_pool/contract.py:39
+    // assert mbr_pay.receiver == Global.current_application_address
+    dup
+    gtxns Receiver
+    global CurrentApplicationAddress
+    ==
+    assert
+    // smart_contracts/escrow_pool/contract.py:40
+    // assert mbr_pay.amount >= 100_000
+    gtxns Amount
+    pushint 100000
+    >=
+    assert
+    // smart_contracts/escrow_pool/contract.py:42
+    // self.platform.value = Txn.sender
+    bytec_3 // "platform"
+    txn Sender
+    app_global_put
+    // smart_contracts/escrow_pool/contract.py:43
+    // self.usdc_asset_id = usdc_asset_id
+    bytec_0 // "usdc_asset_id"
+    dig 1
+    app_global_put
+    // smart_contracts/escrow_pool/contract.py:45-50
+    // itxn.AssetTransfer(
+    //     asset_receiver=Global.current_application_address,
+    //     xfer_asset=Asset(usdc_asset_id),
+    //     asset_amount=0,
+    //     fee=0,
+    // ).submit()
+    itxn_begin
+    // smart_contracts/escrow_pool/contract.py:46
+    // asset_receiver=Global.current_application_address,
+    global CurrentApplicationAddress
+    // smart_contracts/escrow_pool/contract.py:48
+    // asset_amount=0,
+    intc_0 // 0
+    itxn_field AssetAmount
+    itxn_field AssetReceiver
+    itxn_field XferAsset
+    // smart_contracts/escrow_pool/contract.py:45
+    // itxn.AssetTransfer(
+    intc_3 // axfer
+    itxn_field TypeEnum
+    // smart_contracts/escrow_pool/contract.py:49
+    // fee=0,
+    intc_0 // 0
+    itxn_field Fee
+    // smart_contracts/escrow_pool/contract.py:45-50
+    // itxn.AssetTransfer(
+    //     asset_receiver=Global.current_application_address,
+    //     xfer_asset=Asset(usdc_asset_id),
+    //     asset_amount=0,
+    //     fee=0,
+    // ).submit()
+    itxn_submit
+    // smart_contracts/escrow_pool/contract.py:33
+    // @arc4.abimethod
+    intc_1 // 1
+    return
+
+
+// smart_contracts.escrow_pool.contract.EscrowPool.deposit_funds[routing]() -> void:
+deposit_funds:
+    // smart_contracts/escrow_pool/contract.py:52
+    // @arc4.abimethod
+    txn GroupIndex
+    intc_1 // 1
+    -
+    dup
+    gtxns TypeEnum
+    intc_3 // axfer
+    ==
+    assert // transaction type is axfer
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    // smart_contracts/escrow_pool/contract.py:55
+    // assert payment.asset_receiver == Global.current_application_address
+    dig 1
+    gtxns AssetReceiver
+    global CurrentApplicationAddress
+    ==
+    assert
+    // smart_contracts/escrow_pool/contract.py:56
+    // assert payment.xfer_asset == Asset(self.usdc_asset_id)
+    dig 1
+    gtxns XferAsset
+    intc_0 // 0
+    bytec_0 // "usdc_asset_id"
+    app_global_get_ex
+    assert // check self.usdc_asset_id exists
+    ==
+    assert
+    // smart_contracts/escrow_pool/contract.py:57
+    // assert payment.asset_amount == amount
+    swap
+    gtxns AssetAmount
+    dig 1
+    ==
+    assert
+    // smart_contracts/escrow_pool/contract.py:59
+    // self.total_deposited += amount
+    intc_0 // 0
+    bytec_1 // "total_deposited"
+    app_global_get_ex
+    assert // check self.total_deposited exists
+    +
+    bytec_1 // "total_deposited"
+    swap
+    app_global_put
+    // smart_contracts/escrow_pool/contract.py:52
+    // @arc4.abimethod
+    intc_1 // 1
+    return
+
+
+// smart_contracts.escrow_pool.contract.EscrowPool.release_payment[routing]() -> void:
+release_payment:
+    // smart_contracts/escrow_pool/contract.py:61
+    // @arc4.abimethod
+    txna ApplicationArgs 1
+    dup
+    len
+    pushint 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    txna ApplicationArgs 2
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    dup
+    btoi
+    txna ApplicationArgs 3
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    dup
+    btoi
+    // smart_contracts/escrow_pool/contract.py:69
+    // assert Txn.sender == self.platform.value
+    txn Sender
+    intc_0 // 0
+    bytec_3 // "platform"
+    app_global_get_ex
+    assert // check self.platform exists
+    ==
+    assert
+    // smart_contracts/escrow_pool/contract.py:71-76
+    // itxn.AssetTransfer(
+    //     xfer_asset=Asset(self.usdc_asset_id),
+    //     asset_receiver=worker,
+    //     asset_amount=amount,
+    //     fee=0,
+    // ).submit()
+    itxn_begin
+    // smart_contracts/escrow_pool/contract.py:72
+    // xfer_asset=Asset(self.usdc_asset_id),
+    intc_0 // 0
+    bytec_0 // "usdc_asset_id"
+    app_global_get_ex
+    assert // check self.usdc_asset_id exists
+    dig 3
+    itxn_field AssetAmount
+    dig 5
+    itxn_field AssetReceiver
+    itxn_field XferAsset
+    // smart_contracts/escrow_pool/contract.py:71
+    // itxn.AssetTransfer(
+    intc_3 // axfer
+    itxn_field TypeEnum
+    // smart_contracts/escrow_pool/contract.py:75
+    // fee=0,
+    intc_0 // 0
+    itxn_field Fee
+    // smart_contracts/escrow_pool/contract.py:71-76
+    // itxn.AssetTransfer(
+    //     xfer_asset=Asset(self.usdc_asset_id),
+    //     asset_receiver=worker,
+    //     asset_amount=amount,
+    //     fee=0,
+    // ).submit()
+    itxn_submit
+    // smart_contracts/escrow_pool/contract.py:78
+    // self.total_released += amount
+    intc_0 // 0
+    bytec_2 // "total_released"
+    app_global_get_ex
+    assert // check self.total_released exists
+    uncover 3
+    +
+    bytec_2 // "total_released"
+    swap
+    app_global_put
+    // smart_contracts/escrow_pool/contract.py:80
+    // key = b"pay_" + worker.bytes + op.itob(delivery_id)
+    pushbytes 0x7061795f
+    uncover 4
+    concat
+    swap
+    itob
+    concat
+    // smart_contracts/escrow_pool/contract.py:83
+    // timestamp=arc4.UInt64(Global.latest_timestamp),
+    global LatestTimestamp
+    itob
+    // smart_contracts/escrow_pool/contract.py:81-85
+    // record = PaymentRecord(
+    //     amount=arc4.UInt64(amount),
+    //     timestamp=arc4.UInt64(Global.latest_timestamp),
+    //     delivery_id=arc4.UInt64(delivery_id),
+    // )
+    uncover 3
+    swap
+    concat
+    uncover 2
+    concat
+    // smart_contracts/escrow_pool/contract.py:86
+    // op.Box.put(key, record.bytes)
+    box_put
+    // smart_contracts/escrow_pool/contract.py:61
+    // @arc4.abimethod
+    intc_1 // 1
+    return
+
+
+// smart_contracts.escrow_pool.contract.EscrowPool.withdraw_unused[routing]() -> void:
+withdraw_unused:
+    // smart_contracts/escrow_pool/contract.py:88
+    // @arc4.abimethod
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    // smart_contracts/escrow_pool/contract.py:91
+    // assert Txn.sender == Global.creator_address
+    txn Sender
+    global CreatorAddress
+    ==
+    assert
+    // smart_contracts/escrow_pool/contract.py:93-98
+    // itxn.AssetTransfer(
+    //     xfer_asset=Asset(self.usdc_asset_id),
+    //     asset_receiver=Txn.sender,
+    //     asset_amount=amount,
+    //     fee=0,
+    // ).submit()
+    itxn_begin
+    // smart_contracts/escrow_pool/contract.py:94
+    // xfer_asset=Asset(self.usdc_asset_id),
+    intc_0 // 0
+    bytec_0 // "usdc_asset_id"
+    app_global_get_ex
+    assert // check self.usdc_asset_id exists
+    // smart_contracts/escrow_pool/contract.py:95
+    // asset_receiver=Txn.sender,
+    txn Sender
+    uncover 2
+    itxn_field AssetAmount
+    itxn_field AssetReceiver
+    itxn_field XferAsset
+    // smart_contracts/escrow_pool/contract.py:93
+    // itxn.AssetTransfer(
+    intc_3 // axfer
+    itxn_field TypeEnum
+    // smart_contracts/escrow_pool/contract.py:97
+    // fee=0,
+    intc_0 // 0
+    itxn_field Fee
+    // smart_contracts/escrow_pool/contract.py:93-98
+    // itxn.AssetTransfer(
+    //     xfer_asset=Asset(self.usdc_asset_id),
+    //     asset_receiver=Txn.sender,
+    //     asset_amount=amount,
+    //     fee=0,
+    // ).submit()
+    itxn_submit
+    // smart_contracts/escrow_pool/contract.py:88
+    // @arc4.abimethod
+    intc_1 // 1
+    return
+
+
+// smart_contracts.escrow_pool.contract.EscrowPool.get_balance[routing]() -> void:
+get_balance:
+    // smart_contracts/escrow_pool/contract.py:104
+    // Global.current_application_address, Asset(self.usdc_asset_id)
+    global CurrentApplicationAddress
+    intc_0 // 0
+    bytec_0 // "usdc_asset_id"
+    app_global_get_ex
+    assert // check self.usdc_asset_id exists
+    // smart_contracts/escrow_pool/contract.py:103-105
+    // balance, _exists = op.AssetHoldingGet.asset_balance(
+    //     Global.current_application_address, Asset(self.usdc_asset_id)
+    // )
+    asset_holding_get AssetBalance
+    pop
+    // smart_contracts/escrow_pool/contract.py:100
+    // @arc4.abimethod(readonly=True)
+    itob
+    pushbytes 0x151f7c75
+    swap
+    concat
+    log
+    intc_1 // 1
+    return

@@ -1,0 +1,613 @@
+#pragma version 11
+#pragma typetrack false
+
+// algopy.arc4.ARC4Contract.approval_program() -> uint64:
+main:
+    intcblock 1 0 8 2 136 144
+    bytecblock 0x646c765f "admin" 0x151f7c75 "total_deliveries" 0x0000000000000000000000000000000000000000000000000000000000000000
+    txn ApplicationID
+    bnz main_after_if_else@2
+    // smart_contracts/task_verification/contract.py:19
+    // self.total_deliveries = UInt64(0)
+    bytec_3 // "total_deliveries"
+    intc_1 // 0
+    app_global_put
+
+main_after_if_else@2:
+    // smart_contracts/task_verification/contract.py:14
+    // class DeliveryManager(ARC4Contract):
+    txn OnCompletion
+    !
+    assert
+    txn ApplicationID
+    bz main_create_NoOp@14
+    pushbytess 0x7ad00a05 0x77c4c82d 0x579dcc43 0x17305928 0x6bf226eb 0x005318d1 0xeb68b91c 0x7bacb45b // method "create_delivery(uint64,address,uint64,byte[],byte[],byte[])void", method "mark_picked_up(uint64)void", method "confirm_delivery(uint64,uint64)void", method "mark_paid(uint64)void", method "get_delivery_info(uint64)byte[]", method "get_delivery_status(uint64)uint64", method "get_delivery_worker(uint64)address", method "get_delivery_amount(uint64)uint64"
+    txna ApplicationArgs 0
+    match create_delivery mark_picked_up confirm_delivery mark_paid get_delivery_info get_delivery_status get_delivery_worker get_delivery_amount
+    err
+
+main_create_NoOp@14:
+    // smart_contracts/task_verification/contract.py:14
+    // class DeliveryManager(ARC4Contract):
+    pushbytes 0x4c5c61ba // method "create()void"
+    txna ApplicationArgs 0
+    match create
+    err
+
+
+// smart_contracts.task_verification.contract.DeliveryManager.create[routing]() -> void:
+create:
+    // smart_contracts/task_verification/contract.py:24
+    // self.admin.value = Txn.sender
+    bytec_1 // "admin"
+    txn Sender
+    app_global_put
+    // smart_contracts/task_verification/contract.py:21
+    // @arc4.abimethod(create="require")
+    intc_0 // 1
+    return
+
+
+// smart_contracts.task_verification.contract.DeliveryManager.create_delivery[routing]() -> void:
+create_delivery:
+    // smart_contracts/task_verification/contract.py:26
+    // @arc4.abimethod
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    txna ApplicationArgs 2
+    dup
+    len
+    pushint 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    txna ApplicationArgs 3
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    txna ApplicationArgs 4
+    dup
+    intc_1 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_3 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    txna ApplicationArgs 5
+    dup
+    intc_1 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_3 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    txna ApplicationArgs 6
+    dup
+    intc_1 // 0
+    extract_uint16 // on error: invalid array length header
+    intc_3 // 2
+    +
+    dig 1
+    len
+    ==
+    assert // invalid number of bytes for arc4.dynamic_array<arc4.uint8>
+    extract 2 0
+    // smart_contracts/task_verification/contract.py:37
+    // assert Txn.sender == self.admin.value
+    txn Sender
+    intc_1 // 0
+    bytec_1 // "admin"
+    app_global_get_ex
+    assert // check self.admin exists
+    ==
+    assert
+    // smart_contracts/task_verification/contract.py:39
+    // key = b"dlv_" + op.itob(delivery_id)
+    uncover 5
+    itob
+    bytec_0 // 0x646c765f
+    swap
+    concat
+    // smart_contracts/task_verification/contract.py:40
+    // assert not op.Box.get(key)[1]  # delivery must not already exist
+    dup
+    box_len
+    bury 1
+    !
+    assert
+    // smart_contracts/task_verification/contract.py:42-43
+    // # Pad strings to fixed sizes
+    // padded_customer = op.extract(customer_name + Bytes(b"\x00" * 32), 0, 32)
+    uncover 3
+    bytec 4 // 0x0000000000000000000000000000000000000000000000000000000000000000
+    concat
+    extract 0 32
+    // smart_contracts/task_verification/contract.py:44
+    // padded_pickup = op.extract(pickup + Bytes(b"\x00" * 32), 0, 32)
+    uncover 3
+    bytec 4 // 0x0000000000000000000000000000000000000000000000000000000000000000
+    concat
+    extract 0 32
+    // smart_contracts/task_verification/contract.py:45
+    // padded_dropoff = op.extract(dropoff + Bytes(b"\x00" * 32), 0, 32)
+    uncover 3
+    bytec 4 // 0x0000000000000000000000000000000000000000000000000000000000000000
+    concat
+    extract 0 32
+    // smart_contracts/task_verification/contract.py:50-51
+    // worker.bytes
+    // + padded_customer
+    uncover 5
+    uncover 3
+    concat
+    // smart_contracts/task_verification/contract.py:50-52
+    // worker.bytes
+    // + padded_customer
+    // + padded_pickup
+    uncover 2
+    concat
+    // smart_contracts/task_verification/contract.py:50-53
+    // worker.bytes
+    // + padded_customer
+    // + padded_pickup
+    // + padded_dropoff
+    swap
+    concat
+    // smart_contracts/task_verification/contract.py:54
+    // + op.itob(base_amount)
+    uncover 2
+    itob
+    // smart_contracts/task_verification/contract.py:50-54
+    // worker.bytes
+    // + padded_customer
+    // + padded_pickup
+    // + padded_dropoff
+    // + op.itob(base_amount)
+    concat
+    // smart_contracts/task_verification/contract.py:55
+    // + op.itob(UInt64(0))  # final_amount (calculated on confirmation)
+    intc_1 // 0
+    itob
+    // smart_contracts/task_verification/contract.py:50-55
+    // worker.bytes
+    // + padded_customer
+    // + padded_pickup
+    // + padded_dropoff
+    // + op.itob(base_amount)
+    // + op.itob(UInt64(0))  # final_amount (calculated on confirmation)
+    swap
+    dig 1
+    concat
+    // smart_contracts/task_verification/contract.py:50-56
+    // worker.bytes
+    // + padded_customer
+    // + padded_pickup
+    // + padded_dropoff
+    // + op.itob(base_amount)
+    // + op.itob(UInt64(0))  # final_amount (calculated on confirmation)
+    // + op.itob(UInt64(0))  # status: 0=assigned
+    dig 1
+    concat
+    // smart_contracts/task_verification/contract.py:57
+    // + op.itob(Global.latest_timestamp)  # created_at
+    global LatestTimestamp
+    itob
+    // smart_contracts/task_verification/contract.py:50-57
+    // worker.bytes
+    // + padded_customer
+    // + padded_pickup
+    // + padded_dropoff
+    // + op.itob(base_amount)
+    // + op.itob(UInt64(0))  # final_amount (calculated on confirmation)
+    // + op.itob(UInt64(0))  # status: 0=assigned
+    // + op.itob(Global.latest_timestamp)  # created_at
+    concat
+    // smart_contracts/task_verification/contract.py:50-58
+    // worker.bytes
+    // + padded_customer
+    // + padded_pickup
+    // + padded_dropoff
+    // + op.itob(base_amount)
+    // + op.itob(UInt64(0))  # final_amount (calculated on confirmation)
+    // + op.itob(UInt64(0))  # status: 0=assigned
+    // + op.itob(Global.latest_timestamp)  # created_at
+    // + op.itob(UInt64(0))  # delivered_at
+    swap
+    concat
+    // smart_contracts/task_verification/contract.py:60
+    // op.Box.put(key, record)
+    box_put
+    // smart_contracts/task_verification/contract.py:61
+    // self.total_deliveries += 1
+    intc_1 // 0
+    bytec_3 // "total_deliveries"
+    app_global_get_ex
+    assert // check self.total_deliveries exists
+    intc_0 // 1
+    +
+    bytec_3 // "total_deliveries"
+    swap
+    app_global_put
+    // smart_contracts/task_verification/contract.py:26
+    // @arc4.abimethod
+    intc_0 // 1
+    return
+
+
+// smart_contracts.task_verification.contract.DeliveryManager.mark_picked_up[routing]() -> void:
+mark_picked_up:
+    // smart_contracts/task_verification/contract.py:63
+    // @arc4.abimethod
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    // smart_contracts/task_verification/contract.py:66
+    // assert Txn.sender == self.admin.value
+    txn Sender
+    intc_1 // 0
+    bytec_1 // "admin"
+    app_global_get_ex
+    assert // check self.admin exists
+    ==
+    assert
+    // smart_contracts/task_verification/contract.py:68
+    // key = b"dlv_" + op.itob(delivery_id)
+    itob
+    bytec_0 // 0x646c765f
+    swap
+    concat
+    // smart_contracts/task_verification/contract.py:69
+    // data, exists = op.Box.get(key)
+    dup
+    box_get
+    // smart_contracts/task_verification/contract.py:70
+    // assert exists
+    assert
+    intc 4 // 136
+    // smart_contracts/task_verification/contract.py:72
+    // status = op.btoi(op.extract(data, 136, 8))
+    extract_uint64
+    // smart_contracts/task_verification/contract.py:73
+    // assert status == 0  # must be assigned
+    !
+    assert
+    // smart_contracts/task_verification/contract.py:75
+    // op.Box.replace(key, 136, op.itob(UInt64(1)))  # status = picked_up
+    intc_0 // 1
+    itob
+    intc 4 // 136
+    swap
+    box_replace
+    // smart_contracts/task_verification/contract.py:63
+    // @arc4.abimethod
+    intc_0 // 1
+    return
+
+
+// smart_contracts.task_verification.contract.DeliveryManager.confirm_delivery[routing]() -> void:
+confirm_delivery:
+    // smart_contracts/task_verification/contract.py:77
+    // @arc4.abimethod
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    txna ApplicationArgs 2
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    // smart_contracts/task_verification/contract.py:89
+    // assert Txn.sender == self.admin.value
+    txn Sender
+    intc_1 // 0
+    bytec_1 // "admin"
+    app_global_get_ex
+    assert // check self.admin exists
+    ==
+    assert
+    // smart_contracts/task_verification/contract.py:90
+    // assert worker_rating >= 10
+    dup
+    pushint 10
+    >=
+    assert
+    // smart_contracts/task_verification/contract.py:91
+    // assert worker_rating <= 50
+    dup
+    pushint 50
+    <=
+    assert
+    // smart_contracts/task_verification/contract.py:93
+    // key = b"dlv_" + op.itob(delivery_id)
+    swap
+    itob
+    bytec_0 // 0x646c765f
+    swap
+    concat
+    // smart_contracts/task_verification/contract.py:94
+    // data, exists = op.Box.get(key)
+    dup
+    box_get
+    // smart_contracts/task_verification/contract.py:95
+    // assert exists
+    assert
+    // smart_contracts/task_verification/contract.py:97
+    // status = op.btoi(op.extract(data, 136, 8))
+    dup
+    intc 4 // 136
+    extract_uint64
+    // smart_contracts/task_verification/contract.py:98
+    // assert status <= 1  # must be assigned or picked_up
+    intc_0 // 1
+    <=
+    assert
+    pushint 128
+    // smart_contracts/task_verification/contract.py:100
+    // base_amount = op.btoi(op.extract(data, 128, 8))
+    extract_uint64
+    // smart_contracts/task_verification/contract.py:102-105
+    // # Calculate multiplier: rating 10 → 60, 20 → 80, 30 → 100, 40 → 120, 50 → 150
+    // # Formula: multiplier = 40 + (worker_rating * 22) / 10
+    // # Simplified: final = base_amount * (40 + worker_rating * 22 / 10) / 100
+    // multiplier = UInt64(40) + (worker_rating * UInt64(22)) // UInt64(10)
+    uncover 2
+    pushint 22
+    *
+    pushint 10
+    /
+    pushint 40
+    +
+    // smart_contracts/task_verification/contract.py:106
+    // final_amount = (base_amount * multiplier) // UInt64(100)
+    *
+    pushint 100
+    /
+    // smart_contracts/task_verification/contract.py:108-110
+    // # Offsets: worker(32) + customer(32) + pickup(32) + dropoff(32) = 128
+    // # base_amount at 128, final_amount at 136, status at 144, created_at at 152, delivered_at at 160
+    // op.Box.replace(key, 136, op.itob(final_amount))
+    itob
+    dig 1
+    intc 4 // 136
+    uncover 2
+    box_replace
+    // smart_contracts/task_verification/contract.py:111
+    // op.Box.replace(key, 144, op.itob(UInt64(2)))  # status = delivered
+    intc_3 // 2
+    itob
+    dig 1
+    intc 5 // 144
+    uncover 2
+    box_replace
+    // smart_contracts/task_verification/contract.py:112
+    // op.Box.replace(key, 160, op.itob(Global.latest_timestamp))
+    global LatestTimestamp
+    itob
+    pushint 160
+    swap
+    box_replace
+    // smart_contracts/task_verification/contract.py:77
+    // @arc4.abimethod
+    intc_0 // 1
+    return
+
+
+// smart_contracts.task_verification.contract.DeliveryManager.mark_paid[routing]() -> void:
+mark_paid:
+    // smart_contracts/task_verification/contract.py:114
+    // @arc4.abimethod
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    // smart_contracts/task_verification/contract.py:117
+    // assert Txn.sender == self.admin.value
+    txn Sender
+    intc_1 // 0
+    bytec_1 // "admin"
+    app_global_get_ex
+    assert // check self.admin exists
+    ==
+    assert
+    // smart_contracts/task_verification/contract.py:119
+    // key = b"dlv_" + op.itob(delivery_id)
+    itob
+    bytec_0 // 0x646c765f
+    swap
+    concat
+    // smart_contracts/task_verification/contract.py:120
+    // data, exists = op.Box.get(key)
+    dup
+    box_get
+    // smart_contracts/task_verification/contract.py:121
+    // assert exists
+    assert
+    intc 5 // 144
+    // smart_contracts/task_verification/contract.py:123
+    // status = op.btoi(op.extract(data, 144, 8))
+    extract_uint64
+    // smart_contracts/task_verification/contract.py:124
+    // assert status == 2  # must be delivered
+    intc_3 // 2
+    ==
+    assert
+    // smart_contracts/task_verification/contract.py:126
+    // op.Box.replace(key, 144, op.itob(UInt64(3)))  # status = paid
+    pushint 3
+    itob
+    intc 5 // 144
+    swap
+    box_replace
+    // smart_contracts/task_verification/contract.py:114
+    // @arc4.abimethod
+    intc_0 // 1
+    return
+
+
+// smart_contracts.task_verification.contract.DeliveryManager.get_delivery_info[routing]() -> void:
+get_delivery_info:
+    // smart_contracts/task_verification/contract.py:128
+    // @arc4.abimethod(readonly=True)
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    // smart_contracts/task_verification/contract.py:131
+    // key = b"dlv_" + op.itob(delivery_id)
+    itob
+    bytec_0 // 0x646c765f
+    swap
+    concat
+    // smart_contracts/task_verification/contract.py:132
+    // data, exists = op.Box.get(key)
+    box_get
+    // smart_contracts/task_verification/contract.py:133
+    // assert exists
+    assert
+    // smart_contracts/task_verification/contract.py:128
+    // @arc4.abimethod(readonly=True)
+    dup
+    len
+    itob
+    extract 6 2
+    swap
+    concat
+    bytec_2 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+
+// smart_contracts.task_verification.contract.DeliveryManager.get_delivery_status[routing]() -> void:
+get_delivery_status:
+    // smart_contracts/task_verification/contract.py:136
+    // @arc4.abimethod(readonly=True)
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    // smart_contracts/task_verification/contract.py:139
+    // key = b"dlv_" + op.itob(delivery_id)
+    itob
+    bytec_0 // 0x646c765f
+    swap
+    concat
+    // smart_contracts/task_verification/contract.py:140
+    // data, exists = op.Box.get(key)
+    box_get
+    // smart_contracts/task_verification/contract.py:141
+    // assert exists
+    assert
+    // smart_contracts/task_verification/contract.py:136
+    // @arc4.abimethod(readonly=True)
+    extract 144 8
+    bytec_2 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+
+// smart_contracts.task_verification.contract.DeliveryManager.get_delivery_worker[routing]() -> void:
+get_delivery_worker:
+    // smart_contracts/task_verification/contract.py:144
+    // @arc4.abimethod(readonly=True)
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    // smart_contracts/task_verification/contract.py:147
+    // key = b"dlv_" + op.itob(delivery_id)
+    itob
+    bytec_0 // 0x646c765f
+    swap
+    concat
+    // smart_contracts/task_verification/contract.py:148
+    // data, exists = op.Box.get(key)
+    box_get
+    // smart_contracts/task_verification/contract.py:149
+    // assert exists
+    assert
+    // smart_contracts/task_verification/contract.py:150
+    // return Account(op.extract(data, 0, 32))
+    extract 0 32
+    // smart_contracts/task_verification/contract.py:144
+    // @arc4.abimethod(readonly=True)
+    bytec_2 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
+
+
+// smart_contracts.task_verification.contract.DeliveryManager.get_delivery_amount[routing]() -> void:
+get_delivery_amount:
+    // smart_contracts/task_verification/contract.py:152
+    // @arc4.abimethod(readonly=True)
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    // smart_contracts/task_verification/contract.py:155
+    // key = b"dlv_" + op.itob(delivery_id)
+    itob
+    bytec_0 // 0x646c765f
+    swap
+    concat
+    // smart_contracts/task_verification/contract.py:156
+    // data, exists = op.Box.get(key)
+    box_get
+    // smart_contracts/task_verification/contract.py:157
+    // assert exists
+    assert
+    // smart_contracts/task_verification/contract.py:152
+    // @arc4.abimethod(readonly=True)
+    extract 136 8
+    bytec_2 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_0 // 1
+    return
