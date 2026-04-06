@@ -39,19 +39,19 @@ const Landing: React.FC = () => {
     <div className="min-h-screen font-sans relative overflow-hidden">
       <div className="noise-overlay" />
 
-      {/* ══════════ DARK: NAV + HERO ══════════ */}
-      <div className="bg-charcoal text-cream">
+      {/* ══════════ LIGHT: NAV + HERO ══════════ */}
+      <div className="bg-cream text-charcoal">
         {/* ── NAV ── */}
-        <nav className="relative z-10 flex items-center justify-between px-6 md:px-12 lg:px-16 py-6">
+        <nav className="relative z-10 flex items-center justify-between px-6 md:px-12 lg:px-16 py-7">
           <div className="flex items-center gap-3">
             <div className="w-3 h-3 bg-terra" />
             <span className="font-serif text-2xl tracking-tight">GigPay</span>
           </div>
           <div className="flex items-center gap-6">
-            <a href="#flow" className="text-sm text-cream/50 hover:text-cream transition-colors hidden md:block">Flow</a>
-            <a href="#architecture" className="text-sm text-cream/50 hover:text-cream transition-colors hidden md:block">Architecture</a>
-            <a href="#payouts" className="text-sm text-cream/50 hover:text-cream transition-colors hidden md:block">Payouts</a>
-            <a href="#fraud" className="text-sm text-cream/50 hover:text-cream transition-colors hidden md:block">Anti-Fraud</a>
+            <a href="#flow" className="text-sm text-charcoal/40 hover:text-charcoal transition-colors hidden md:block">Flow</a>
+            <a href="#architecture" className="text-sm text-charcoal/40 hover:text-charcoal transition-colors hidden md:block">Architecture</a>
+            <a href="#payouts" className="text-sm text-charcoal/40 hover:text-charcoal transition-colors hidden md:block">Payouts</a>
+            <a href="#fraud" className="text-sm text-charcoal/40 hover:text-charcoal transition-colors hidden md:block">Anti-Fraud</a>
             <button
               onClick={() => navigate('/platform')}
               className="bg-terra text-cream px-5 py-2.5 text-sm font-medium hover:bg-terra-dark transition-colors"
@@ -62,8 +62,8 @@ const Landing: React.FC = () => {
         </nav>
 
         {/* ── HERO ── */}
-        <section className="relative z-10 px-6 md:px-12 lg:px-20 pt-20 md:pt-25 pb-20">
-          <div className="grid md:grid-cols-12 gap-8 items-end">
+        <section className="relative z-10 px-6 md:px-12 md:pt-25 lg:px-20 pt-20 pb-20">
+          <div className="grid md:grid-cols-12 gap-8 items-end py-10">
             <div className={`md:col-span-7 ${mounted ? 'animate-fade-up' : 'opacity-0'}`}>
               <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl leading-[0.9] tracking-tight mb-8">
                 Pay gig workers
@@ -73,7 +73,7 @@ const Landing: React.FC = () => {
                 <span className="text-terra italic">not weeks.</span>
               </h1>
 
-              <p className="text-cream/50 text-lg md:text-xl max-w-lg leading-relaxed mb-10 text-balance">
+              <p className="text-charcoal/50 text-lg md:text-xl max-w-lg leading-relaxed mb-10 text-balance">
                 Smart contracts calculate rating-based payouts. Workers get paid atomically the moment a delivery is confirmed.
               </p>
 
@@ -91,7 +91,7 @@ const Landing: React.FC = () => {
                 </button>
                 <button
                   onClick={() => navigate('/worker')}
-                  className="border-2 border-cream/20 text-cream px-8 py-4 text-sm font-medium tracking-wide uppercase hover:bg-cream/5 transition-all"
+                  className="border-2 border-charcoal/20 text-charcoal px-8 py-4 text-sm font-medium tracking-wide uppercase hover:bg-charcoal/5 transition-all"
                 >
                   Worker Dashboard
                 </button>
@@ -99,21 +99,21 @@ const Landing: React.FC = () => {
             </div>
 
             <div className={`md:col-span-5 ${mounted ? 'animate-fade-up-delay-2' : 'opacity-0'}`}>
-              <div className="border-2 border-cream/10 p-8 md:p-10 relative">
+              <div className="border-2 border-charcoal/10 p-8 md:p-10 relative">
                 <div className="absolute -top-[2px] -right-[2px] w-16 h-16">
                   <div className="absolute top-0 right-0 w-full h-[2px] bg-terra" />
                   <div className="absolute top-0 right-0 h-full w-[2px] bg-terra" />
                 </div>
-                <span className="font-mono text-[10px] tracking-[0.3em] text-cream/30 uppercase block mb-8">The Problem Today</span>
+                <span className="font-mono text-[10px] tracking-[0.3em] text-charcoal/60 uppercase block mb-8">The Problem Today</span>
                 <div className="grid grid-cols-2 gap-8">
                   {STATS.map((stat, i) => (
                     <div key={i}>
-                      <div className="font-serif text-3xl md:text-4xl text-cream mb-1">{stat.value}</div>
-                      <div className="text-xs text-cream/40 tracking-wide uppercase">{stat.label}</div>
+                      <div className="font-serif text-3xl md:text-4xl text-charcoal mb-1">{stat.value}</div>
+                      <div className="text-xs text-charcoal/40 tracking-wide uppercase">{stat.label}</div>
                     </div>
                   ))}
                 </div>
-                <div className="mt-8 pt-6 border-t border-cream/10">
+                <div className="mt-8 pt-6 border-t border-charcoal/10">
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-terra rounded-full" />
                     <span className="text-xs text-terra/80">GigPay fixes this</span>
@@ -126,12 +126,12 @@ const Landing: React.FC = () => {
       </div>
 
       {/* ── TICKER ── */}
-      <div className="relative z-10 border-y-2 border-charcoal/10 py-4 bg-cream">
+      <div className="relative z-10 border-y-2 border-cream/10 py-6 bg-charcoal">
         <div className="ticker-strip">
           <div className="ticker-content">
             {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
               <span key={i} className="inline-flex items-center gap-6 mx-6">
-                <span className="font-mono text-[10px] tracking-[0.2em] text-charcoal/55 font-medium whitespace-nowrap">{item}</span>
+                <span className="font-mono text-[10px] tracking-[0.2em] text-cream/60 font-medium whitespace-nowrap">{item}</span>
                 <span className="w-1.5 h-1.5 bg-terra flex-shrink-0" />
               </span>
             ))}
@@ -249,6 +249,7 @@ const Landing: React.FC = () => {
                 methods: ['add_worker', 'update_rating', 'increment_earnings', 'get_worker_info'],
                 storage: 'Box: wrk_{address} → 120B',
                 color: 'bg-sage',
+                borderColor: 'border-sage/40 hover:border-sage/70',
               },
               {
                 name: 'DeliveryManager',
@@ -257,6 +258,7 @@ const Landing: React.FC = () => {
                 methods: ['create_delivery', 'mark_picked_up', 'confirm_delivery', 'mark_paid'],
                 storage: 'Box: dlv_{id} → 168B',
                 color: 'bg-terra',
+                borderColor: 'border-terra/40 hover:border-terra/70',
               },
               {
                 name: 'EscrowPool',
@@ -265,37 +267,38 @@ const Landing: React.FC = () => {
                 methods: ['initialize', 'deposit_funds', 'release_payment', 'withdraw_unused'],
                 storage: 'Box: pay_{worker}{id} → 24B',
                 color: 'bg-cream',
+                borderColor: 'border-cream/30 hover:border-cream/50',
               },
             ].map((contract) => (
-              <div key={contract.name} className="border-2 border-cream/10 p-8 md:p-10 bg-soot relative group hover:border-cream/20 transition-colors">
+              <div key={contract.name} className={`border-2 ${contract.borderColor} p-8 md:p-10 bg-soot relative group transition-colors`}>
                 <div className="flex items-start justify-between mb-5">
                   <div className={`w-3 h-3 ${contract.color}`} />
-                  <span className="font-mono text-[9px] tracking-[0.3em] text-terra font-medium bg-terra/10 px-2.5 py-1">
+                  <span className="font-mono text-[9px] tracking-[0.3em] text-terra font-medium bg-terra/15 px-2.5 py-1">
                     {contract.tag}
                   </span>
                 </div>
 
-                <h3 className="font-serif text-2xl mb-3 group-hover:text-terra transition-colors">
+                <h3 className="font-serif text-2xl mb-3 text-cream group-hover:text-terra transition-colors">
                   {contract.name}
                 </h3>
 
-                <p className="text-cream/40 text-sm leading-relaxed mb-5">
+                <p className="text-cream/55 text-sm leading-relaxed mb-5">
                   {contract.desc}
                 </p>
 
                 <div className="space-y-2 mb-5">
-                  <div className="font-mono text-[9px] tracking-[0.2em] text-cream/25 uppercase">ABI Methods</div>
+                  <div className="font-mono text-[9px] tracking-[0.2em] text-cream/35 uppercase">ABI Methods</div>
                   <div className="flex flex-wrap gap-1.5">
                     {contract.methods.map((m) => (
-                      <span key={m} className="font-mono text-[10px] bg-cream/[0.05] text-cream/50 px-2 py-1">
+                      <span key={m} className="font-mono text-[10px] bg-cream/[0.08] text-cream/60 px-2 py-1">
                         {m}()
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-cream/10">
-                  <span className="font-mono text-[10px] text-cream/30">{contract.storage}</span>
+                <div className="pt-4 border-t border-cream/15">
+                  <span className="font-mono text-[10px] text-cream/40">{contract.storage}</span>
                 </div>
 
                 <div className="absolute bottom-0 left-0 h-[3px] w-0 bg-terra group-hover:w-full transition-all duration-500" />
@@ -304,10 +307,10 @@ const Landing: React.FC = () => {
           </div>
 
           {/* Atomic flow diagram */}
-          <div className="border-2 border-cream/10 p-8 md:p-12 bg-soot">
+          <div className="border-2 border-cream/20 p-8 md:p-12 bg-soot">
             <div className="flex items-center gap-3 mb-8">
               <div className="w-2 h-2 bg-terra" />
-              <span className="font-mono text-[10px] tracking-[0.3em] text-cream/30 uppercase font-medium">
+              <span className="font-mono text-[10px] tracking-[0.3em] text-cream/50 uppercase font-medium">
                 Atomic Transaction Group — "Confirm & Pay"
               </span>
             </div>
@@ -320,14 +323,14 @@ const Landing: React.FC = () => {
                 { num: 'TXN 4', contract: 'WorkerRegistry', method: 'increment_earnings()', desc: 'Update worker total earned' },
               ].map((txn, i) => (
                 <div key={i} className="relative">
-                  <div className="border border-cream/10 p-5 md:border-r-0 last:md:border-r hover:bg-cream/[0.03] transition-colors">
+                  <div className="border border-cream/15 p-5 md:border-r-0 last:md:border-r hover:bg-cream/[0.04] transition-colors">
                     <span className="font-mono text-[9px] tracking-[0.2em] text-terra font-medium block mb-3">{txn.num}</span>
-                    <div className="font-mono text-xs text-cream/60 mb-1">{txn.contract}</div>
+                    <div className="font-mono text-xs text-cream/70 mb-1">{txn.contract}</div>
                     <div className="font-mono text-[11px] text-terra mb-2">{txn.method}</div>
-                    <p className="text-[11px] text-cream/30 leading-relaxed">{txn.desc}</p>
+                    <p className="text-[11px] text-cream/40 leading-relaxed">{txn.desc}</p>
                   </div>
                   {i < 3 && (
-                    <div className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-10 w-5 h-5 bg-soot border border-cream/15 items-center justify-center">
+                    <div className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-10 w-5 h-5 bg-soot border border-cream/20 items-center justify-center">
                       <svg className="w-2.5 h-2.5 text-terra" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                         <path strokeLinecap="square" d="M5 12h14" />
                         <path strokeLinecap="square" d="M12 5l7 7-7 7" />
@@ -338,18 +341,18 @@ const Landing: React.FC = () => {
               ))}
             </div>
 
-            <div className="mt-6 pt-6 border-t border-cream/10 flex flex-wrap items-center gap-6">
+            <div className="mt-6 pt-6 border-t border-cream/15 flex flex-wrap items-center gap-6">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-sage rounded-full" />
-                <span className="text-xs text-cream/40">All 4 succeed or all 4 revert</span>
+                <span className="text-xs text-cream/50">All 4 succeed or all 4 revert</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-terra rounded-full" />
-                <span className="text-xs text-cream/40">Single wallet signature</span>
+                <span className="text-xs text-cream/50">Single wallet signature</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-cream/20 rounded-full" />
-                <span className="text-xs text-cream/40">~4 seconds finality</span>
+                <div className="w-2 h-2 bg-cream/30 rounded-full" />
+                <span className="text-xs text-cream/50">~4 seconds finality</span>
               </div>
             </div>
           </div>
@@ -632,13 +635,12 @@ final_amount = (base × multiplier) / 100
         </div>
       </section>
 
-      {/* ══════════ DARK: TECH STACK + CTA + FOOTER ══════════ */}
+      {/* ══════════ DARK: TECH STACK ══════════ */}
       <div className="bg-charcoal text-cream">
-        {/* ── TECH STACK ── */}
-        <section className="relative z-10 px-6 md:px-12 lg:px-16 py-16 border-b border-cream/[0.06]">
+        <section className="relative z-10 px-6 md:px-12 lg:px-16 py-10">
           <div className="flex items-center gap-3 mb-8">
-            <div className="accent-line" />
-            <span className="font-mono text-[10px] tracking-[0.3em] text-cream/30 uppercase font-medium">Tech Stack</span>
+            <div className="w-[60px] h-[3px] bg-terra" />
+            <span className="font-mono text-[10px] tracking-[0.3em] text-cream/50 uppercase font-medium">Tech Stack</span>
           </div>
           <div className="flex flex-wrap gap-3">
             {[
@@ -651,16 +653,17 @@ final_amount = (base × multiplier) / 100
               'Inner Transactions',
               'Atomic Groups',
               'React + TypeScript',
-              'Tailwind CSS',
-              'Pera / Defly Wallet',
             ].map((tech) => (
-              <span key={tech} className="font-mono text-[11px] text-cream/35 border border-cream/10 px-3 py-2 hover:border-terra/30 hover:text-terra/60 transition-colors">
+              <span key={tech} className="font-mono text-[11px] text-cream/60 border border-cream/10 px-3 py-2 hover:border-terra/40 hover:text-terra transition-colors">
                 {tech}
               </span>
             ))}
           </div>
         </section>
+      </div>
 
+      {/* ══════════ LIGHT: CTA + FOOTER ══════════ */}
+      <div className="bg-cream text-charcoal">
         {/* ── CTA ── */}
         <section className="relative z-10 px-6 md:px-12 lg:px-16 py-24 md:py-32">
           <div className="max-w-3xl mx-auto text-center">
@@ -669,7 +672,7 @@ final_amount = (base × multiplier) / 100
               Stop running payroll<br />
               <span className="text-terra italic">manually.</span>
             </h2>
-            <p className="text-cream/40 text-lg mb-10 max-w-lg mx-auto text-balance">
+            <p className="text-charcoal/45 text-lg mb-10 max-w-lg mx-auto text-balance">
               Your riders, drivers, and delivery partners deserve real-time pay
               tied to real performance. One atomic transaction. No spreadsheets.
             </p>
@@ -686,7 +689,7 @@ final_amount = (base × multiplier) / 100
               </button>
               <button
                 onClick={() => navigate('/worker')}
-                className="border-2 border-cream/20 text-cream px-10 py-5 text-sm font-medium tracking-[0.15em] uppercase hover:bg-cream/5 transition-all"
+                className="border-2 border-charcoal/20 text-charcoal px-10 py-5 text-sm font-medium tracking-[0.15em] uppercase hover:bg-charcoal/5 transition-all"
               >
                 Worker Dashboard
               </button>
@@ -695,20 +698,20 @@ final_amount = (base × multiplier) / 100
         </section>
 
         {/* ── FOOTER ── */}
-        <footer className="relative z-10 border-t border-cream/[0.06] px-6 md:px-12 lg:px-16 py-10">
+        <footer className="relative z-10 border-t border-charcoal/[0.08] px-6 md:px-12 lg:px-16 py-10">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="flex items-center gap-3">
               <div className="w-2 h-2 bg-terra" />
               <span className="font-serif text-lg">GigPay</span>
-              <span className="text-cream/20 text-xs ml-4">On-Chain Gig Payment Infrastructure</span>
+              <span className="text-charcoal/25 text-xs ml-4">On-Chain Gig Payment Infrastructure</span>
             </div>
-            <div className="flex items-center gap-8 font-mono text-[10px] text-cream/25">
+            <div className="flex items-center gap-8 font-mono text-[10px] text-charcoal/30">
               <span>Built on Algorand</span>
-              <span className="w-1 h-1 bg-cream/15" />
+              <span className="w-1 h-1 bg-charcoal/15" />
               <span>USDC Settlements</span>
-              <span className="w-1 h-1 bg-cream/15" />
+              <span className="w-1 h-1 bg-charcoal/15" />
               <span>Atomic Transactions</span>
-              <span className="w-1 h-1 bg-cream/15" />
+              <span className="w-1 h-1 bg-charcoal/15" />
               <span>Rating-Based Payouts</span>
             </div>
           </div>
