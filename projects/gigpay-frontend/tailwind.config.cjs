@@ -24,6 +24,7 @@ module.exports = {
       fontFamily: {
         serif: ['"Instrument Serif"', 'Georgia', 'serif'],
         sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
       },
       animation: {
         'ticker': 'ticker 30s linear infinite',
