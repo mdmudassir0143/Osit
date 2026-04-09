@@ -10,12 +10,13 @@ import AddWorkerForm from '../components/platform/AddWorkerForm'
 import CreateDelivery from '../components/platform/CreateDelivery'
 import DeliveryTracker from '../components/platform/DeliveryTracker'
 import TransactionFeed from '../components/platform/TransactionFeed'
+import Analytics from '../components/platform/Analytics'
 import { usePlatformData } from '../hooks/usePlatformData'
 
 const USDC_ASSET_ID = Number(import.meta.env.VITE_USDC_ASSET_ID) || 0
 const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS || ''
 
-type Tab = 'overview' | 'workers' | 'deliveries'
+type Tab = 'overview' | 'workers' | 'deliveries' | 'analytics'
 
 const PlatformDashboard: React.FC = () => {
   const { activeAddress } = useWallet()
@@ -86,6 +87,7 @@ const PlatformDashboard: React.FC = () => {
     { key: 'overview', label: 'Overview' },
     { key: 'workers', label: 'Workers', count: workers.length },
     { key: 'deliveries', label: 'Deliveries', count: deliveries.length },
+    { key: 'analytics', label: 'Analytics' },
   ]
 
   return (
@@ -176,6 +178,11 @@ const PlatformDashboard: React.FC = () => {
           <CreateDelivery workers={workers} onCreated={handleRefresh} />
           <DeliveryTracker deliveries={deliveries} workers={workers} onUpdated={handleRefresh} statusOverrides={statusOverrides} onStatusOverride={handleStatusOverride} />
         </div>
+      )}
+
+      {/* Analytics Tab */}
+      {activeTab === 'analytics' && (
+        <Analytics refreshKey={refreshKey} />
       )}
     </DashboardLayout>
   )
