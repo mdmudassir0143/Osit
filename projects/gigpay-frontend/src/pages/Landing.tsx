@@ -146,7 +146,6 @@ const Landing: React.FC = () => {
               onClick={(e) => { e.stopPropagation(); setAppMenuOpen((v) => !v) }}
               className="nb-btn bg-terra text-cream px-5 py-2.5 text-sm font-display font-bold flex items-center gap-2.5 shadow-brutal-sm"
             >
-              <span className="w-2 h-2 bg-sun rounded-full" />
               Launch App
               <svg className={`w-3.5 h-3.5 transition-transform ${appMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -193,15 +192,9 @@ const Landing: React.FC = () => {
       <section className="relative z-10 px-6 md:px-12 lg:px-20 pt-16 md:pt-24 pb-20">
         {/* Grid dots bg */}
         <div className="absolute inset-0 grid-dots pointer-events-none" />
-
         <div className="relative grid md:grid-cols-12 gap-10 items-start">
           {/* Left — headline */}
           <div className={`md:col-span-7 ${mounted ? 'animate-fade-up' : 'opacity-0'}`}>
-            <div className="inline-block mb-6">
-              <span className="nb-tag bg-sun border-charcoal font-mono text-[10px]">
-                Built on Algorand
-              </span>
-            </div>
 
             <h1 className="font-display text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold leading-[0.95] tracking-tight mb-8">
               Pay gig workers{' '}
@@ -732,7 +725,7 @@ final_amount = (base * multiplier) / 100
 
       {/* ══════════ DARK: TECH STACK ══════════ */}
       <div className="bg-charcoal text-cream">
-        <section className="relative z-10 px-6 md:px-12 lg:px-16 py-10">
+        <section className="relative z-10 px-6 md:px-12 lg:px-16 py-5">
           <div className="flex items-center gap-3 mb-8">
             <div className="w-[60px] h-[3px] bg-terra" />
             <span className="font-mono text-[10px] tracking-[0.3em] text-cream/50 uppercase font-medium">Tech Stack</span>
