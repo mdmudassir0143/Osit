@@ -182,7 +182,7 @@ const PlatformDashboard: React.FC = () => {
 
       {/* Analytics Tab */}
       {activeTab === 'analytics' && (
-        <Analytics refreshKey={refreshKey} />
+        <Analytics refreshKey={refreshKey} workers={workers} deliveries={deliveries} escrow={escrow} />
       )}
     </DashboardLayout>
   )
