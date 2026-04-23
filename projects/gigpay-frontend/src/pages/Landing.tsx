@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import AloraLogo from '../components/shared/AloraLogo'
 
 const TICKER_ITEMS = [
   'ATOMIC SETTLEMENTS',
@@ -133,10 +134,7 @@ const Landing: React.FC = () => {
 
       {/* ═══════════ NAV ═══════════ */}
       <nav className="relative z-50 flex items-center justify-between px-6 md:px-12 lg:px-20 py-5 border-b-[2.5px] border-charcoal bg-cream">
-        <div className="flex items-center gap-3">
-          <div className="w-4 h-4 bg-terra rounded-sm border-2 border-charcoal" />
-          <span className="font-display text-xl font-bold tracking-tight">GigPay</span>
-        </div>
+        <AloraLogo size="md" />
         <div className="flex items-center gap-8">
           <a href="#flow" className="text-sm font-medium text-charcoal/50 hover:text-charcoal transition-colors hidden md:block">Flow</a>
           <a href="#architecture" className="text-sm font-medium text-charcoal/50 hover:text-charcoal transition-colors hidden md:block">Architecture</a>
@@ -256,7 +254,7 @@ const Landing: React.FC = () => {
               <div className="mt-7 pt-5 border-t-2 border-dashed border-charcoal/10">
                 <div className="flex items-center gap-2.5">
                   <div className="w-2 h-2 bg-terra rounded-full animate-pulse" />
-                  <span className="text-xs text-terra font-semibold">GigPay fixes this</span>
+                  <span className="text-xs text-terra font-semibold">Alora fixes this</span>
                 </div>
               </div>
             </div>
@@ -784,9 +782,8 @@ final_amount = (base * multiplier) / 100
       <footer className="relative z-10 border-t-[2.5px] border-charcoal bg-cream px-6 md:px-12 lg:px-20 py-8">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
           <div className="flex items-center gap-3">
-            <div className="w-3 h-3 bg-terra rounded-sm border-2 border-charcoal" />
-            <span className="font-display text-base font-bold">GigPay</span>
-            <span className="text-charcoal/25 text-xs ml-3">On-Chain Gig Payments</span>
+            <AloraLogo size="sm" />
+            <span className="text-charcoal/25 text-xs ml-1">On-Chain Gig Payments</span>
           </div>
           <div className="flex flex-wrap items-center gap-4 font-mono text-[10px] text-charcoal/30">
             <span>Built on Algorand</span>

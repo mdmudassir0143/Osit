@@ -12,6 +12,7 @@ import EarningsBreakdown from '../components/worker/EarningsBreakdown'
 import RatingInsight from '../components/worker/RatingInsight'
 import SendUsdc from '../components/worker/SendUsdc'
 import RegisterWorker from '../components/worker/RegisterWorker'
+import AloraLogo from '../components/shared/AloraLogo'
 import { useWorkerData } from '../hooks/useWorkerData'
 import { getAlgodConfigFromViteEnvironment, getIndexerConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
 
@@ -50,8 +51,9 @@ const WorkerDashboard: React.FC = () => {
       <div className="min-h-screen bg-cream text-charcoal font-sans flex items-center justify-center">
         <div className="noise-overlay" />
         <div className="nb-card max-w-md w-full mx-6 p-10 text-center shadow-brutal-lg">
-          <div className="w-4 h-4 bg-terra rotate-45 mx-auto mb-6" />
-          <h1 className="font-display text-3xl font-bold mb-3">GigPay</h1>
+          <div className="flex justify-center mb-6">
+            <AloraLogo size="lg" />
+          </div>
           <p className="text-muted text-sm mb-8 leading-relaxed">
             Connect your Algorand wallet to access the worker dashboard.
           </p>

@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useWallet } from '@txnlab/use-wallet-react'
 import WalletStatus from '../components/shared/WalletStatus'
 import NotificationBell from '../components/shared/NotificationBell'
+import AloraLogo from '../components/shared/AloraLogo'
 
 const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS || ''
 
@@ -24,9 +25,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, title }) =>
       {/* Header */}
       <nav className="bg-white border-b-[2.5px] border-charcoal px-6 md:px-10 py-3.5 flex items-center justify-between relative z-10">
         <div className="flex items-center gap-5">
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-3 h-3 bg-terra rotate-45 group-hover:rotate-[225deg] transition-transform duration-300" />
-            <span className="font-display text-xl font-bold tracking-tight text-charcoal">GigPay</span>
+          <Link to="/" className="hover:opacity-80 transition-opacity">
+            <AloraLogo size="md" />
           </Link>
 
           <div className="h-6 w-[2px] bg-charcoal/20" />
