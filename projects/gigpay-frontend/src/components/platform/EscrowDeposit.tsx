@@ -28,22 +28,22 @@ const EscrowDeposit: React.FC<EscrowDepositProps> = ({ usdcAssetId, onDeposited 
   }
 
   return (
-    <div className="bg-surface-raised border border-border rounded-lg p-6 md:p-8">
+    <div className="nb-dash-card p-6 md:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-serif text-xl text-charcoal">Deposit USDC</h2>
-        <span className="text-[10px] tracking-[0.2em] uppercase text-muted">Fund Escrow</span>
+        <h2 className="nb-section-heading">Deposit USDC</h2>
+        <span className="nb-tag bg-cream">Fund Escrow</span>
       </div>
 
       <form onSubmit={handleDeposit} className="space-y-5">
         <div>
-          <label className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-2">
+          <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-2">
             Amount (USDC)
           </label>
           <input
             type="number"
             step="0.01"
             min="0"
-            className="w-full bg-surface border border-border rounded px-4 py-3 text-charcoal text-sm font-mono placeholder-muted/50 focus:border-terra focus:outline-none transition-colors"
+            className="nb-input nb-input-mono"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             placeholder="100.00"
@@ -52,7 +52,7 @@ const EscrowDeposit: React.FC<EscrowDepositProps> = ({ usdcAssetId, onDeposited 
 
         <button
           type="submit"
-          className="w-full bg-terra text-white py-3 text-sm font-medium tracking-wide uppercase hover:bg-terra-dark transition-colors disabled:opacity-30 disabled:cursor-not-allowed rounded flex items-center justify-center gap-2"
+          className="nb-btn-primary"
           disabled={loading || !amount}
         >
           {loading ? (

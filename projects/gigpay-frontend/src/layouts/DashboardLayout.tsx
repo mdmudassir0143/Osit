@@ -17,35 +17,38 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, title }) =>
   const isAdmin = activeAddress === ADMIN_ADDRESS
 
   return (
-    <div className="min-h-screen bg-surface text-charcoal font-sans">
+    <div className="min-h-screen bg-cream text-charcoal font-sans">
+      {/* Noise overlay */}
+      <div className="noise-overlay" />
+
       {/* Header */}
-      <nav className="bg-surface-raised border-b border-border px-6 md:px-10 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition-opacity">
-            <div className="w-2.5 h-2.5 bg-terra" />
-            <span className="font-serif text-xl tracking-tight text-charcoal">GigPay</span>
+      <nav className="bg-white border-b-[2.5px] border-charcoal px-6 md:px-10 py-3.5 flex items-center justify-between relative z-10">
+        <div className="flex items-center gap-5">
+          <Link to="/" className="flex items-center gap-2.5 group">
+            <div className="w-3 h-3 bg-terra rotate-45 group-hover:rotate-[225deg] transition-transform duration-300" />
+            <span className="font-display text-xl font-bold tracking-tight text-charcoal">GigPay</span>
           </Link>
 
-          <div className="h-5 w-px bg-border" />
+          <div className="h-6 w-[2px] bg-charcoal/20" />
 
-          <span className="text-sm text-muted font-medium">{title}</span>
+          <span className="font-display text-sm font-semibold text-charcoal/60 tracking-wide">{title}</span>
 
           {isAdmin && (
-            <span className="text-[10px] tracking-[0.2em] uppercase bg-terra-light text-terra px-2.5 py-1 font-medium">
+            <span className="nb-tag bg-terra text-white border-charcoal">
               Admin
             </span>
           )}
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <NotificationBell />
           {isAdmin ? (
             <Link
               to="/platform"
-              className={`text-sm px-4 py-2 transition-all rounded ${
+              className={`font-display text-sm font-semibold px-4 py-2 border-2 border-charcoal rounded-lg transition-all ${
                 location.pathname === '/platform'
-                  ? 'bg-charcoal/5 text-charcoal font-medium'
-                  : 'text-muted hover:text-charcoal'
+                  ? 'bg-charcoal text-white shadow-brutal-sm'
+                  : 'bg-transparent text-charcoal hover:bg-charcoal hover:text-white'
               }`}
             >
               Platform
@@ -53,10 +56,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, title }) =>
           ) : (
             <Link
               to="/worker"
-              className={`text-sm px-4 py-2 transition-all rounded ${
+              className={`font-display text-sm font-semibold px-4 py-2 border-2 border-charcoal rounded-lg transition-all ${
                 location.pathname === '/worker'
-                  ? 'bg-charcoal/5 text-charcoal font-medium'
-                  : 'text-muted hover:text-charcoal'
+                  ? 'bg-charcoal text-white shadow-brutal-sm'
+                  : 'bg-transparent text-charcoal hover:bg-charcoal hover:text-white'
               }`}
             >
               Worker

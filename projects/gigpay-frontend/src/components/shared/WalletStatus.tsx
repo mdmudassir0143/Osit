@@ -10,13 +10,13 @@ const WalletStatus: React.FC = () => {
   return (
     <>
       {activeAddress ? (
-        <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-2 text-xs font-mono text-muted">
-            <span className="w-1.5 h-1.5 bg-sage rounded-full" />
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-2 text-xs font-mono border-2 border-charcoal rounded-lg px-3 py-1.5 bg-cream">
+            <span className="w-2 h-2 bg-sage rounded-full" />
             {ellipseAddress(activeAddress)}
           </span>
           <button
-            className="text-[10px] tracking-wider uppercase text-muted hover:text-charcoal transition-colors"
+            className="nb-btn-ghost !py-1.5 !px-3 !text-[10px]"
             onClick={() => setOpenModal(true)}
           >
             Switch
@@ -24,10 +24,10 @@ const WalletStatus: React.FC = () => {
         </div>
       ) : (
         <button
-          className="bg-terra text-white px-4 py-2 text-sm font-medium hover:bg-terra-dark transition-colors rounded"
+          className="nb-btn bg-terra text-white px-5 py-2 text-sm font-display font-bold"
           onClick={() => setOpenModal(true)}
         >
-          Connect Wallet
+          Connect
         </button>
       )}
       <ConnectWallet openModal={openModal} closeModal={() => setOpenModal(false)} />

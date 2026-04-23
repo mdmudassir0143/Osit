@@ -30,13 +30,6 @@ const DeliveryTracker: React.FC<DeliveryTrackerProps> = ({ deliveries, workers, 
   const loading = deliveryLoading || payLoading
   const workerMap = new Map(workers.map((w) => [w.address, w]))
 
-  /**
-   * Confirm + Pay: single atomic transaction group (1 signature)
-   * 1. confirmDelivery → calculates final payout on-chain
-   * 2. releasePayment → sends USDC from escrow to worker
-   * 3. markPaid → updates delivery status
-   * 4. incrementEarnings → updates worker stats
-   */
   const handleConfirmAndPay = async (delivery: DeliveryData) => {
     const worker = workerMap.get(delivery.worker)
     const rating = worker?.rating || 30
@@ -46,7 +39,6 @@ const DeliveryTracker: React.FC<DeliveryTrackerProps> = ({ deliveries, workers, 
     try {
       showInfo('Signing atomic transaction (4 calls in 1)...')
       await confirmAndPay(delivery.id, delivery.worker, rating, finalAmount)
-
       onStatusOverride(delivery.id, 3)
       showSuccess(`Payment of $${(finalAmount / 1_000_000).toFixed(2)} sent to ${worker?.name || ellipseAddress(delivery.worker, 4)}`)
       onUpdated()
@@ -63,7 +55,6 @@ const DeliveryTracker: React.FC<DeliveryTrackerProps> = ({ deliveries, workers, 
     try {
       if (effectiveStatus === 0) {
         await markPickedUp(delivery.id)
-        // Optimistically update status to "picked up"
         onStatusOverride(delivery.id, 1)
         showSuccess('Marked as picked up')
         onUpdated()
@@ -84,17 +75,12 @@ const DeliveryTracker: React.FC<DeliveryTrackerProps> = ({ deliveries, workers, 
     return null
   }
 
-  const getActionColor = (status: number) => {
-    if (status === 1) return 'bg-sage text-white hover:bg-sage/90 border-sage'
-    return 'text-terra hover:text-terra-dark border-terra/30'
-  }
-
   return (
-    <div className="bg-surface-raised border border-border rounded-lg p-6 md:p-8">
+    <div className="nb-dash-card p-6 md:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-serif text-xl text-charcoal">Deliveries</h2>
+        <h2 className="nb-section-heading">Deliveries</h2>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-4 text-[10px] tracking-[0.15em] uppercase text-muted">
+          <div className="flex items-center gap-4 text-[10px] tracking-[0.15em] uppercase text-muted font-display font-semibold">
             <span>{deliveries.filter((d) => d.status < 2).length} active</span>
             <span>{deliveries.filter((d) => d.status === 3).length} paid</span>
           </div>
@@ -103,12 +89,11 @@ const DeliveryTracker: React.FC<DeliveryTrackerProps> = ({ deliveries, workers, 
 
       {deliveries.length === 0 ? (
         <div className="py-10 text-center">
-          <div className="text-muted text-sm">No deliveries created yet</div>
+          <div className="text-muted text-sm font-display">No deliveries created yet</div>
         </div>
       ) : (
         <div className="space-y-0">
-          {/* Header */}
-          <div className="grid grid-cols-7 gap-3 pb-3 border-b border-border text-[10px] tracking-[0.2em] uppercase text-muted">
+          <div className="grid grid-cols-7 gap-3 pb-3 border-b-2 border-charcoal/10 text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold">
             <div>ID</div>
             <div>Worker</div>
             <div>Customer</div>
@@ -125,7 +110,6 @@ const DeliveryTracker: React.FC<DeliveryTrackerProps> = ({ deliveries, workers, 
             const actionLabel = getActionLabel(effectiveStatus)
             const isActing = actionId === d.id && loading
 
-            // Preview the payout for picked-up orders
             const previewPayout = effectiveStatus === 1 && worker
               ? calculatePayout(d.baseAmount, worker.rating)
               : null
@@ -133,12 +117,12 @@ const DeliveryTracker: React.FC<DeliveryTrackerProps> = ({ deliveries, workers, 
             return (
               <div
                 key={d.id}
-                className="grid grid-cols-7 gap-3 py-3.5 border-b border-border-light items-center hover:bg-surface transition-colors -mx-2 px-2 rounded"
+                className="grid grid-cols-7 gap-3 py-3.5 nb-table-row items-center -mx-2 px-2 rounded"
               >
                 <div className="font-mono text-xs text-muted">#{d.id}</div>
                 <div>
-                  <div className="text-sm text-charcoal">{worker?.name || ellipseAddress(d.worker, 4)}</div>
-                  {worker && <div className="text-[10px] text-muted">{(worker.rating / 10).toFixed(1)}★ · {worker.upiId}</div>}
+                  <div className="text-sm text-charcoal font-display font-semibold">{worker?.name || ellipseAddress(d.worker, 4)}</div>
+                  {worker && <div className="text-[10px] text-muted font-mono">{(worker.rating / 10).toFixed(1)}★ · {worker.upiId}</div>}
                 </div>
                 <div className="text-sm text-charcoal truncate">{d.customerName}</div>
                 <div>
@@ -162,8 +146,8 @@ const DeliveryTracker: React.FC<DeliveryTrackerProps> = ({ deliveries, workers, 
                 </div>
                 <div className="text-center">
                   <span className="inline-flex items-center gap-1.5">
-                    <span className={`w-1.5 h-1.5 rounded-full ${statusInfo.dot}`} />
-                    <span className={`text-xs ${statusInfo.color}`}>{statusInfo.label}</span>
+                    <span className={`w-2 h-2 rounded-full ${statusInfo.dot}`} />
+                    <span className={`text-xs font-display font-semibold ${statusInfo.color}`}>{statusInfo.label}</span>
                   </span>
                 </div>
                 <div className="text-right">
@@ -171,7 +155,7 @@ const DeliveryTracker: React.FC<DeliveryTrackerProps> = ({ deliveries, workers, 
                     <button
                       onClick={() => effectiveStatus === 1 ? handleConfirmAndPay(d) : handleAction(d)}
                       disabled={loading}
-                      className={`text-[10px] tracking-wider uppercase transition-colors disabled:opacity-30 border px-2.5 py-1 rounded ${getActionColor(effectiveStatus)}`}
+                      className={`nb-btn-ghost !text-[10px] !py-1 ${effectiveStatus === 1 ? '!bg-sage !text-white !border-sage hover:!bg-sage/90' : ''}`}
                     >
                       {isActing ? (
                         <span className="inline-flex items-center gap-1">
@@ -183,10 +167,10 @@ const DeliveryTracker: React.FC<DeliveryTrackerProps> = ({ deliveries, workers, 
                     </button>
                   )}
                   {effectiveStatus === 2 && (
-                    <span className="text-[10px] text-sage font-medium">Delivered</span>
+                    <span className="text-[10px] text-sage font-display font-bold">Delivered</span>
                   )}
                   {effectiveStatus === 3 && (
-                    <span className="text-[10px] text-terra font-medium">Paid ✓</span>
+                    <span className="text-[10px] text-terra font-display font-bold">Paid ✓</span>
                   )}
                 </div>
               </div>

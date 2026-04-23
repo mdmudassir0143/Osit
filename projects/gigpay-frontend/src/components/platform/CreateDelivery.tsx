@@ -44,35 +44,34 @@ const CreateDelivery: React.FC<CreateDeliveryProps> = ({ workers, onCreated }) =
     setPickup(d.pickup)
     setDropoff(d.dropoff)
     setBaseAmount(String(d.baseAmount))
-    // Auto-increment delivery ID
     setDeliveryId(String(Math.floor(Date.now() / 1000) % 100000))
   }
 
   const activeWorkers = workers.filter((w) => w.status === 1)
 
   return (
-    <div className="bg-surface-raised border border-border rounded-lg p-6 md:p-8">
+    <div className="nb-dash-card p-6 md:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-serif text-xl text-charcoal">Create Delivery</h2>
-        <span className="text-[10px] tracking-[0.2em] uppercase text-muted">Assign Task</span>
+        <h2 className="nb-section-heading">Create Delivery</h2>
+        <span className="nb-tag bg-cream">Assign Task</span>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-1.5">Delivery ID</label>
+            <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">Delivery ID</label>
             <input
               type="number"
-              className="w-full bg-surface border border-border rounded px-3 py-2.5 text-charcoal text-sm font-mono placeholder-muted/50 focus:border-terra focus:outline-none transition-colors"
+              className="nb-input nb-input-mono"
               value={deliveryId}
               onChange={(e) => setDeliveryId(e.target.value)}
               placeholder="1001"
             />
           </div>
           <div>
-            <label className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-1.5">Assign Worker</label>
+            <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">Assign Worker</label>
             <select
-              className="w-full bg-surface border border-border rounded px-3 py-2.5 text-charcoal text-sm focus:border-terra focus:outline-none transition-colors"
+              className="nb-select"
               value={selectedWorker}
               onChange={(e) => setSelectedWorker(e.target.value)}
             >
@@ -87,10 +86,10 @@ const CreateDelivery: React.FC<CreateDeliveryProps> = ({ workers, onCreated }) =
         </div>
 
         <div>
-          <label className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-1.5">Customer Name</label>
+          <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">Customer Name</label>
           <input
             type="text"
-            className="w-full bg-surface border border-border rounded px-3 py-2.5 text-charcoal text-sm placeholder-muted/50 focus:border-terra focus:outline-none transition-colors"
+            className="nb-input"
             value={customerName}
             onChange={(e) => setCustomerName(e.target.value)}
             placeholder="Customer name"
@@ -99,20 +98,20 @@ const CreateDelivery: React.FC<CreateDeliveryProps> = ({ workers, onCreated }) =
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-1.5">Pickup</label>
+            <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">Pickup</label>
             <input
               type="text"
-              className="w-full bg-surface border border-border rounded px-3 py-2.5 text-charcoal text-sm placeholder-muted/50 focus:border-terra focus:outline-none transition-colors"
+              className="nb-input"
               value={pickup}
               onChange={(e) => setPickup(e.target.value)}
               placeholder="Pickup address"
             />
           </div>
           <div>
-            <label className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-1.5">Dropoff</label>
+            <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">Dropoff</label>
             <input
               type="text"
-              className="w-full bg-surface border border-border rounded px-3 py-2.5 text-charcoal text-sm placeholder-muted/50 focus:border-terra focus:outline-none transition-colors"
+              className="nb-input"
               value={dropoff}
               onChange={(e) => setDropoff(e.target.value)}
               placeholder="Dropoff address"
@@ -121,45 +120,43 @@ const CreateDelivery: React.FC<CreateDeliveryProps> = ({ workers, onCreated }) =
         </div>
 
         <div>
-          <label className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-1.5">Base Amount (USDC)</label>
+          <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">Base Amount (USDC)</label>
           <input
             type="number"
             step="0.01"
             min="0"
-            className="w-full bg-surface border border-border rounded px-3 py-2.5 text-charcoal text-sm font-mono placeholder-muted/50 focus:border-terra focus:outline-none transition-colors"
+            className="nb-input nb-input-mono"
             value={baseAmount}
             onChange={(e) => setBaseAmount(e.target.value)}
             placeholder="0.25"
           />
         </div>
 
-        <div className="flex gap-3">
-          <button
-            type="submit"
-            className="flex-1 bg-terra text-white py-2.5 text-sm font-medium tracking-wide uppercase hover:bg-terra-dark transition-colors disabled:opacity-30 disabled:cursor-not-allowed rounded flex items-center justify-center gap-2"
-            disabled={loading || !deliveryId || !selectedWorker || !customerName || !baseAmount}
-          >
-            {loading ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white animate-spin rounded-full" />
-                Creating...
-              </>
-            ) : (
-              'Create Delivery'
-            )}
-          </button>
-        </div>
+        <button
+          type="submit"
+          className="nb-btn-primary"
+          disabled={loading || !deliveryId || !selectedWorker || !customerName || !baseAmount}
+        >
+          {loading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white animate-spin rounded-full" />
+              Creating...
+            </>
+          ) : (
+            'Create Delivery'
+          )}
+        </button>
 
         {DUMMY_ORDERS.length > 0 && (
-          <div className="border-t border-border-light pt-4 mt-4">
-            <div className="text-[10px] tracking-[0.2em] uppercase text-muted mb-2">Quick fill demo data</div>
+          <div className="border-t-2 border-charcoal/10 pt-4 mt-4">
+            <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-2">Quick fill demo data</div>
             <div className="flex flex-wrap gap-2">
               {DUMMY_ORDERS.map((d, i) => (
                 <button
                   key={i}
                   type="button"
                   onClick={() => fillDummy(d)}
-                  className="text-xs px-3 py-1.5 bg-surface border border-border rounded hover:border-terra/40 hover:text-terra transition-colors"
+                  className="nb-btn-ghost !text-[10px] !py-1.5"
                 >
                   {d.customerName} — ${d.baseAmount}
                 </button>

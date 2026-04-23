@@ -7,10 +7,10 @@ interface Props {
 }
 
 const STATUS_LABELS: Record<number, { label: string; color: string }> = {
-  0: { label: 'Assigned', color: 'bg-sun-light text-charcoal' },
-  1: { label: 'Picked Up', color: 'bg-sage-light text-charcoal' },
-  2: { label: 'Delivered', color: 'bg-sage text-white' },
-  3: { label: 'Paid', color: 'bg-terra text-white' },
+  0: { label: 'Assigned', color: 'bg-sun-light text-charcoal border-2 border-sun/30' },
+  1: { label: 'Picked Up', color: 'bg-sage-light text-charcoal border-2 border-sage/30' },
+  2: { label: 'Delivered', color: 'bg-sage text-white border-2 border-sage' },
+  3: { label: 'Paid', color: 'bg-terra text-white border-2 border-terra' },
 }
 
 function formatDate(ts: number): string {
@@ -20,7 +20,6 @@ function formatDate(ts: number): string {
 }
 
 function computeMultiplier(rating: number): number {
-  // multiplier = 40 + (rating × 22) / 10, rating is 10-50
   return (40 + (rating * 22) / 10) / 100
 }
 
@@ -30,35 +29,34 @@ const EarningsBreakdown: React.FC<Props> = ({ deliveries, rating }) => {
   const multiplier = computeMultiplier(rating)
   const displayed = showAll ? paidDeliveries : paidDeliveries.slice(0, 5)
 
-  // Cumulative earnings for mini chart (last 7 paid deliveries, newest first → reverse for left-to-right)
   const chartData = paidDeliveries.slice(0, 7).reverse()
   const maxAmount = Math.max(...chartData.map((d) => d.finalAmount), 1)
 
   return (
-    <div className="bg-surface-raised border border-border rounded-lg p-6 md:p-8">
+    <div className="nb-dash-card p-6 md:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-serif text-xl text-charcoal">Earnings Breakdown</h2>
+        <h2 className="nb-section-heading">Earnings Breakdown</h2>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] tracking-[0.2em] uppercase text-muted">Multiplier</span>
-          <span className="text-sm font-mono font-medium text-terra">{(multiplier * 100).toFixed(0)}%</span>
+          <span className="nb-tag bg-cream">Multiplier</span>
+          <span className="text-sm font-mono font-bold text-terra">{(multiplier * 100).toFixed(0)}%</span>
         </div>
       </div>
 
-      {/* Mini bar chart — recent earnings trend */}
+      {/* Mini bar chart */}
       {chartData.length > 0 && (
         <div className="mb-6">
-          <div className="text-[10px] tracking-[0.2em] uppercase text-muted mb-3">Recent Earnings Trend</div>
+          <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-3">Recent Earnings Trend</div>
           <div className="flex items-end gap-1.5 h-16">
-            {chartData.map((d, i) => {
+            {chartData.map((d) => {
               const height = Math.max((d.finalAmount / maxAmount) * 100, 8)
               return (
                 <div key={d.id} className="flex-1 flex flex-col items-center gap-1">
                   <div
-                    className="w-full bg-terra/80 rounded-t transition-all hover:bg-terra"
+                    className="w-full bg-terra rounded-t-lg border-2 border-charcoal transition-all hover:bg-terra-dark"
                     style={{ height: `${height}%` }}
                     title={`$${(d.finalAmount / 1_000_000).toFixed(2)} — ${formatDate(d.deliveredAt)}`}
                   />
-                  <span className="text-[9px] text-muted">{formatDate(d.deliveredAt)}</span>
+                  <span className="text-[9px] text-muted font-mono">{formatDate(d.deliveredAt)}</span>
                 </div>
               )
             })}
@@ -69,11 +67,11 @@ const EarningsBreakdown: React.FC<Props> = ({ deliveries, rating }) => {
       {/* Per-delivery list */}
       {paidDeliveries.length === 0 ? (
         <div className="py-8 text-center">
-          <span className="text-sm text-muted">No completed deliveries yet</span>
+          <span className="text-sm text-muted font-display">No completed deliveries yet</span>
         </div>
       ) : (
         <>
-          <div className="space-y-0 divide-y divide-border-light">
+          <div className="space-y-0 divide-y divide-charcoal/10">
             {displayed.map((d) => {
               const base = d.baseAmount / 1_000_000
               const final_ = d.finalAmount / 1_000_000
@@ -83,15 +81,15 @@ const EarningsBreakdown: React.FC<Props> = ({ deliveries, rating }) => {
                 <div key={d.id} className="py-3 flex items-center gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-charcoal truncate">{d.customerName || `Delivery #${d.id}`}</span>
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${status.color}`}>
+                      <span className="text-sm font-display font-semibold text-charcoal truncate">{d.customerName || `Delivery #${d.id}`}</span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-display font-bold ${status.color}`}>
                         {status.label}
                       </span>
                     </div>
-                    <div className="text-xs text-muted mt-0.5">{formatDate(d.createdAt)}</div>
+                    <div className="text-xs text-muted mt-0.5 font-mono">{formatDate(d.createdAt)}</div>
                   </div>
                   <div className="text-right flex-shrink-0">
-                    <div className="text-sm font-mono font-medium text-charcoal">${final_.toFixed(2)}</div>
+                    <div className="text-sm font-mono font-bold text-charcoal">${final_.toFixed(2)}</div>
                     {bonus > 0 ? (
                       <div className="text-[10px] text-sage font-mono">
                         ${base.toFixed(2)} + ${bonus.toFixed(2)} bonus
@@ -108,29 +106,28 @@ const EarningsBreakdown: React.FC<Props> = ({ deliveries, rating }) => {
           {paidDeliveries.length > 5 && (
             <button
               onClick={() => setShowAll(!showAll)}
-              className="mt-4 text-xs text-terra hover:text-terra-dark font-medium transition-colors"
+              className="mt-4 text-xs text-terra hover:text-terra-dark font-display font-bold transition-colors"
             >
               {showAll ? 'Show less' : `Show all ${paidDeliveries.length} deliveries`}
             </button>
           )}
 
-          {/* Summary */}
-          <div className="mt-5 pt-4 border-t border-border grid grid-cols-3 gap-4">
+          <div className="mt-5 pt-4 border-t-2 border-charcoal/10 grid grid-cols-3 gap-4">
             <div>
-              <div className="text-[10px] tracking-[0.2em] uppercase text-muted mb-1">Total Base</div>
+              <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-1">Total Base</div>
               <div className="text-sm font-mono text-charcoal">
                 ${(paidDeliveries.reduce((s, d) => s + d.baseAmount, 0) / 1_000_000).toFixed(2)}
               </div>
             </div>
             <div>
-              <div className="text-[10px] tracking-[0.2em] uppercase text-muted mb-1">Total Bonus</div>
+              <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-1">Total Bonus</div>
               <div className="text-sm font-mono text-sage">
                 +${((paidDeliveries.reduce((s, d) => s + d.finalAmount - d.baseAmount, 0)) / 1_000_000).toFixed(2)}
               </div>
             </div>
             <div>
-              <div className="text-[10px] tracking-[0.2em] uppercase text-muted mb-1">Total Final</div>
-              <div className="text-sm font-mono font-semibold text-charcoal">
+              <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-1">Total Final</div>
+              <div className="text-sm font-mono font-bold text-charcoal">
                 ${(paidDeliveries.reduce((s, d) => s + d.finalAmount, 0) / 1_000_000).toFixed(2)}
               </div>
             </div>

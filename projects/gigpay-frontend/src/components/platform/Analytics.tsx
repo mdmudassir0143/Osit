@@ -39,7 +39,6 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
   const [recentTxns, setRecentTxns] = useState<RecentTxn[]>([])
   const [txnLoading, setTxnLoading] = useState(true)
 
-  // Fetch transaction counts and recent txns from indexer
   useEffect(() => {
     const indexer = new algosdk.Indexer(INDEXER_TOKEN, INDEXER_SERVER, INDEXER_PORT)
     let cancelled = false
@@ -95,7 +94,6 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
     return () => { cancelled = true }
   }, [refreshKey])
 
-  // Derived stats from workers/deliveries/escrow
   const stats = useMemo(() => {
     const activeWorkers = workers.filter((w) => w.status === 1).length
     const suspendedWorkers = workers.filter((w) => w.status === 2).length
@@ -127,14 +125,12 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
     }
   }, [workers, deliveries, escrow])
 
-  // Worker leaderboard — top 5 by earnings
   const leaderboard = useMemo(() => {
     return [...workers]
       .sort((a, b) => b.totalEarned - a.totalEarned)
       .slice(0, 5)
   }, [workers])
 
-  // Txn volume by day (last 7 days)
   const dailyVolume = useMemo(() => {
     const now = Math.floor(Date.now() / 1000)
     const days: { label: string; count: number }[] = []
@@ -156,8 +152,8 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
   const short = (addr: string) => addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : '—'
 
   return (
-    <div className="space-y-6">
-      {/* ── Row 1: Key Metrics ── */}
+    <div className="space-y-6 stagger-children">
+      {/* Row 1: Key Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard label="Total Transactions" value={txnLoading ? null : totalTxnCount} accent="terra" />
         <MetricCard label="Escrow Balance" value={fmtUsdc(escrow.balance)} accent="sage" />
@@ -165,7 +161,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
         <MetricCard label="Escrow Utilization" value={`${stats.escrowUtilization}%`} accent="sage" />
       </div>
 
-      {/* ── Row 2: Workers + Deliveries stats ── */}
+      {/* Row 2: Workers + Deliveries stats */}
       <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
         <MiniStat label="Active Workers" value={stats.activeWorkers} />
         <MiniStat label="Avg Rating" value={`${stats.avgRating.toFixed(1)} ★`} />
@@ -175,13 +171,12 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
         <MiniStat label="Completion" value={`${stats.completionRate}%`} />
       </div>
 
-      {/* ── Row 3: Daily Volume Chart + Per-Contract Breakdown ── */}
+      {/* Row 3: Daily Volume Chart + Per-Contract Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Chart */}
-        <div className="lg:col-span-2 bg-surface-raised border border-border rounded-lg p-6">
+        <div className="lg:col-span-2 nb-dash-card p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-sm font-medium text-charcoal">Transaction Volume (7 days)</h3>
-            <span className="text-[10px] tracking-[0.2em] uppercase text-muted">On-Chain</span>
+            <h3 className="font-display text-sm font-bold text-charcoal">Transaction Volume (7 days)</h3>
+            <span className="nb-tag bg-cream">On-Chain</span>
           </div>
           <div className="flex items-end gap-2 h-36">
             {dailyVolume.map((day) => (
@@ -189,19 +184,18 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
                 <span className="text-[10px] font-mono text-muted">{day.count || ''}</span>
                 <div className="w-full relative" style={{ height: '100px' }}>
                   <div
-                    className="absolute bottom-0 w-full bg-terra/80 rounded-t transition-all duration-500"
+                    className="absolute bottom-0 w-full bg-terra rounded-t-lg border-2 border-charcoal transition-all duration-500"
                     style={{ height: `${Math.max((day.count / maxDayCount) * 100, day.count > 0 ? 6 : 0)}%` }}
                   />
                 </div>
-                <span className="text-[10px] text-muted">{day.label}</span>
+                <span className="text-[10px] text-muted font-display font-semibold">{day.label}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Per-contract txn counts */}
-        <div className="bg-surface-raised border border-border rounded-lg p-6">
-          <h3 className="text-sm font-medium text-charcoal mb-5">By Contract</h3>
+        <div className="nb-dash-card p-6">
+          <h3 className="font-display text-sm font-bold text-charcoal mb-5">By Contract</h3>
           <div className="space-y-4">
             {APP_CONFIGS.map((config) => {
               const data = txnCounts[config.appId]
@@ -210,12 +204,12 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
               return (
                 <div key={config.appId}>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-medium text-charcoal">{config.label}</span>
+                    <span className="text-xs font-display font-semibold text-charcoal">{config.label}</span>
                     <span className="font-mono text-xs text-muted">
                       {data?.loading ? '...' : count}
                     </span>
                   </div>
-                  <div className="h-2 bg-border-light rounded-full overflow-hidden">
+                  <div className="h-2.5 bg-cream rounded-full overflow-hidden border border-charcoal/10">
                     <div
                       className={`h-full rounded-full transition-all duration-500 ${
                         config.key === 'escrow' ? 'bg-terra' : config.key === 'registry' ? 'bg-sage' : 'bg-charcoal/30'
@@ -234,37 +228,36 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
         </div>
       </div>
 
-      {/* ── Row 4: Leaderboard + Delivery Pipeline ── */}
+      {/* Row 4: Leaderboard + Delivery Pipeline */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Worker Leaderboard */}
-        <div className="bg-surface-raised border border-border rounded-lg p-6">
+        <div className="nb-dash-card p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-sm font-medium text-charcoal">Top Workers</h3>
-            <span className="text-[10px] tracking-[0.2em] uppercase text-muted">By Earnings</span>
+            <h3 className="font-display text-sm font-bold text-charcoal">Top Workers</h3>
+            <span className="nb-tag bg-sun-light text-charcoal border-sun">By Earnings</span>
           </div>
           {leaderboard.length === 0 ? (
-            <div className="py-8 text-center text-sm text-muted">No workers yet</div>
+            <div className="py-8 text-center text-sm text-muted font-display">No workers yet</div>
           ) : (
             <div className="space-y-0">
               {leaderboard.map((w, i) => {
                 const maxEarned = leaderboard[0]?.totalEarned || 1
                 const pct = Math.round((w.totalEarned / maxEarned) * 100)
                 return (
-                  <div key={w.address} className="flex items-center gap-3 py-3 border-b border-border-light last:border-0">
-                    <span className={`w-6 h-6 flex items-center justify-center rounded text-xs font-medium ${
-                      i === 0 ? 'bg-terra text-white' : 'bg-border-light text-muted'
+                  <div key={w.address} className="flex items-center gap-3 py-3 border-b border-charcoal/10 last:border-0">
+                    <span className={`w-7 h-7 flex items-center justify-center rounded-lg border-2 border-charcoal text-xs font-display font-bold ${
+                      i === 0 ? 'bg-terra text-white' : 'bg-cream text-charcoal'
                     }`}>
                       {i + 1}
                     </span>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1">
                         <div className="flex items-center gap-2 min-w-0">
-                          <span className="text-sm font-medium text-charcoal truncate">{w.name || short(w.address)}</span>
-                          <span className="text-[10px] text-terra">{(w.rating / 10).toFixed(1)}★</span>
+                          <span className="text-sm font-display font-semibold text-charcoal truncate">{w.name || short(w.address)}</span>
+                          <span className="text-[10px] text-terra font-mono">{(w.rating / 10).toFixed(1)}★</span>
                         </div>
                         <span className="font-mono text-xs text-charcoal ml-2 flex-shrink-0">{fmtUsdc(w.totalEarned)}</span>
                       </div>
-                      <div className="h-1.5 bg-border-light rounded-full overflow-hidden">
+                      <div className="h-2 bg-cream rounded-full overflow-hidden border border-charcoal/10">
                         <div className="h-full bg-sage rounded-full transition-all" style={{ width: `${pct}%` }} />
                       </div>
                       <div className="flex items-center justify-between mt-1">
@@ -279,18 +272,16 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
           )}
         </div>
 
-        {/* Delivery Pipeline */}
-        <div className="bg-surface-raised border border-border rounded-lg p-6">
+        <div className="nb-dash-card p-6">
           <div className="flex items-center justify-between mb-5">
-            <h3 className="text-sm font-medium text-charcoal">Delivery Pipeline</h3>
-            <span className="text-[10px] tracking-[0.2em] uppercase text-muted">{deliveries.length} Total</span>
+            <h3 className="font-display text-sm font-bold text-charcoal">Delivery Pipeline</h3>
+            <span className="nb-tag bg-cream">{deliveries.length} Total</span>
           </div>
 
           {deliveries.length === 0 ? (
-            <div className="py-8 text-center text-sm text-muted">No deliveries yet</div>
+            <div className="py-8 text-center text-sm text-muted font-display">No deliveries yet</div>
           ) : (
             <>
-              {/* Funnel bars */}
               <div className="space-y-3 mb-6">
                 {[
                   { label: 'Assigned', count: stats.assigned, color: 'bg-charcoal/20' },
@@ -302,10 +293,10 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
                   return (
                     <div key={stage.label}>
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-charcoal">{stage.label}</span>
+                        <span className="text-xs text-charcoal font-display font-semibold">{stage.label}</span>
                         <span className="font-mono text-xs text-muted">{stage.count}</span>
                       </div>
-                      <div className="h-2.5 bg-border-light rounded-full overflow-hidden">
+                      <div className="h-3 bg-cream rounded-full overflow-hidden border border-charcoal/10">
                         <div className={`h-full ${stage.color} rounded-full transition-all duration-500`} style={{ width: `${pct}%` }} />
                       </div>
                     </div>
@@ -313,15 +304,14 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
                 })}
               </div>
 
-              {/* Summary stats */}
-              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border-light">
+              <div className="grid grid-cols-2 gap-4 pt-4 border-t-2 border-charcoal/10">
                 <div>
-                  <div className="text-[10px] tracking-[0.2em] uppercase text-muted mb-1">Avg Payout</div>
-                  <div className="font-serif text-xl text-charcoal">{fmtUsdc(stats.avgPayout)}</div>
+                  <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-1">Avg Payout</div>
+                  <div className="font-display text-xl font-bold text-charcoal">{fmtUsdc(stats.avgPayout)}</div>
                 </div>
                 <div>
-                  <div className="text-[10px] tracking-[0.2em] uppercase text-muted mb-1">Total Paid Out</div>
-                  <div className="font-serif text-xl text-sage">{fmtUsdc(stats.totalEarned)}</div>
+                  <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-1">Total Paid Out</div>
+                  <div className="font-display text-xl font-bold text-sage">{fmtUsdc(stats.totalEarned)}</div>
                 </div>
               </div>
             </>
@@ -329,12 +319,12 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
         </div>
       </div>
 
-      {/* ── Row 5: Contract Links ── */}
+      {/* Row 5: Contract Links */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {APP_CONFIGS.map((config) => (
-          <div key={config.appId} className="bg-surface-raised border border-border rounded-lg px-5 py-4 flex items-center justify-between">
+          <div key={config.appId} className="nb-dash-card-hover px-5 py-4 flex items-center justify-between">
             <div>
-              <div className="text-xs font-medium text-charcoal">{config.label}</div>
+              <div className="text-xs font-display font-bold text-charcoal">{config.label}</div>
               <div className="font-mono text-[10px] text-muted mt-0.5">App ID: {config.appId || '—'}</div>
             </div>
             {config.appId > 0 && (
@@ -342,7 +332,7 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
                 href={`https://testnet.explorer.perawallet.app/application/${config.appId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[10px] tracking-wider uppercase text-terra hover:text-terra-dark transition-colors border border-terra/30 px-2.5 py-1 rounded"
+                className="nb-btn-ghost !text-[10px]"
               >
                 Explorer
               </a>
@@ -354,16 +344,14 @@ const Analytics: React.FC<AnalyticsProps> = ({ refreshKey, workers, deliveries, 
   )
 }
 
-/* ── Sub-components ── */
-
 function MetricCard({ label, value, accent }: { label: string; value: string | number | null; accent: 'terra' | 'sage' }) {
   return (
-    <div className="bg-surface-raised border border-border rounded-lg p-5">
-      <div className="text-[10px] tracking-[0.2em] uppercase text-muted mb-2">{label}</div>
+    <div className="nb-stat-card">
+      <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-2">{label}</div>
       {value === null ? (
-        <div className="inline-block w-5 h-5 border-2 border-border border-t-terra animate-spin rounded-full" />
+        <div className="inline-block w-5 h-5 border-[2.5px] border-charcoal/20 border-t-terra animate-spin rounded-full" />
       ) : (
-        <div className={`font-serif text-2xl ${accent === 'terra' ? 'text-terra' : 'text-sage'}`}>{value}</div>
+        <div className={`font-display text-2xl font-bold ${accent === 'terra' ? 'text-terra' : 'text-sage'}`}>{value}</div>
       )}
     </div>
   )
@@ -371,9 +359,9 @@ function MetricCard({ label, value, accent }: { label: string; value: string | n
 
 function MiniStat({ label, value, color }: { label: string; value: string | number; color?: string }) {
   return (
-    <div className="bg-surface-raised border border-border rounded-lg px-4 py-3">
-      <div className="text-[10px] tracking-[0.15em] uppercase text-muted mb-1">{label}</div>
-      <div className={`font-serif text-lg ${color || 'text-charcoal'}`}>{value}</div>
+    <div className="nb-dash-card px-4 py-3">
+      <div className="text-[10px] tracking-[0.15em] uppercase text-muted font-display font-semibold mb-1">{label}</div>
+      <div className={`font-display text-lg font-bold ${color || 'text-charcoal'}`}>{value}</div>
     </div>
   )
 }

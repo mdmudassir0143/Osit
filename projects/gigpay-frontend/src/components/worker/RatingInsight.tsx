@@ -1,13 +1,11 @@
 import React from 'react'
 
 interface Props {
-  rating: number // 10-50 (1.0★ to 5.0★)
+  rating: number
   tasksCompleted: number
-  avgBaseAmount?: number // microUSDC average base per delivery
+  avgBaseAmount?: number
 }
 
-// Contract formula: multiplier = 40 + (rating × 22) / 10
-// Rating is stored as 10-50 (representing 1.0-5.0)
 function getMultiplier(rating: number): number {
   return (40 + (rating * 22) / 10) / 100
 }
@@ -30,81 +28,78 @@ const RatingInsight: React.FC<Props> = ({ rating, tasksCompleted, avgBaseAmount 
   const nextMultiplier = nextTier ? getMultiplier(nextTier.min) : multiplier
   const multiplierGain = nextMultiplier - multiplier
 
-  // Estimate extra earnings per delivery at next tier
-  const avgBase = avgBaseAmount || 500_000 // default $0.50 if unknown
+  const avgBase = avgBaseAmount || 500_000
   const extraPerDelivery = (avgBase * multiplierGain) / 1_000_000
 
-  // Progress within current tier
   const tierRange = currentTier.max - currentTier.min
   const tierProgress = tierRange > 0 ? ((rating - currentTier.min) / tierRange) * 100 : 100
 
   return (
-    <div className="bg-surface-raised border border-border rounded-lg p-6 md:p-8">
+    <div className="nb-dash-card p-6 md:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-serif text-xl text-charcoal">Rating Insight</h2>
+        <h2 className="nb-section-heading">Rating Insight</h2>
         <div className="flex items-center gap-1.5">
-          <span className="font-serif text-2xl text-charcoal">{stars}</span>
+          <span className="font-display text-2xl font-bold text-charcoal">{stars}</span>
           <span className="text-terra text-lg">★</span>
         </div>
       </div>
 
       {/* Current Tier Card */}
-      <div className="bg-surface rounded-lg border border-border-light p-4 mb-5">
+      <div className="bg-cream rounded-lg border-2 border-charcoal/10 p-4 mb-5">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <span className="text-[10px] tracking-[0.2em] uppercase text-muted">Current Tier</span>
-            <div className="text-sm font-semibold text-charcoal mt-0.5">{currentTier.name}</div>
+            <span className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold">Current Tier</span>
+            <div className="text-sm font-display font-bold text-charcoal mt-0.5">{currentTier.name}</div>
           </div>
           <div className="text-right">
-            <span className="text-[10px] tracking-[0.2em] uppercase text-muted">Pay Multiplier</span>
-            <div className="text-lg font-mono font-semibold text-terra mt-0.5">{(multiplier * 100).toFixed(0)}%</div>
+            <span className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold">Pay Multiplier</span>
+            <div className="text-lg font-mono font-bold text-terra mt-0.5">{(multiplier * 100).toFixed(0)}%</div>
           </div>
         </div>
 
-        {/* Progress bar */}
         <div className="relative">
-          <div className="h-2 bg-border-light rounded-full overflow-hidden">
+          <div className="h-3 bg-white rounded-full overflow-hidden border-2 border-charcoal/10">
             <div
               className="h-full bg-terra rounded-full transition-all"
               style={{ width: `${Math.min(tierProgress, 100)}%` }}
             />
           </div>
           <div className="flex items-center justify-between mt-1.5">
-            <span className="text-[10px] text-muted">{(currentTier.min / 10).toFixed(1)}★</span>
-            <span className="text-[10px] text-muted">{(currentTier.max / 10).toFixed(1)}★</span>
+            <span className="text-[10px] text-muted font-mono">{(currentTier.min / 10).toFixed(1)}★</span>
+            <span className="text-[10px] text-muted font-mono">{(currentTier.max / 10).toFixed(1)}★</span>
           </div>
         </div>
       </div>
 
       {/* Next Tier Preview */}
       {nextTier ? (
-        <div className="bg-sage-light/50 rounded-lg border border-sage/20 p-4 mb-5">
+        <div className="bg-sage-light/50 rounded-lg border-2 border-sage/30 p-4 mb-5">
           <div className="flex items-center gap-2 mb-2">
-            <span className="text-sage text-sm">↑</span>
-            <span className="text-sm font-medium text-charcoal">Next: {nextTier.name}</span>
-            <span className="text-xs font-mono text-sage ml-auto">{(nextMultiplier * 100).toFixed(0)}%</span>
+            <span className="text-sage text-sm font-bold">↑</span>
+            <span className="text-sm font-display font-bold text-charcoal">Next: {nextTier.name}</span>
+            <span className="text-xs font-mono font-bold text-sage ml-auto">{(nextMultiplier * 100).toFixed(0)}%</span>
           </div>
           <p className="text-xs text-muted leading-relaxed">
             Reach {(nextTier.min / 10).toFixed(1)}★ to unlock{' '}
-            <span className="font-medium text-sage">{(nextMultiplier * 100).toFixed(0)}% multiplier</span>.
+            <span className="font-display font-bold text-sage">{(nextMultiplier * 100).toFixed(0)}% multiplier</span>.
             {extraPerDelivery > 0 && (
-              <> You'd earn ~<span className="font-mono font-medium text-sage">${extraPerDelivery.toFixed(3)}</span> more per delivery.</>
+              <> You'd earn ~<span className="font-mono font-bold text-sage">${extraPerDelivery.toFixed(3)}</span> more per delivery.</>
             )}
           </p>
         </div>
       ) : (
-        <div className="bg-sun-light/50 rounded-lg border border-sun/30 p-4 mb-5">
+        <div className="bg-sun-light/50 rounded-lg border-2 border-sun/30 p-4 mb-5">
           <div className="flex items-center gap-2">
             <span className="text-sun text-sm">⭐</span>
-            <span className="text-sm font-medium text-charcoal">Max Tier Reached!</span>
+            <span className="text-sm font-display font-bold text-charcoal">Max Tier Reached!</span>
           </div>
           <p className="text-xs text-muted mt-1">You're earning the highest possible multiplier.</p>
         </div>
       )}
 
-      {/* Formula Explanation */}
-      <div className="border-t border-border pt-4">
-        <div className="text-[10px] tracking-[0.2em] uppercase text-muted mb-3">How Pay Works</div>
+      {/* Formula */}
+      <div className="border-t-2 border-charcoal/10 pt-4">
+        <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-3">How Pay Works</div>
         <div className="space-y-2">
           <div className="flex items-center justify-between text-xs">
             <span className="text-muted">Base delivery amount</span>
@@ -112,10 +107,10 @@ const RatingInsight: React.FC<Props> = ({ rating, tasksCompleted, avgBaseAmount 
           </div>
           <div className="flex items-center justify-between text-xs">
             <span className="text-muted">× Your multiplier ({stars}★)</span>
-            <span className="font-mono text-terra">×{multiplier.toFixed(2)}</span>
+            <span className="font-mono text-terra font-bold">×{multiplier.toFixed(2)}</span>
           </div>
-          <div className="h-px bg-border-light" />
-          <div className="flex items-center justify-between text-xs font-medium">
+          <div className="h-[2px] bg-charcoal/10" />
+          <div className="flex items-center justify-between text-xs font-display font-bold">
             <span className="text-charcoal">Final payout</span>
             <span className="font-mono text-charcoal">= base × {multiplier.toFixed(2)}</span>
           </div>
@@ -123,8 +118,8 @@ const RatingInsight: React.FC<Props> = ({ rating, tasksCompleted, avgBaseAmount 
       </div>
 
       {/* Tier Table */}
-      <div className="mt-5 pt-4 border-t border-border">
-        <div className="text-[10px] tracking-[0.2em] uppercase text-muted mb-3">All Tiers</div>
+      <div className="mt-5 pt-4 border-t-2 border-charcoal/10">
+        <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-3">All Tiers</div>
         <div className="space-y-1.5">
           {TIERS.map((tier) => {
             const isActive = tier === currentTier
@@ -133,17 +128,17 @@ const RatingInsight: React.FC<Props> = ({ rating, tasksCompleted, avgBaseAmount 
             return (
               <div
                 key={tier.name}
-                className={`flex items-center justify-between py-1.5 px-2.5 rounded text-xs ${
-                  isActive ? 'bg-terra/5 border border-terra/20' : ''
+                className={`flex items-center justify-between py-1.5 px-2.5 rounded-lg text-xs ${
+                  isActive ? 'bg-terra/5 border-2 border-terra/20' : 'border-2 border-transparent'
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-terra" />}
-                  <span className={isActive ? 'font-medium text-charcoal' : 'text-muted'}>{tier.name}</span>
+                  {isActive && <span className="w-2 h-2 rounded-full bg-terra" />}
+                  <span className={`font-display font-semibold ${isActive ? 'text-charcoal' : 'text-muted'}`}>{tier.name}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-muted">{tier.label}</span>
-                  <span className={`font-mono ${isActive ? 'text-terra font-medium' : 'text-muted'}`}>
+                  <span className="text-muted font-mono">{tier.label}</span>
+                  <span className={`font-mono ${isActive ? 'text-terra font-bold' : 'text-muted'}`}>
                     {(mult * 100).toFixed(0)}–{(multMax * 100).toFixed(0)}%
                   </span>
                 </div>

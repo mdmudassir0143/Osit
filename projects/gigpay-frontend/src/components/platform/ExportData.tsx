@@ -73,18 +73,18 @@ const ExportData: React.FC<Props> = ({ workers, deliveries }) => {
   }
 
   return (
-    <div className="bg-surface-raised border border-border rounded-lg p-5">
+    <div className="nb-dash-card p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-charcoal">Export Data</h3>
-        <span className="text-[10px] tracking-[0.2em] uppercase text-muted">CSV Download</span>
+        <h3 className="font-display text-sm font-bold text-charcoal">Export Data</h3>
+        <span className="nb-tag bg-cream">CSV Download</span>
       </div>
       <div className="flex gap-3">
         <button
           onClick={exportWorkers}
           disabled={workers.length === 0}
-          className="flex-1 py-2.5 text-xs font-medium text-charcoal border border-border rounded hover:bg-surface hover:border-terra/30 transition-colors disabled:opacity-30 flex items-center justify-center gap-2"
+          className="nb-btn-ghost flex-1 flex items-center justify-center gap-2"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" y1="15" x2="12" y2="3" />
@@ -94,9 +94,9 @@ const ExportData: React.FC<Props> = ({ workers, deliveries }) => {
         <button
           onClick={exportDeliveries}
           disabled={deliveries.length === 0}
-          className="flex-1 py-2.5 text-xs font-medium text-charcoal border border-border rounded hover:bg-surface hover:border-terra/30 transition-colors disabled:opacity-30 flex items-center justify-center gap-2"
+          className="nb-btn-ghost flex-1 flex items-center justify-center gap-2"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
             <polyline points="7 10 12 15 17 10" />
             <line x1="12" y1="15" x2="12" y2="3" />

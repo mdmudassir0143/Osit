@@ -11,54 +11,57 @@ const ConnectWallet = ({ openModal, closeModal }: ConnectWalletInterface) => {
 
   const isKmd = (wallet: Wallet) => wallet.id === WalletId.KMD
 
+  if (!openModal) return null
+
   return (
-    <dialog id="connect_wallet_modal" className={`modal ${openModal ? 'modal-open' : ''}`}>
-      <form method="dialog" className="modal-box">
-        <h3 className="font-bold text-2xl">Select wallet provider</h3>
+    <div className="fixed inset-0 bg-charcoal/50 flex items-center justify-center z-50 p-6" onClick={closeModal}>
+      <div
+        className="nb-card bg-white p-8 max-w-md w-full shadow-brutal-lg"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="font-display text-2xl font-bold text-charcoal">Connect Wallet</h3>
+          <button
+            onClick={closeModal}
+            className="w-8 h-8 flex items-center justify-center border-2 border-charcoal rounded-lg hover:bg-charcoal hover:text-white transition-colors text-sm font-bold"
+          >
+            ✕
+          </button>
+        </div>
 
-        <div className="grid m-2 pt-5">
-          {activeAddress && (
-            <>
-              <Account />
-              <div className="divider" />
-            </>
-          )}
+        {activeAddress && (
+          <>
+            <Account />
+            <div className="divider-line my-5" />
+          </>
+        )}
 
-          {!activeAddress &&
-            wallets?.map((wallet) => (
+        {!activeAddress && (
+          <div className="space-y-3">
+            {wallets?.map((wallet) => (
               <button
                 data-test-id={`${wallet.id}-connect`}
-                className="btn border-teal-800 border-1  m-2"
+                className="w-full flex items-center gap-3 px-4 py-3.5 border-2 border-charcoal rounded-lg font-display font-semibold text-sm text-charcoal hover:bg-charcoal hover:text-white transition-all hover:shadow-brutal-sm"
                 key={`provider-${wallet.id}`}
-                onClick={() => {
-                  return wallet.connect()
-                }}
+                onClick={() => wallet.connect()}
               >
                 {!isKmd(wallet) && (
                   <img
                     alt={`wallet_icon_${wallet.id}`}
                     src={wallet.metadata.icon}
-                    style={{ objectFit: 'contain', width: '30px', height: 'auto' }}
+                    className="w-7 h-7 object-contain"
                   />
                 )}
                 <span>{isKmd(wallet) ? 'LocalNet Wallet' : wallet.metadata.name}</span>
               </button>
             ))}
-        </div>
+          </div>
+        )}
 
-        <div className="modal-action ">
-          <button
-            data-test-id="close-wallet-modal"
-            className="btn"
-            onClick={() => {
-              closeModal()
-            }}
-          >
-            Close
-          </button>
+        <div className="flex items-center gap-3 mt-6 pt-5 border-t-2 border-charcoal/10">
           {activeAddress && (
             <button
-              className="btn btn-warning"
+              className="nb-btn-ghost flex-1 !border-terra !text-terra hover:!bg-terra hover:!text-white"
               data-test-id="logout"
               onClick={async () => {
                 if (wallets) {
@@ -66,9 +69,6 @@ const ConnectWallet = ({ openModal, closeModal }: ConnectWalletInterface) => {
                   if (activeWallet) {
                     await activeWallet.disconnect()
                   } else {
-                    // Required for logout/cleanup of inactive providers
-                    // For instance, when you login to localnet wallet and switch network
-                    // to testnet/mainnet or vice verse.
                     localStorage.removeItem('@txnlab/use-wallet:v3')
                     window.location.reload()
                   }
@@ -78,9 +78,16 @@ const ConnectWallet = ({ openModal, closeModal }: ConnectWalletInterface) => {
               Logout
             </button>
           )}
+          <button
+            data-test-id="close-wallet-modal"
+            className="nb-btn-ghost flex-1"
+            onClick={closeModal}
+          >
+            Close
+          </button>
         </div>
-      </form>
-    </dialog>
+      </div>
+    </div>
   )
 }
 export default ConnectWallet

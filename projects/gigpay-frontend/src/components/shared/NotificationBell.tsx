@@ -26,22 +26,22 @@ const NotificationItem: React.FC<{ notif: Notification; onRead: (id: string) => 
   return (
     <button
       onClick={() => onRead(notif.id)}
-      className={`w-full text-left px-4 py-3 flex items-start gap-3 transition-colors hover:bg-surface ${
-        !notif.read ? 'bg-surface' : ''
+      className={`w-full text-left px-4 py-3 flex items-start gap-3 transition-colors hover:bg-cream ${
+        !notif.read ? 'bg-cream/60' : ''
       }`}
     >
-      <span className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm ${config.color}`}>
+      <span className={`flex-shrink-0 w-8 h-8 rounded-lg border-2 border-charcoal/10 flex items-center justify-center text-sm ${config.color}`}>
         {config.icon}
       </span>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className={`text-sm ${!notif.read ? 'font-semibold text-charcoal' : 'font-medium text-muted'}`}>
+          <span className={`text-sm ${!notif.read ? 'font-bold text-charcoal' : 'font-medium text-muted'}`}>
             {notif.title}
           </span>
-          {!notif.read && <span className="w-1.5 h-1.5 rounded-full bg-terra flex-shrink-0" />}
+          {!notif.read && <span className="w-2 h-2 rounded-full bg-terra flex-shrink-0" />}
         </div>
         <p className="text-xs text-muted mt-0.5 truncate">{notif.description}</p>
-        <span className="text-[10px] text-muted/60 mt-1 block">{timeAgo(notif.timestamp)}</span>
+        <span className="text-[10px] text-muted/60 mt-1 block font-mono">{timeAgo(notif.timestamp)}</span>
       </div>
     </button>
   )
@@ -52,7 +52,6 @@ const NotificationBell: React.FC = () => {
   const [open, setOpen] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
 
-  // Close on outside click
   useEffect(() => {
     if (!open) return
     const handler = (e: MouseEvent) => {
@@ -66,32 +65,29 @@ const NotificationBell: React.FC = () => {
 
   return (
     <div className="relative" ref={panelRef}>
-      {/* Bell Button */}
       <button
         onClick={() => setOpen(!open)}
-        className="relative p-2 text-muted hover:text-charcoal transition-colors rounded-lg hover:bg-surface"
+        className="relative p-2 border-2 border-charcoal rounded-lg text-charcoal hover:bg-charcoal hover:text-white transition-all"
         aria-label="Notifications"
       >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
           <path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
         {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-terra text-white text-[10px] font-bold flex items-center justify-center rounded-full px-1">
+          <span className="absolute -top-1.5 -right-1.5 min-w-[20px] h-[20px] bg-terra text-white text-[10px] font-bold flex items-center justify-center rounded-full px-1 border-2 border-white">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
       </button>
 
-      {/* Dropdown Panel */}
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-[360px] bg-surface-raised border border-border rounded-lg shadow-lg z-50 overflow-hidden">
-          {/* Header */}
-          <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+        <div className="absolute right-0 top-full mt-3 w-[380px] nb-dropdown z-50 overflow-hidden">
+          <div className="px-4 py-3 border-b-2 border-charcoal/10 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-charcoal">Notifications</span>
+              <span className="font-display text-sm font-bold text-charcoal">Notifications</span>
               {unreadCount > 0 && (
-                <span className="text-[10px] bg-terra text-white rounded-full px-2 py-0.5 font-medium">
+                <span className="nb-tag bg-terra text-white border-terra text-[9px]">
                   {unreadCount}
                 </span>
               )}
@@ -99,24 +95,23 @@ const NotificationBell: React.FC = () => {
             {unreadCount > 0 && (
               <button
                 onClick={markAllRead}
-                className="text-[11px] text-terra hover:text-terra-dark font-medium transition-colors"
+                className="text-[11px] font-display font-semibold text-terra hover:text-terra-dark transition-colors"
               >
                 Mark all read
               </button>
             )}
           </div>
 
-          {/* Notification List */}
-          <div className="max-h-[400px] overflow-y-auto divide-y divide-border-light">
+          <div className="max-h-[400px] overflow-y-auto divide-y divide-charcoal/5">
             {loading && notifications.length === 0 ? (
               <div className="py-10 text-center">
-                <div className="w-5 h-5 border-2 border-border border-t-terra animate-spin rounded-full mx-auto mb-3" />
-                <span className="text-xs text-muted">Loading notifications...</span>
+                <div className="w-5 h-5 border-2 border-charcoal/20 border-t-terra animate-spin rounded-full mx-auto mb-3" />
+                <span className="text-xs text-muted font-display">Loading...</span>
               </div>
             ) : notifications.length === 0 ? (
               <div className="py-10 text-center">
                 <span className="text-2xl block mb-2">🔔</span>
-                <span className="text-sm text-muted">No notifications yet</span>
+                <span className="text-sm text-muted font-display font-semibold">No notifications yet</span>
                 <p className="text-xs text-muted/60 mt-1">Activity from your contracts will appear here</p>
               </div>
             ) : (
@@ -126,10 +121,9 @@ const NotificationBell: React.FC = () => {
             )}
           </div>
 
-          {/* Footer */}
           {notifications.length > 0 && (
-            <div className="px-4 py-2.5 border-t border-border bg-surface/50">
-              <span className="text-[10px] text-muted tracking-wide uppercase">
+            <div className="px-4 py-2.5 border-t-2 border-charcoal/10 bg-cream/50">
+              <span className="text-[10px] text-muted tracking-wider uppercase font-display font-semibold">
                 {notifications.length} event{notifications.length !== 1 ? 's' : ''} tracked
               </span>
             </div>

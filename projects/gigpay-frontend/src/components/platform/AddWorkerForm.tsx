@@ -46,34 +46,34 @@ const AddWorkerForm: React.FC<AddWorkerFormProps> = ({ onAdded }) => {
   const ratingDisplay = (Number(rating) / 10).toFixed(1)
 
   return (
-    <div className="bg-surface-raised border border-border rounded-lg p-6 md:p-8">
+    <div className="nb-dash-card p-6 md:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-serif text-xl text-charcoal">Add Worker</h2>
+        <h2 className="nb-section-heading">Add Worker</h2>
         <button
           type="button"
           onClick={() => setShowDummy(!showDummy)}
-          className="text-[10px] tracking-[0.2em] uppercase text-terra hover:text-terra-dark transition-colors"
+          className="nb-btn-ghost !text-[10px]"
         >
-          {showDummy ? 'Hide' : 'Load Demo Data'}
+          {showDummy ? 'Hide' : 'Demo Data'}
         </button>
       </div>
 
       {showDummy && (
-        <div className="mb-5 border border-border-light rounded p-3 bg-surface">
-          <div className="text-[10px] tracking-[0.2em] uppercase text-muted mb-2">Select a demo worker</div>
+        <div className="mb-5 border-2 border-charcoal/10 rounded-lg p-3 bg-cream">
+          <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-2">Select a demo worker</div>
           <div className="space-y-1.5">
             {DUMMY_WORKERS.map((w) => (
               <button
                 key={w.name}
                 type="button"
                 onClick={() => fillDummy(w)}
-                className="w-full text-left px-3 py-2 rounded hover:bg-surface-raised transition-colors flex items-center justify-between group"
+                className="w-full text-left px-3 py-2 rounded-lg hover:bg-white transition-colors flex items-center justify-between group border border-transparent hover:border-charcoal/20"
               >
                 <div>
-                  <span className="text-sm text-charcoal">{w.name}</span>
-                  <span className="text-xs text-muted ml-2">{w.upiId}</span>
+                  <span className="text-sm text-charcoal font-display font-semibold">{w.name}</span>
+                  <span className="text-xs text-muted ml-2 font-mono">{w.upiId}</span>
                 </div>
-                <span className="text-xs text-muted group-hover:text-terra transition-colors">
+                <span className="text-xs text-muted group-hover:text-terra transition-colors font-mono">
                   {(w.rating / 10).toFixed(1)} ★
                 </span>
               </button>
@@ -84,12 +84,12 @@ const AddWorkerForm: React.FC<AddWorkerFormProps> = ({ onAdded }) => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-1.5">
+          <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">
             Wallet Address
           </label>
           <input
             type="text"
-            className="w-full bg-surface border border-border rounded px-3 py-2.5 text-charcoal text-sm font-mono placeholder-muted/50 focus:border-terra focus:outline-none transition-colors"
+            className="nb-input nb-input-mono"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             placeholder="ALGO..."
@@ -98,20 +98,20 @@ const AddWorkerForm: React.FC<AddWorkerFormProps> = ({ onAdded }) => {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-1.5">Name</label>
+            <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">Name</label>
             <input
               type="text"
-              className="w-full bg-surface border border-border rounded px-3 py-2.5 text-charcoal text-sm placeholder-muted/50 focus:border-terra focus:outline-none transition-colors"
+              className="nb-input"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Full name"
             />
           </div>
           <div>
-            <label className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-1.5">Phone</label>
+            <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">Phone</label>
             <input
               type="text"
-              className="w-full bg-surface border border-border rounded px-3 py-2.5 text-charcoal text-sm placeholder-muted/50 focus:border-terra focus:outline-none transition-colors"
+              className="nb-input"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+91-..."
@@ -121,17 +121,17 @@ const AddWorkerForm: React.FC<AddWorkerFormProps> = ({ onAdded }) => {
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-1.5">UPI / Bank ID</label>
+            <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">UPI / Bank ID</label>
             <input
               type="text"
-              className="w-full bg-surface border border-border rounded px-3 py-2.5 text-charcoal text-sm placeholder-muted/50 focus:border-terra focus:outline-none transition-colors"
+              className="nb-input"
               value={upiId}
               onChange={(e) => setUpiId(e.target.value)}
               placeholder="name@paytm"
             />
           </div>
           <div>
-            <label className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-1.5">
+            <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">
               Rating ({ratingDisplay} ★)
             </label>
             <input
@@ -143,7 +143,7 @@ const AddWorkerForm: React.FC<AddWorkerFormProps> = ({ onAdded }) => {
               value={rating}
               onChange={(e) => setRating(e.target.value)}
             />
-            <div className="flex justify-between text-[10px] text-muted mt-1">
+            <div className="flex justify-between text-[10px] text-muted font-mono mt-1">
               <span>1.0</span>
               <span>5.0</span>
             </div>
@@ -152,7 +152,7 @@ const AddWorkerForm: React.FC<AddWorkerFormProps> = ({ onAdded }) => {
 
         <button
           type="submit"
-          className="w-full bg-terra text-white py-2.5 text-sm font-medium tracking-wide uppercase hover:bg-terra-dark transition-colors disabled:opacity-30 disabled:cursor-not-allowed rounded flex items-center justify-center gap-2"
+          className="nb-btn-primary"
           disabled={loading || !address || !name}
         >
           {loading ? (

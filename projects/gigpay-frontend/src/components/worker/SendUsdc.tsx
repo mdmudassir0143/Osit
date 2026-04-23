@@ -3,7 +3,7 @@ import algosdk from 'algosdk'
 import { useSendUsdc } from '../../hooks/useSendUsdc'
 
 interface Props {
-  usdcBalance: number // microUSDC
+  usdcBalance: number
   onSent: () => void
 }
 
@@ -35,25 +35,24 @@ const SendUsdc: React.FC<Props> = ({ usdcBalance, onSent }) => {
     }
   }
 
-  // Success state
   if (txId) {
     return (
-      <div className="bg-surface-raised border border-border rounded-lg p-6 md:p-8">
+      <div className="nb-dash-card p-6 md:p-8">
         <div className="text-center py-4">
-          <div className="w-12 h-12 bg-sage-light rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-sage text-xl">✓</span>
+          <div className="w-12 h-12 bg-sage-light rounded-lg border-2 border-sage flex items-center justify-center mx-auto mb-4">
+            <span className="text-sage text-xl font-bold">✓</span>
           </div>
-          <h3 className="font-serif text-xl text-charcoal mb-2">Sent Successfully</h3>
+          <h3 className="font-display text-xl font-bold text-charcoal mb-2">Sent Successfully</h3>
           <p className="text-sm text-muted mb-4">
             ${parsedAmount.toFixed(2)} USDC sent to {recipient.slice(0, 6)}...{recipient.slice(-4)}
           </p>
-          <div className="bg-surface border border-border-light rounded px-3 py-2 mb-4">
-            <span className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-1">Transaction ID</span>
+          <div className="bg-cream border-2 border-charcoal/10 rounded-lg px-3 py-2 mb-4">
+            <span className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1">Transaction ID</span>
             <span className="text-xs font-mono text-charcoal break-all">{txId}</span>
           </div>
           <button
             onClick={reset}
-            className="text-sm text-terra hover:text-terra-dark font-medium transition-colors"
+            className="text-sm text-terra hover:text-terra-dark font-display font-bold transition-colors"
           >
             Send another
           </button>
@@ -63,16 +62,15 @@ const SendUsdc: React.FC<Props> = ({ usdcBalance, onSent }) => {
   }
 
   return (
-    <div className="bg-surface-raised border border-border rounded-lg p-6 md:p-8">
+    <div className="nb-dash-card p-6 md:p-8">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-serif text-xl text-charcoal">Send USDC</h2>
-        <span className="text-xs font-mono text-muted">${balance.toFixed(2)} available</span>
+        <h2 className="nb-section-heading">Send USDC</h2>
+        <span className="text-xs font-mono font-bold text-muted">${balance.toFixed(2)} available</span>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Recipient */}
         <div>
-          <label className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-2">
+          <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-2">
             Recipient Address
           </label>
           <input
@@ -80,20 +78,19 @@ const SendUsdc: React.FC<Props> = ({ usdcBalance, onSent }) => {
             value={recipient}
             onChange={(e) => { setRecipient(e.target.value); reset() }}
             placeholder="ALGO..."
-            className="w-full bg-surface border border-border rounded px-3 py-2.5 text-sm font-mono text-charcoal placeholder:text-muted/40 focus:outline-none focus:border-terra/50 transition-colors"
+            className="nb-input nb-input-mono"
           />
           {recipient.length > 0 && !isValidAddress && (
-            <span className="text-[10px] text-terra mt-1 block">Invalid Algorand address</span>
+            <span className="text-[10px] text-terra font-display font-semibold mt-1 block">Invalid Algorand address</span>
           )}
         </div>
 
-        {/* Amount */}
         <div>
-          <label className="text-[10px] tracking-[0.2em] uppercase text-muted block mb-2">
+          <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-2">
             Amount (USDC)
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted">$</span>
+            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-muted font-bold">$</span>
             <input
               type="number"
               value={amount}
@@ -101,33 +98,31 @@ const SendUsdc: React.FC<Props> = ({ usdcBalance, onSent }) => {
               placeholder="0.00"
               step="0.01"
               min="0"
-              className="w-full bg-surface border border-border rounded pl-7 pr-16 py-2.5 text-sm font-mono text-charcoal placeholder:text-muted/40 focus:outline-none focus:border-terra/50 transition-colors"
+              className="nb-input nb-input-mono !pl-7 !pr-16"
             />
             <button
               type="button"
               onClick={() => setAmount((usdcBalance / 1_000_000).toString())}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-terra hover:text-terra-dark font-semibold uppercase tracking-wider transition-colors"
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-terra hover:text-terra-dark font-display font-bold uppercase tracking-wider transition-colors"
             >
               Max
             </button>
           </div>
           {parsedAmount > balance && (
-            <span className="text-[10px] text-terra mt-1 block">Exceeds available balance</span>
+            <span className="text-[10px] text-terra font-display font-semibold mt-1 block">Exceeds available balance</span>
           )}
         </div>
 
-        {/* Error */}
         {error && (
-          <div className="bg-terra/5 border border-terra/20 rounded px-3 py-2.5">
-            <span className="text-xs text-terra">{error}</span>
+          <div className="bg-terra/5 border-2 border-terra/20 rounded-lg px-3 py-2.5">
+            <span className="text-xs text-terra font-display font-semibold">{error}</span>
           </div>
         )}
 
-        {/* Submit */}
         <button
           type="submit"
           disabled={!canSend || sending}
-          className="w-full bg-terra text-white py-3 text-sm font-medium tracking-wide uppercase hover:bg-terra-dark transition-colors rounded disabled:opacity-30 flex items-center justify-center gap-2"
+          className="nb-btn-primary"
         >
           {sending ? (
             <>
@@ -143,18 +138,18 @@ const SendUsdc: React.FC<Props> = ({ usdcBalance, onSent }) => {
       {/* Confirm Dialog */}
       {showConfirm && (
         <div className="fixed inset-0 bg-charcoal/50 flex items-center justify-center z-50 p-6">
-          <div className="bg-surface-raised border border-border rounded-lg p-6 max-w-sm w-full">
-            <h3 className="font-serif text-lg text-charcoal mb-4">Confirm Transfer</h3>
+          <div className="nb-card bg-white p-6 max-w-sm w-full shadow-brutal-lg">
+            <h3 className="font-display text-lg font-bold text-charcoal mb-4">Confirm Transfer</h3>
             <div className="space-y-3 mb-6">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted">Amount</span>
-                <span className="font-mono font-medium text-charcoal">${parsedAmount.toFixed(2)} USDC</span>
+                <span className="font-mono font-bold text-charcoal">${parsedAmount.toFixed(2)} USDC</span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted">To</span>
                 <span className="font-mono text-xs text-charcoal">{recipient.slice(0, 8)}...{recipient.slice(-6)}</span>
               </div>
-              <div className="h-px bg-border" />
+              <div className="h-[2px] bg-charcoal/10" />
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted">Remaining</span>
                 <span className="font-mono text-charcoal">${(balance - parsedAmount).toFixed(2)} USDC</span>
@@ -163,13 +158,13 @@ const SendUsdc: React.FC<Props> = ({ usdcBalance, onSent }) => {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowConfirm(false)}
-                className="flex-1 py-2.5 text-sm font-medium text-muted border border-border rounded hover:bg-surface transition-colors"
+                className="nb-btn-ghost flex-1"
               >
                 Cancel
               </button>
               <button
                 onClick={handleConfirm}
-                className="flex-1 py-2.5 text-sm font-medium text-white bg-terra rounded hover:bg-terra-dark transition-colors"
+                className="nb-btn-ghost flex-1 !bg-terra !text-white !border-terra hover:!bg-terra-dark"
               >
                 Confirm Send
               </button>

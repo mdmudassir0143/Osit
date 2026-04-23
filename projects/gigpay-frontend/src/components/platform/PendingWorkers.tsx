@@ -17,7 +17,6 @@ const PendingWorkers: React.FC<Props> = ({ applications, onApproved }) => {
   const handleApprove = async (app: ApplicationData) => {
     setProcessingId(app.workerAddress)
     try {
-      // Approve with default rating 30 (3.0 stars)
       await approveApplication(app.workerAddress, 30)
       showSuccess(`${app.name} approved and added to registry`)
       onApproved()
@@ -44,15 +43,15 @@ const PendingWorkers: React.FC<Props> = ({ applications, onApproved }) => {
   if (applications.length === 0) return null
 
   return (
-    <div className="bg-surface-raised border border-border rounded-lg p-6 md:p-8">
+    <div className="nb-dash-card p-6 md:p-8 border-terra">
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <h2 className="font-serif text-xl text-charcoal">Pending Applications</h2>
-          <span className="text-[10px] bg-terra text-white rounded-full px-2 py-0.5 font-medium">
+          <h2 className="nb-section-heading">Pending Applications</h2>
+          <span className="nb-tag bg-terra text-white border-terra">
             {applications.length}
           </span>
         </div>
-        <span className="text-[10px] tracking-[0.2em] uppercase text-muted">On-Chain</span>
+        <span className="nb-tag bg-sage-light text-sage border-sage">On-Chain</span>
       </div>
 
       <div className="space-y-3">
@@ -68,23 +67,23 @@ const PendingWorkers: React.FC<Props> = ({ applications, onApproved }) => {
           return (
             <div
               key={app.workerAddress}
-              className="border border-border-light rounded-lg p-4 flex items-center gap-4"
+              className="border-2 border-charcoal/10 rounded-lg p-4 flex items-center gap-4 hover:border-charcoal/30 transition-colors"
             >
-              <div className="w-10 h-10 bg-terra-light rounded-full flex items-center justify-center shrink-0">
-                <span className="text-terra font-serif text-sm">
+              <div className="w-10 h-10 bg-terra-light rounded-lg border-2 border-charcoal/10 flex items-center justify-center shrink-0">
+                <span className="text-terra font-display font-bold text-sm">
                   {app.name.charAt(0).toUpperCase()}
                 </span>
               </div>
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-charcoal">{app.name}</span>
+                  <span className="text-sm font-display font-bold text-charcoal">{app.name}</span>
                   <span className="text-[10px] font-mono text-muted">{ellipseAddress(app.workerAddress, 4)}</span>
                 </div>
                 <div className="flex items-center gap-3 mt-0.5">
                   {app.phone && <span className="text-xs text-muted">{app.phone}</span>}
-                  {app.upiId && <span className="text-xs text-muted">{app.upiId}</span>}
-                  <span className="text-[10px] text-muted/60">{appliedDate}</span>
+                  {app.upiId && <span className="text-xs text-muted font-mono">{app.upiId}</span>}
+                  <span className="text-[10px] text-muted/60 font-mono">{appliedDate}</span>
                 </div>
               </div>
 
@@ -92,14 +91,14 @@ const PendingWorkers: React.FC<Props> = ({ applications, onApproved }) => {
                 <button
                   onClick={() => handleReject(app)}
                   disabled={isProcessing}
-                  className="px-3 py-1.5 text-xs font-medium text-muted border border-border rounded hover:bg-surface hover:text-terra transition-colors disabled:opacity-30"
+                  className="nb-btn-ghost !text-[10px]"
                 >
                   Reject
                 </button>
                 <button
                   onClick={() => handleApprove(app)}
                   disabled={isProcessing}
-                  className="px-3 py-1.5 text-xs font-medium text-white bg-terra rounded hover:bg-terra-dark transition-colors disabled:opacity-30 flex items-center gap-1.5"
+                  className="nb-btn-ghost !bg-terra !text-white !border-terra hover:!bg-terra-dark !text-[10px] flex items-center gap-1.5"
                 >
                   {isProcessing ? (
                     <>

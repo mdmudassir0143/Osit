@@ -42,7 +42,6 @@ const BulkUpload: React.FC<Props> = ({ mode, workers = [], onComplete }) => {
       const text = await file.text()
       const rows = parseCSV(text)
 
-      // Skip header row if it looks like headers
       const firstRow = rows[0]
       const hasHeader =
         firstRow &&
@@ -71,13 +70,11 @@ const BulkUpload: React.FC<Props> = ({ mode, workers = [], onComplete }) => {
 
         try {
           if (mode === 'workers') {
-            // Expected: address, name, phone, upi_id, rating
             const [address, name, phone = '', upiId = '', ratingStr = '40'] = row
             if (!address || !name) throw new Error('Missing address or name')
             const rating = Math.max(10, Math.min(50, Number(ratingStr) || 40))
             await addWorker(address, name, phone, upiId, rating)
           } else {
-            // Expected: worker_address, customer, pickup, dropoff, amount
             const [workerAddr, customer, pickup = '', dropoff = '', amountStr = '0'] = row
             if (!workerAddr || !customer) throw new Error('Missing worker address or customer')
             const baseAmount = Math.round((parseFloat(amountStr) || 0) * 1_000_000)
@@ -96,7 +93,6 @@ const BulkUpload: React.FC<Props> = ({ mode, workers = [], onComplete }) => {
       setProcessing(false)
       onComplete()
 
-      // Reset file input
       if (fileRef.current) fileRef.current.value = ''
     },
     [mode, addWorker, createDelivery, onComplete],
@@ -111,17 +107,17 @@ const BulkUpload: React.FC<Props> = ({ mode, workers = [], onComplete }) => {
       : 'worker_address,customer,pickup,dropoff,amount\nALGO...,Customer Name,Pickup Address,Dropoff Address,0.25'
 
   return (
-    <div className="bg-surface-raised border border-border rounded-lg p-6 md:p-8">
+    <div className="nb-dash-card p-6 md:p-8">
       <div className="flex items-center justify-between mb-5">
-        <h2 className="font-serif text-xl text-charcoal">
+        <h2 className="nb-section-heading">
           Bulk {mode === 'workers' ? 'Add Workers' : 'Create Deliveries'}
         </h2>
-        <span className="text-[10px] tracking-[0.2em] uppercase text-muted">CSV Upload</span>
+        <span className="nb-tag bg-cream">CSV Upload</span>
       </div>
 
-      {/* Template Download */}
-      <div className="bg-surface border border-border-light rounded p-3 mb-5">
-        <div className="text-[10px] tracking-[0.2em] uppercase text-muted mb-2">CSV Format</div>
+      {/* Template */}
+      <div className="bg-cream border-2 border-charcoal/10 rounded-lg p-3 mb-5">
+        <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-2">CSV Format</div>
         <code className="text-xs font-mono text-charcoal block whitespace-pre-wrap leading-relaxed">
           {csvTemplate}
         </code>
@@ -135,7 +131,7 @@ const BulkUpload: React.FC<Props> = ({ mode, workers = [], onComplete }) => {
             a.click()
             URL.revokeObjectURL(url)
           }}
-          className="text-[11px] text-terra hover:text-terra-dark font-medium mt-2 transition-colors"
+          className="text-[11px] text-terra hover:text-terra-dark font-display font-bold mt-2 transition-colors"
         >
           Download template
         </button>
@@ -154,25 +150,25 @@ const BulkUpload: React.FC<Props> = ({ mode, workers = [], onComplete }) => {
         />
         <label
           htmlFor={`bulk-upload-${mode}`}
-          className={`flex-1 border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+          className={`flex-1 border-[2.5px] border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
             processing
-              ? 'border-border bg-surface/50 cursor-not-allowed'
-              : 'border-border-light hover:border-terra/40 hover:bg-terra/5'
+              ? 'border-charcoal/20 bg-cream/50 cursor-not-allowed'
+              : 'border-charcoal/30 hover:border-terra hover:bg-terra/5'
           }`}
         >
           {processing ? (
             <div className="flex flex-col items-center gap-2">
-              <div className="w-5 h-5 border-2 border-border border-t-terra animate-spin rounded-full" />
-              <span className="text-sm text-muted">
+              <div className="w-5 h-5 border-[2.5px] border-charcoal/20 border-t-terra animate-spin rounded-full" />
+              <span className="text-sm text-muted font-display font-semibold">
                 Processing row {currentRow} of {totalRows}...
               </span>
             </div>
           ) : (
             <>
-              <span className="text-sm text-muted block">
-                Drop a CSV file or <span className="text-terra font-medium">click to browse</span>
+              <span className="text-sm text-muted font-display block">
+                Drop a CSV file or <span className="text-terra font-bold">click to browse</span>
               </span>
-              <span className="text-[10px] text-muted/60 mt-1 block">
+              <span className="text-[10px] text-muted/60 mt-1 block font-mono">
                 {mode === 'workers' ? 'address, name, phone, upi_id, rating' : 'worker_address, customer, pickup, dropoff, amount'}
               </span>
             </>
@@ -180,19 +176,19 @@ const BulkUpload: React.FC<Props> = ({ mode, workers = [], onComplete }) => {
         </label>
       </div>
 
-      {/* Progress Bar */}
+      {/* Progress */}
       {totalRows > 0 && (
         <div className="mt-4">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-muted">
+            <span className="text-xs text-muted font-display font-semibold">
               {processing ? `${currentRow}/${totalRows}` : 'Complete'}
             </span>
             <div className="flex items-center gap-3">
-              {successCount > 0 && <span className="text-xs text-sage font-medium">{successCount} OK</span>}
-              {errorCount > 0 && <span className="text-xs text-terra font-medium">{errorCount} failed</span>}
+              {successCount > 0 && <span className="text-xs text-sage font-display font-bold">{successCount} OK</span>}
+              {errorCount > 0 && <span className="text-xs text-terra font-display font-bold">{errorCount} failed</span>}
             </div>
           </div>
-          <div className="h-2 bg-border-light rounded-full overflow-hidden">
+          <div className="h-3 bg-cream rounded-full overflow-hidden border-2 border-charcoal/10">
             <div
               className="h-full bg-terra rounded-full transition-all duration-300"
               style={{ width: `${(currentRow / totalRows) * 100}%` }}
@@ -203,7 +199,7 @@ const BulkUpload: React.FC<Props> = ({ mode, workers = [], onComplete }) => {
 
       {/* Results */}
       {results.length > 0 && !processing && (
-        <div className="mt-4 max-h-48 overflow-y-auto divide-y divide-border-light border border-border-light rounded">
+        <div className="mt-4 max-h-48 overflow-y-auto divide-y divide-charcoal/10 border-2 border-charcoal/10 rounded-lg">
           {results.map((r) => (
             <div
               key={r.row}
@@ -212,12 +208,12 @@ const BulkUpload: React.FC<Props> = ({ mode, workers = [], onComplete }) => {
               }`}
             >
               <div className="flex items-center gap-2 min-w-0">
-                <span className={r.status === 'success' ? 'text-sage' : 'text-terra'}>
+                <span className={`font-display font-bold ${r.status === 'success' ? 'text-sage' : 'text-terra'}`}>
                   {r.status === 'success' ? '✓' : '✗'}
                 </span>
-                <span className="text-muted truncate">Row {r.row}: {r.data}</span>
+                <span className="text-muted truncate font-mono">Row {r.row}: {r.data}</span>
               </div>
-              {r.error && <span className="text-terra shrink-0 ml-2">{r.error}</span>}
+              {r.error && <span className="text-terra shrink-0 ml-2 font-mono">{r.error}</span>}
             </div>
           ))}
         </div>
