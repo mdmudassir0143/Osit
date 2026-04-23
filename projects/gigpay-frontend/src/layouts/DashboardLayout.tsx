@@ -2,6 +2,7 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useWallet } from '@txnlab/use-wallet-react'
 import WalletStatus from '../components/shared/WalletStatus'
+import NotificationBell from '../components/shared/NotificationBell'
 
 const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS || ''
 
@@ -37,6 +38,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, title }) =>
         </div>
 
         <div className="flex items-center gap-4">
+          <NotificationBell />
           {isAdmin ? (
             <Link
               to="/platform"

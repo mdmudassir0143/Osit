@@ -8,6 +8,10 @@ import WorkerProfileCard from '../components/worker/WorkerProfile'
 import EarningsCard from '../components/worker/EarningsCard'
 import OfframpCard from '../components/worker/OfframpCard'
 import DeliveryHistory from '../components/worker/DeliveryHistory'
+import EarningsBreakdown from '../components/worker/EarningsBreakdown'
+import RatingInsight from '../components/worker/RatingInsight'
+import SendUsdc from '../components/worker/SendUsdc'
+import RegisterWorker from '../components/worker/RegisterWorker'
 import { useWorkerData } from '../hooks/useWorkerData'
 import { getAlgodConfigFromViteEnvironment, getIndexerConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
 
@@ -85,21 +89,7 @@ const WorkerDashboard: React.FC = () => {
   if (!profile) {
     return (
       <DashboardLayout title="Worker Dashboard">
-        <div className="max-w-md mx-auto mt-12">
-          <div className="bg-surface-raised border border-border rounded-lg p-8 text-center">
-            <div className="w-10 h-10 bg-terra-light rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-terra text-lg">!</span>
-            </div>
-            <h2 className="font-serif text-xl text-charcoal mb-2">Not Registered</h2>
-            <p className="text-muted text-sm leading-relaxed max-w-sm mx-auto">
-              Your wallet is not registered as a worker. Please contact your merchant to be added to the platform.
-            </p>
-            <div className="mt-4 pt-4 border-t border-border-light">
-              <div className="text-[10px] tracking-[0.2em] uppercase text-muted mb-1">Your Wallet</div>
-              <div className="text-xs font-mono text-muted break-all">{activeAddress}</div>
-            </div>
-          </div>
-        </div>
+        <RegisterWorker walletAddress={activeAddress} />
       </DashboardLayout>
     )
   }
@@ -136,9 +126,14 @@ const WorkerDashboard: React.FC = () => {
           usdcBalance={usdcBalance}
           rating={profile.rating}
         />
-        <div className="lg:col-span-2">
-          <OfframpCard usdcBalance={usdcBalance} upiId={profile.upiId} />
-        </div>
+        <EarningsBreakdown deliveries={deliveries} rating={profile.rating} />
+        <RatingInsight
+          rating={profile.rating}
+          tasksCompleted={profile.tasksCompleted}
+          avgBaseAmount={deliveries.length > 0 ? Math.round(deliveries.reduce((s, d) => s + d.baseAmount, 0) / deliveries.length) : undefined}
+        />
+        <SendUsdc usdcBalance={usdcBalance} onSent={() => setRefreshKey((k) => k + 1)} />
+        <OfframpCard usdcBalance={usdcBalance} upiId={profile.upiId} />
         <div className="lg:col-span-2">
           <DeliveryHistory deliveries={deliveries} />
         </div>

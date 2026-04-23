@@ -36,6 +36,15 @@ export interface DeliveryData {
   deliveredAt: number
 }
 
+export interface ApplicationData {
+  workerAddress: string
+  platformAddress: string
+  name: string
+  phone: string
+  upiId: string
+  appliedAt: number
+}
+
 export interface EscrowData {
   balance: number
   totalDeposited: number
@@ -90,9 +99,10 @@ function parseDeliveryBox(id: number, data: Uint8Array): DeliveryData | null {
   }
 }
 
-export function usePlatformData(refreshKey: number) {
+export function usePlatformData(refreshKey: number, adminAddress?: string) {
   const [workers, setWorkers] = useState<WorkerData[]>([])
   const [deliveries, setDeliveries] = useState<DeliveryData[]>([])
+  const [applications, setApplications] = useState<ApplicationData[]>([])
   const [escrow, setEscrow] = useState<EscrowData>({ balance: 0, totalDeposited: 0, totalReleased: 0, appAddress: '', usdcOptedIn: false })
   const [loading, setLoading] = useState(true)
 
@@ -201,19 +211,69 @@ export function usePlatformData(refreshKey: number) {
     }
   }, [])
 
+  const fetchApplications = useCallback(async (): Promise<ApplicationData[]> => {
+    if (!REGISTRY_APP_ID || !adminAddress) return []
+    try {
+      const boxesResponse = await indexer.searchForApplicationBoxes(REGISTRY_APP_ID).do()
+      const boxes = boxesResponse.boxes || []
+      const adminBytes = algosdk.decodeAddress(adminAddress).publicKey
+
+      const appList: ApplicationData[] = []
+      for (const box of boxes) {
+        const nameBytes = box.name as Uint8Array
+        // app_ prefix (4) + worker address (32) = 36 bytes
+        if (nameBytes.length !== 36) continue
+        const prefix = new TextDecoder().decode(nameBytes.slice(0, 4))
+        if (prefix !== 'app_') continue
+
+        const workerAddress = algosdk.encodeAddress(nameBytes.slice(4, 36))
+
+        try {
+          const boxValue = await algod.getApplicationBoxByName(REGISTRY_APP_ID, nameBytes).do()
+          const data = boxValue.value as Uint8Array
+          // 120 bytes: platform(32) + name(32) + phone(16) + upi_id(32) + applied_at(8)
+          if (data.length < 120) continue
+
+          // Check if this application is for our platform
+          const platformBytes = data.slice(0, 32)
+          let match = true
+          for (let i = 0; i < 32; i++) {
+            if (platformBytes[i] !== adminBytes[i]) { match = false; break }
+          }
+          if (!match) continue
+
+          const platformAddress = algosdk.encodeAddress(platformBytes)
+          appList.push({
+            workerAddress,
+            platformAddress,
+            name: decodeFixedString(data, 32, 32),
+            phone: decodeFixedString(data, 64, 16),
+            upiId: decodeFixedString(data, 80, 32),
+            appliedAt: readUint64(data, 112),
+          })
+        } catch { /* skip */ }
+      }
+      return appList.sort((a, b) => b.appliedAt - a.appliedAt)
+    } catch (e) {
+      console.error('fetchApplications error:', e)
+      return []
+    }
+  }, [adminAddress])
+
   useEffect(() => {
     let cancelled = false
     setLoading(true)
-    Promise.all([fetchWorkers(), fetchDeliveries(), fetchEscrow()]).then(([w, d, e]) => {
+    Promise.all([fetchWorkers(), fetchDeliveries(), fetchEscrow(), fetchApplications()]).then(([w, d, e, a]) => {
       if (!cancelled) {
         setWorkers(w)
         setDeliveries(d)
         setEscrow(e)
+        setApplications(a)
         setLoading(false)
       }
     })
     return () => { cancelled = true }
-  }, [fetchWorkers, fetchDeliveries, fetchEscrow, refreshKey])
+  }, [fetchWorkers, fetchDeliveries, fetchEscrow, fetchApplications, refreshKey])
 
-  return { workers, deliveries, escrow, loading }
+  return { workers, deliveries, applications, escrow, loading }
 }

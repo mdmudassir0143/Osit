@@ -11,6 +11,9 @@ import CreateDelivery from '../components/platform/CreateDelivery'
 import DeliveryTracker from '../components/platform/DeliveryTracker'
 import TransactionFeed from '../components/platform/TransactionFeed'
 import Analytics from '../components/platform/Analytics'
+import BulkUpload from '../components/platform/BulkUpload'
+import ExportData from '../components/platform/ExportData'
+import PendingWorkers from '../components/platform/PendingWorkers'
 import { usePlatformData } from '../hooks/usePlatformData'
 
 const USDC_ASSET_ID = Number(import.meta.env.VITE_USDC_ASSET_ID) || 0
@@ -23,7 +26,7 @@ const PlatformDashboard: React.FC = () => {
   const [refreshKey, setRefreshKey] = useState(0)
   const [walletModal, setWalletModal] = useState(false)
   const [activeTab, setActiveTab] = useState<Tab>('overview')
-  const { workers, deliveries, escrow, loading } = usePlatformData(refreshKey)
+  const { workers, deliveries, applications, escrow, loading } = usePlatformData(refreshKey, activeAddress || undefined)
 
   // Optimistic status overrides — persists across tab switches
   const [statusOverrides, setStatusOverrides] = useState<Record<number, number>>({})
@@ -167,7 +170,10 @@ const PlatformDashboard: React.FC = () => {
       {/* Workers Tab */}
       {activeTab === 'workers' && (
         <div className="space-y-6">
+          <PendingWorkers applications={applications} onApproved={handleRefresh} />
           <AddWorkerForm onAdded={handleRefresh} />
+          <BulkUpload mode="workers" onComplete={handleRefresh} />
+          <ExportData workers={workers} deliveries={deliveries} />
           <WorkerList workers={workers} />
         </div>
       )}
@@ -176,6 +182,7 @@ const PlatformDashboard: React.FC = () => {
       {activeTab === 'deliveries' && (
         <div className="space-y-6">
           <CreateDelivery workers={workers} onCreated={handleRefresh} />
+          <BulkUpload mode="deliveries" workers={workers} onComplete={handleRefresh} />
           <DeliveryTracker deliveries={deliveries} workers={workers} onUpdated={handleRefresh} statusOverrides={statusOverrides} onStatusOverride={handleStatusOverride} />
         </div>
       )}

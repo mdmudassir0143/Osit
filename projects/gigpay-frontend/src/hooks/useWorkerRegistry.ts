@@ -138,5 +138,105 @@ export function useWorkerRegistry() {
     [getClient],
   )
 
-  return { addWorker, updateRating, incrementEarnings, getWorkerInfo, loading }
+  const applyWorker = useCallback(
+    async (platformAddress: string, name: string, phone: string, upiId: string) => {
+      const client = getClient()
+      if (!client || !activeAddress) throw new Error('Not connected')
+      setLoading(true)
+      try {
+        const algorand = getAlgorand()
+        const mbrPay = await algorand.createTransaction.payment({
+          sender: activeAddress,
+          receiver: client.appClient.appAddress,
+          amount: microAlgo(100_000),
+        })
+
+        const workerBytes = algosdk.decodeAddress(activeAddress).publicKey
+
+        await client.send.applyWorker({
+          args: {
+            platform: platformAddress,
+            name: new TextEncoder().encode(name),
+            phone: new TextEncoder().encode(phone),
+            upiId: new TextEncoder().encode(upiId),
+            mbrPay,
+          },
+          boxReferences: [
+            {
+              appId: BigInt(REGISTRY_APP_ID),
+              name: new Uint8Array([...new TextEncoder().encode('app_'), ...workerBytes]),
+            },
+          ],
+        })
+      } finally {
+        setLoading(false)
+      }
+    },
+    [getClient, getAlgorand, activeAddress],
+  )
+
+  const approveApplication = useCallback(
+    async (workerAddress: string, rating: number) => {
+      const client = getClient()
+      if (!client || !activeAddress) throw new Error('Not connected')
+      setLoading(true)
+      try {
+        const algorand = getAlgorand()
+        const mbrPay = await algorand.createTransaction.payment({
+          sender: activeAddress,
+          receiver: client.appClient.appAddress,
+          amount: microAlgo(100_000),
+        })
+
+        const workerBytes = algosdk.decodeAddress(workerAddress).publicKey
+
+        await client.send.approveApplication({
+          args: {
+            worker: workerAddress,
+            rating,
+            mbrPay,
+          },
+          boxReferences: [
+            {
+              appId: BigInt(REGISTRY_APP_ID),
+              name: new Uint8Array([...new TextEncoder().encode('app_'), ...workerBytes]),
+            },
+            {
+              appId: BigInt(REGISTRY_APP_ID),
+              name: new Uint8Array([...new TextEncoder().encode('wrk_'), ...workerBytes]),
+            },
+          ],
+        })
+      } finally {
+        setLoading(false)
+      }
+    },
+    [getClient, getAlgorand, activeAddress],
+  )
+
+  const rejectApplication = useCallback(
+    async (workerAddress: string) => {
+      const client = getClient()
+      if (!client || !activeAddress) throw new Error('Not connected')
+      setLoading(true)
+      try {
+        const workerBytes = algosdk.decodeAddress(workerAddress).publicKey
+
+        await client.send.rejectApplication({
+          args: { worker: workerAddress },
+          boxReferences: [
+            {
+              appId: BigInt(REGISTRY_APP_ID),
+              name: new Uint8Array([...new TextEncoder().encode('app_'), ...workerBytes]),
+            },
+          ],
+        })
+      } finally {
+        setLoading(false)
+      }
+    },
+    [getClient, activeAddress],
+  )
+
+  return { addWorker, applyWorker, approveApplication, rejectApplication, updateRating, incrementEarnings, getWorkerInfo, loading }
 }
