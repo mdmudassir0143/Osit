@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
-import { type WorkerDelivery } from '../../hooks/useWorkerData'
+import { type WorkerDelivery, type WorkerProfile } from '../../hooks/useWorkerData'
+import { buildInvoiceData } from '../../utils/invoice'
+import { generatePayoutReceipt } from '../../utils/pdf'
 
 interface Props {
   deliveries: WorkerDelivery[]
   rating: number
+  profile?: WorkerProfile | null
 }
 
 const STATUS_LABELS: Record<number, { label: string; color: string }> = {
@@ -23,11 +26,35 @@ function computeMultiplier(rating: number): number {
   return (40 + (rating * 22) / 10) / 100
 }
 
-const EarningsBreakdown: React.FC<Props> = ({ deliveries, rating }) => {
+const DownloadIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <polyline points="7 10 12 15 17 10" />
+    <line x1="12" y1="15" x2="12" y2="3" />
+  </svg>
+)
+
+const EarningsBreakdown: React.FC<Props> = ({ deliveries, rating, profile }) => {
   const [showAll, setShowAll] = useState(false)
   const paidDeliveries = deliveries.filter((d) => d.status === 3)
   const multiplier = computeMultiplier(rating)
   const displayed = showAll ? paidDeliveries : paidDeliveries.slice(0, 5)
+
+  const handleDownloadReceipt = (d: WorkerDelivery) => {
+    if (!profile) return
+    const invoice = buildInvoiceData(
+      { ...d, id: d.id },
+      { name: profile.name, address: profile.address, phone: profile.phone, upiId: profile.upiId, rating: profile.rating },
+    )
+    generatePayoutReceipt(invoice)
+  }
+
+  const handleDownloadAll = () => {
+    if (!profile) return
+    for (const d of paidDeliveries) {
+      handleDownloadReceipt(d)
+    }
+  }
 
   const chartData = paidDeliveries.slice(0, 7).reverse()
   const maxAmount = Math.max(...chartData.map((d) => d.finalAmount), 1)
@@ -98,6 +125,15 @@ const EarningsBreakdown: React.FC<Props> = ({ deliveries, rating }) => {
                       <div className="text-[10px] text-muted font-mono">base ${base.toFixed(2)}</div>
                     )}
                   </div>
+                  {profile && (
+                    <button
+                      onClick={() => handleDownloadReceipt(d)}
+                      className="ml-2 p-1.5 rounded-lg border-2 border-charcoal/10 hover:border-charcoal hover:bg-charcoal hover:text-white text-muted transition-all flex-shrink-0"
+                      title="Download receipt"
+                    >
+                      <DownloadIcon />
+                    </button>
+                  )}
                 </div>
               )
             })}
@@ -109,6 +145,16 @@ const EarningsBreakdown: React.FC<Props> = ({ deliveries, rating }) => {
               className="mt-4 text-xs text-terra hover:text-terra-dark font-display font-bold transition-colors"
             >
               {showAll ? 'Show less' : `Show all ${paidDeliveries.length} deliveries`}
+            </button>
+          )}
+
+          {profile && paidDeliveries.length > 0 && (
+            <button
+              onClick={handleDownloadAll}
+              className="mt-4 nb-btn-ghost flex items-center justify-center gap-2 w-full"
+            >
+              <DownloadIcon />
+              Download All Receipts ({paidDeliveries.length})
             </button>
           )}
 

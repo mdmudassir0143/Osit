@@ -128,7 +128,7 @@ const WorkerDashboard: React.FC = () => {
           usdcBalance={usdcBalance}
           rating={profile.rating}
         />
-        <EarningsBreakdown deliveries={deliveries} rating={profile.rating} />
+        <EarningsBreakdown deliveries={deliveries} rating={profile.rating} profile={profile} />
         <RatingInsight
           rating={profile.rating}
           tasksCompleted={profile.tasksCompleted}

@@ -14,13 +14,15 @@ import Analytics from '../components/platform/Analytics'
 import BulkUpload from '../components/platform/BulkUpload'
 import ExportData from '../components/platform/ExportData'
 import PendingWorkers from '../components/platform/PendingWorkers'
+import ComplianceDashboard from '../components/platform/ComplianceDashboard'
+import ComplianceLog from '../components/platform/ComplianceLog'
 import AloraLogo from '../components/shared/AloraLogo'
 import { usePlatformData } from '../hooks/usePlatformData'
 
 const USDC_ASSET_ID = Number(import.meta.env.VITE_USDC_ASSET_ID) || 0
 const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS || ''
 
-type Tab = 'overview' | 'workers' | 'deliveries' | 'analytics'
+type Tab = 'overview' | 'workers' | 'deliveries' | 'compliance' | 'analytics'
 
 const PlatformDashboard: React.FC = () => {
   const { activeAddress } = useWallet()
@@ -90,6 +92,7 @@ const PlatformDashboard: React.FC = () => {
     { key: 'overview', label: 'Overview' },
     { key: 'workers', label: 'Workers', count: workers.length },
     { key: 'deliveries', label: 'Deliveries', count: deliveries.length },
+    { key: 'compliance', label: 'Compliance', count: deliveries.filter((d) => d.status === 3).length },
     { key: 'analytics', label: 'Analytics' },
   ]
 
@@ -180,6 +183,14 @@ const PlatformDashboard: React.FC = () => {
           <CreateDelivery workers={workers} onCreated={handleRefresh} />
           <BulkUpload mode="deliveries" workers={workers} onComplete={handleRefresh} />
           <DeliveryTracker deliveries={deliveries} workers={workers} onUpdated={handleRefresh} statusOverrides={statusOverrides} onStatusOverride={handleStatusOverride} />
+        </div>
+      )}
+
+      {/* Compliance Tab */}
+      {activeTab === 'compliance' && (
+        <div className="space-y-6 stagger-children">
+          <ComplianceDashboard workers={workers} deliveries={deliveries} />
+          <ComplianceLog workers={workers} deliveries={deliveries} />
         </div>
       )}
 

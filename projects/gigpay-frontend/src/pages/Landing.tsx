@@ -7,8 +7,8 @@ const TICKER_ITEMS = [
   'RATING-BASED PAYOUTS',
   'ESCROW-PROTECTED',
   'USDC ON ALGORAND',
-  'ANTI-FRAUD ENGINE',
-  'ONE-CLICK PAY',
+  'GST-COMPLIANT',
+  'INVOICE ENGINE',
   'REAL-TIME DELIVERY',
   'UPI OFF-RAMP',
 ]
@@ -195,20 +195,20 @@ const Landing: React.FC = () => {
           <div className={`md:col-span-7 ${mounted ? 'animate-fade-up' : 'opacity-0'}`}>
 
             <h1 className="font-display text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold leading-[0.95] tracking-tight mb-8">
-              Pay gig workers{' '}
+              Real-time{' '}
               <span className="relative inline-block">
-                in seconds
+                payouts
                 <svg className="absolute -bottom-1 left-0 w-full" height="8" viewBox="0 0 200 8" preserveAspectRatio="none">
                   <path d="M0 5 Q50 0 100 5 T200 5" stroke="#c44b2b" strokeWidth="3" fill="none" />
                 </svg>
               </span>
               <br />
-              <span className="font-serif italic text-terra font-normal">not weeks.</span>
+              <span className="font-serif italic text-terra font-normal">for gig platforms.</span>
             </h1>
 
             <p className="text-charcoal/55 text-lg md:text-xl max-w-lg leading-relaxed mb-10">
-              Smart contracts calculate rating-based payouts. Workers get paid
-              atomically the moment a delivery is confirmed.
+              Plug into any delivery platform. Instant USDC settlements,
+              rating-based payouts, and built-in GST compliance — all on-chain.
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -748,6 +748,54 @@ final_amount = (base * multiplier) / 100
         </section>
       </div>
 
+      {/* ═══════════ COMPLIANCE SECTION ═══════════ */}
+      <section className="relative z-10 px-6 md:px-12 lg:px-20 pt-20 md:pt-28 pb-16 md:pb-24 bg-cream">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <span className="nb-tag bg-sage/10 text-sage border-sage/20 text-[10px] tracking-[0.2em] uppercase mb-4 inline-block">India Ready</span>
+            <h2 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
+              Built-in invoice &{' '}
+              <span className="font-serif italic text-sage font-normal">compliance layer</span>
+            </h2>
+            <p className="text-charcoal/50 text-lg max-w-2xl mx-auto leading-relaxed">
+              No serious company integrates a payout system without GST records, payout proofs, and audit logs. Alora generates all of it automatically from on-chain data.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="nb-card p-8 bg-white rounded-2xl shadow-brutal relative group hover:-translate-y-1 transition-transform">
+              <div className="w-10 h-10 bg-terra/10 rounded-lg border-2 border-terra/20 flex items-center justify-center mb-5">
+                <span className="text-terra font-bold text-lg">₹</span>
+              </div>
+              <h3 className="font-display text-lg font-bold mb-2">GST-Compliant Invoices</h3>
+              <p className="text-sm text-charcoal/50 leading-relaxed">
+                Every payout auto-generates an invoice with CGST/SGST breakdown, platform service fee, and INR equivalent. Ready for GSTR-1 filing.
+              </p>
+            </div>
+
+            <div className="nb-card p-8 bg-white rounded-2xl shadow-brutal relative group hover:-translate-y-1 transition-transform">
+              <div className="w-10 h-10 bg-sage/10 rounded-lg border-2 border-sage/20 flex items-center justify-center mb-5">
+                <span className="text-sage font-bold text-lg">PDF</span>
+              </div>
+              <h3 className="font-display text-lg font-bold mb-2">Payout Receipts</h3>
+              <p className="text-sm text-charcoal/50 leading-relaxed">
+                Workers and merchants can download PDF receipts for any payout — with on-chain transaction hash, amount breakdown, and Alora branding.
+              </p>
+            </div>
+
+            <div className="nb-card p-8 bg-white rounded-2xl shadow-brutal relative group hover:-translate-y-1 transition-transform">
+              <div className="w-10 h-10 bg-lavender/10 rounded-lg border-2 border-lavender/20 flex items-center justify-center mb-5">
+                <span className="text-lavender font-bold text-lg">log</span>
+              </div>
+              <h3 className="font-display text-lg font-bold mb-2">Audit Trail</h3>
+              <p className="text-sm text-charcoal/50 leading-relaxed">
+                Full compliance log: escrow deposits, payout releases, worker registrations — timestamped, on-chain verified, and exportable as CSV.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════ CTA ═══════════ */}
       <section className="relative z-10 bg-cream px-6 md:px-12 lg:px-20 py-24 md:py-32">
         <div className="max-w-3xl mx-auto text-center">
@@ -783,14 +831,14 @@ final_amount = (base * multiplier) / 100
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
           <div className="flex items-center gap-3">
             <AloraLogo size="sm" />
-            <span className="text-charcoal/25 text-xs ml-1">On-Chain Gig Payments</span>
+            <span className="text-charcoal/25 text-xs ml-1">Real-Time Payouts Infrastructure</span>
           </div>
           <div className="flex flex-wrap items-center gap-4 font-mono text-[10px] text-charcoal/30">
             <span>Built on Algorand</span>
             <span className="w-1.5 h-1.5 bg-charcoal/10 rounded-full" />
             <span>USDC Settlements</span>
             <span className="w-1.5 h-1.5 bg-charcoal/10 rounded-full" />
-            <span>Atomic Transactions</span>
+            <span>GST Compliant</span>
           </div>
         </div>
       </footer>
