@@ -7,19 +7,6 @@ from algokit_utils import (
 )
 from algokit_utils.config import config
 
-from smart_contracts.artifacts.escrow_pool.escrow_pool_client import (
-    EscrowPoolClient,
-    EscrowPoolFactory,
-)
-from smart_contracts.artifacts.worker_registry.worker_registry_client import (
-    WorkerRegistryClient,
-    WorkerRegistryFactory,
-)
-from smart_contracts.artifacts.task_verification.task_verification_client import (
-    DeliveryManagerClient,
-    DeliveryManagerFactory,
-)
-
 config.configure(debug=True)
 
 
@@ -49,70 +36,74 @@ def worker_account(algorand_client: AlgorandClient) -> SigningAccount:
 
 
 @pytest.fixture()
-def mock_usdc_id(algorand_client: AlgorandClient, deployer: SigningAccount) -> int:
-    """Create a mock USDC ASA on localnet with 6 decimals."""
-    result = algorand_client.send.asset_create(
-        algokit_utils.AssetCreateParams(
-            sender=deployer.address,
-            total=10_000_000_000_000,  # 10M USDC
-            decimals=6,
-            unit_name="USDC",
-            asset_name="Mock USDC",
-            default_frozen=False,
-        )
+def issuer_account(algorand_client: AlgorandClient) -> SigningAccount:
+    account = algorand_client.account.random()
+    algorand_client.account.ensure_funded_from_environment(
+        account_to_fund=account.address,
+        min_spending_balance=AlgoAmount.from_algo(5),
     )
-    return result.asset_id
+    return account
 
 
 @pytest.fixture()
-def escrow_client(
-    algorand_client: AlgorandClient, deployer: SigningAccount
-) -> EscrowPoolClient:
-    factory = algorand_client.client.get_typed_app_factory(
-        EscrowPoolFactory, default_sender=deployer.address
+def consumer_account(algorand_client: AlgorandClient) -> SigningAccount:
+    account = algorand_client.account.random()
+    algorand_client.account.ensure_funded_from_environment(
+        account_to_fund=account.address,
+        min_spending_balance=AlgoAmount.from_algo(5),
     )
-    client, _ = factory.send.create.bare()
-    algorand_client.send.payment(
-        algokit_utils.PaymentParams(
-            amount=AlgoAmount.from_algo(1),
-            sender=deployer.address,
-            receiver=client.app_address,
-        )
-    )
-    return client
+    return account
 
 
 @pytest.fixture()
 def registry_client(
     algorand_client: AlgorandClient, deployer: SigningAccount
-) -> WorkerRegistryClient:
+):
+    from smart_contracts.artifacts.worker_registry.worker_registry_client import (
+        WorkerRegistryFactory,
+    )
+
     factory = algorand_client.client.get_typed_app_factory(
         WorkerRegistryFactory, default_sender=deployer.address
     )
-    client, _ = factory.send.create.create()
-    algorand_client.send.payment(
-        algokit_utils.PaymentParams(
-            amount=AlgoAmount.from_algo(1),
-            sender=deployer.address,
-            receiver=client.app_address,
-        )
+    client, _ = factory.deploy(
+        on_update=algokit_utils.OnUpdate.AppendApp,
+        on_schema_break=algokit_utils.OnSchemaBreak.AppendApp,
     )
     return client
 
 
 @pytest.fixture()
-def delivery_client(
+def attestation_log_client(
     algorand_client: AlgorandClient, deployer: SigningAccount
-) -> DeliveryManagerClient:
-    factory = algorand_client.client.get_typed_app_factory(
-        DeliveryManagerFactory, default_sender=deployer.address
+):
+    from smart_contracts.artifacts.attestation_log.attestation_log_client import (
+        AttestationLogFactory,
     )
-    client, _ = factory.send.create.create()
-    algorand_client.send.payment(
-        algokit_utils.PaymentParams(
-            amount=AlgoAmount.from_algo(1),
-            sender=deployer.address,
-            receiver=client.app_address,
-        )
+
+    factory = algorand_client.client.get_typed_app_factory(
+        AttestationLogFactory, default_sender=deployer.address
+    )
+    client, _ = factory.deploy(
+        on_update=algokit_utils.OnUpdate.AppendApp,
+        on_schema_break=algokit_utils.OnSchemaBreak.AppendApp,
+    )
+    return client
+
+
+@pytest.fixture()
+def access_grants_client(
+    algorand_client: AlgorandClient, deployer: SigningAccount
+):
+    from smart_contracts.artifacts.access_grants.access_grants_client import (
+        AccessGrantsFactory,
+    )
+
+    factory = algorand_client.client.get_typed_app_factory(
+        AccessGrantsFactory, default_sender=deployer.address
+    )
+    client, _ = factory.deploy(
+        on_update=algokit_utils.OnUpdate.AppendApp,
+        on_schema_break=algokit_utils.OnSchemaBreak.AppendApp,
     )
     return client

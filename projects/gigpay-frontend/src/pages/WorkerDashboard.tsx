@@ -1,50 +1,43 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useWallet } from '@txnlab/use-wallet-react'
-import { Navigate } from 'react-router-dom'
-import { AlgorandClient } from '@algorandfoundation/algokit-utils'
 import DashboardLayout from '../layouts/DashboardLayout'
 import ConnectWallet from '../components/ConnectWallet'
-import WorkerProfileCard from '../components/worker/WorkerProfile'
-import EarningsCard from '../components/worker/EarningsCard'
-import OfframpCard from '../components/worker/OfframpCard'
-import DeliveryHistory from '../components/worker/DeliveryHistory'
-import EarningsBreakdown from '../components/worker/EarningsBreakdown'
-import RatingInsight from '../components/worker/RatingInsight'
-import SendUsdc from '../components/worker/SendUsdc'
-import RegisterWorker from '../components/worker/RegisterWorker'
 import AloraLogo from '../components/shared/AloraLogo'
-import { useWorkerData } from '../hooks/useWorkerData'
-import { getAlgodConfigFromViteEnvironment, getIndexerConfigFromViteEnvironment } from '../utils/network/getAlgoClientConfigs'
-
-const ADMIN_ADDRESS = import.meta.env.VITE_ADMIN_ADDRESS || ''
-const USDC_ASSET_ID = Number(import.meta.env.VITE_USDC_ASSET_ID) || 0
+import RegisterWorker from '../components/worker/RegisterWorker'
+import WorkerProfileCard from '../components/worker/WorkerProfile'
+import AuraCard from '../components/worker/AuraCard'
+import AuraScoreBreakdown from '../components/worker/AuraScoreBreakdown'
+import AttestationsList from '../components/worker/AttestationsList'
+import GrantsManager from '../components/worker/GrantsManager'
+import { computeAuraScore } from '../services/score'
+import { getWorkerProfile, WorkerProfile } from '../services/registry'
+import { AttestationRecord, listBySubject } from '../services/attestations'
 
 const WorkerDashboard: React.FC = () => {
-  const { activeAddress, transactionSigner } = useWallet()
-  const [refreshKey, setRefreshKey] = useState(0)
+  const { activeAddress } = useWallet()
   const [walletModal, setWalletModal] = useState(false)
-  const [optingIn, setOptingIn] = useState(false)
-  const { profile, deliveries, usdcBalance, usdcOptedIn, loading } = useWorkerData(activeAddress || undefined, refreshKey)
+  const [profile, setProfile] = useState<WorkerProfile | null>(null)
+  const [attestations, setAttestations] = useState<AttestationRecord[]>([])
+  const [loading, setLoading] = useState(false)
+  const [refreshKey, setRefreshKey] = useState(0)
 
-  const handleOptInUsdc = async () => {
+  useEffect(() => {
     if (!activeAddress) return
-    setOptingIn(true)
-    try {
-      const algodConfig = getAlgodConfigFromViteEnvironment()
-      const indexerConfig = getIndexerConfigFromViteEnvironment()
-      const algorand = AlgorandClient.fromConfig({ algodConfig, indexerConfig })
-      algorand.setDefaultSigner(transactionSigner)
-      await algorand.send.assetOptIn({
-        sender: activeAddress,
-        assetId: BigInt(USDC_ASSET_ID),
+    let cancelled = false
+    setLoading(true)
+    Promise.all([getWorkerProfile(activeAddress), listBySubject(activeAddress, activeAddress)])
+      .then(([p, atts]) => {
+        if (cancelled) return
+        setProfile(p)
+        setAttestations(atts)
       })
-      setRefreshKey((k) => k + 1)
-    } catch (err: any) {
-      console.error('USDC opt-in failed:', err)
-    } finally {
-      setOptingIn(false)
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => {
+      cancelled = true
     }
-  }
+  }, [activeAddress, refreshKey])
 
   if (!activeAddress) {
     return (
@@ -54,91 +47,46 @@ const WorkerDashboard: React.FC = () => {
           <div className="flex justify-center mb-6">
             <AloraLogo size="lg" />
           </div>
-          <p className="text-muted text-sm mb-8 leading-relaxed">
-            Connect your Algorand wallet to access the worker dashboard.
-          </p>
-
+          <p className="text-charcoal/55 text-sm mb-8 leading-relaxed">Connect your Algorand wallet to access your worker record.</p>
           <button
             onClick={() => setWalletModal(true)}
-            className="nb-btn-primary"
+            className="nb-btn bg-terra text-cream w-full py-3 text-sm font-display font-bold tracking-widest uppercase"
           >
             Connect Wallet
           </button>
-
-          <a href="/" className="block text-xs font-display font-semibold text-muted hover:text-charcoal transition-colors mt-6">
-            Back to home
+          <a href="/" className="block text-xs font-display font-semibold text-charcoal/40 hover:text-charcoal transition-colors mt-6">
+            ← Back to home
           </a>
-
           <ConnectWallet openModal={walletModal} closeModal={() => setWalletModal(false)} />
         </div>
       </div>
     )
   }
 
-  if (activeAddress === ADMIN_ADDRESS) return <Navigate to="/platform" />
-
-  if (loading) {
+  if (loading && !profile) {
     return (
-      <DashboardLayout title="Worker Dashboard">
-        <div className="flex items-center justify-center gap-3 py-12">
-          <div className="w-5 h-5 border-[2.5px] border-charcoal/20 border-t-terra animate-spin rounded-full" />
-          <span className="text-sm text-muted font-display font-semibold">Loading your data...</span>
-        </div>
+      <DashboardLayout title="Worker">
+        <div className="text-charcoal/45 text-sm py-12 text-center">Loading your record…</div>
       </DashboardLayout>
     )
   }
 
-  if (!profile) {
+  if (!profile?.registered) {
     return (
-      <DashboardLayout title="Worker Dashboard">
-        <RegisterWorker walletAddress={activeAddress} />
+      <DashboardLayout title="Worker">
+        <RegisterWorker onRegistered={() => setRefreshKey((k) => k + 1)} />
       </DashboardLayout>
     )
   }
 
   return (
-    <DashboardLayout title="Worker Dashboard">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 stagger-children">
-        {!usdcOptedIn && (
-          <div className="lg:col-span-2 nb-dash-card border-terra bg-terra/5 p-5 flex items-center justify-between">
-            <div>
-              <div className="text-sm font-display font-bold text-charcoal mb-1">USDC Opt-In Required</div>
-              <div className="text-xs text-muted">Your wallet needs to opt into USDC (ASA {USDC_ASSET_ID}) to receive payments.</div>
-            </div>
-            <button
-              onClick={handleOptInUsdc}
-              disabled={optingIn}
-              className="nb-btn bg-terra text-white px-5 py-2.5 text-xs font-display font-bold tracking-wide uppercase flex items-center gap-2 shrink-0 ml-4"
-            >
-              {optingIn ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white animate-spin rounded-full" />
-                  Opting in...
-                </>
-              ) : (
-                'Opt In to USDC'
-              )}
-            </button>
-          </div>
-        )}
-        <WorkerProfileCard profile={profile} />
-        <EarningsCard
-          totalEarned={profile.totalEarned}
-          tasksCompleted={profile.tasksCompleted}
-          usdcBalance={usdcBalance}
-          rating={profile.rating}
-        />
-        <EarningsBreakdown deliveries={deliveries} rating={profile.rating} profile={profile} />
-        <RatingInsight
-          rating={profile.rating}
-          tasksCompleted={profile.tasksCompleted}
-          avgBaseAmount={deliveries.length > 0 ? Math.round(deliveries.reduce((s, d) => s + d.baseAmount, 0) / deliveries.length) : undefined}
-        />
-        <SendUsdc usdcBalance={usdcBalance} onSent={() => setRefreshKey((k) => k + 1)} />
-        <OfframpCard usdcBalance={usdcBalance} upiId={profile.upiId} />
-        <div className="lg:col-span-2">
-          <DeliveryHistory deliveries={deliveries} />
-        </div>
+    <DashboardLayout title="Worker">
+      <div className="space-y-6">
+        <AuraCard address={activeAddress} profile={profile} attestations={attestations} />
+        <AuraScoreBreakdown breakdown={computeAuraScore(attestations, profile.registeredAt)} />
+        <WorkerProfileCard address={activeAddress} profile={profile} />
+        <AttestationsList attestations={attestations} loading={loading} onRefresh={() => setRefreshKey((k) => k + 1)} />
+        <GrantsManager onChanged={() => setRefreshKey((k) => k + 1)} />
       </div>
     </DashboardLayout>
   )

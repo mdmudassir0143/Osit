@@ -6,15 +6,15 @@ logger = logging.getLogger(__name__)
 
 
 def deploy() -> None:
-    from smart_contracts.artifacts.worker_registry.worker_registry_client import (
-        WorkerRegistryFactory,
+    from smart_contracts.artifacts.attestation_log.attestation_log_client import (
+        AttestationLogFactory,
     )
 
     algorand = algokit_utils.AlgorandClient.from_environment()
     deployer_ = algorand.account.from_environment("DEPLOYER")
 
     factory = algorand.client.get_typed_app_factory(
-        WorkerRegistryFactory, default_sender=deployer_.address
+        AttestationLogFactory, default_sender=deployer_.address
     )
 
     app_client, _ = factory.deploy(

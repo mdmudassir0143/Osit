@@ -1,177 +1,240 @@
-import algosdk
+"""Tests for the refactored WorkerRegistry contract."""
+
+import secrets
+
 import algokit_utils
-from algokit_utils import AlgoAmount, AlgorandClient, CommonAppCallParams, SigningAccount
+import pytest
+from algokit_utils import (
+    AlgoAmount,
+    AlgorandClient,
+    CommonAppCallParams,
+    LogicError,
+    SigningAccount,
+)
 
 from smart_contracts.artifacts.worker_registry.worker_registry_client import (
+    GetWorkerInfoArgs,
+    IsRegisteredArgs,
+    LookupByPhoneHashArgs,
+    RegisterWorkerArgs,
+    UpdateHandleArgs,
     WorkerRegistryClient,
-    WorkerRegistryFactory,
 )
 
 
-@algokit_utils.pytest.fixture()
-def registry(
-    algorand_client: AlgorandClient, deployer: SigningAccount
-) -> WorkerRegistryClient:
-    factory = algorand_client.client.get_typed_app_factory(
-        WorkerRegistryFactory, default_sender=deployer.address
-    )
-    client, _ = factory.send.create.create()
-    algorand_client.send.payment(
+def _phone_hash() -> bytes:
+    return secrets.token_bytes(32)
+
+
+def _send_mbr(
+    algorand: AlgorandClient,
+    deployer: SigningAccount,
+    receiver: str,
+    micro: int = 200_000,
+) -> None:
+    algorand.send.payment(
         algokit_utils.PaymentParams(
-            amount=AlgoAmount.from_algo(1),
             sender=deployer.address,
-            receiver=client.app_address,
+            receiver=receiver,
+            amount=AlgoAmount.from_micro_algo(micro),
+            note=secrets.token_bytes(8),
         )
     )
-    return client
 
 
-def _worker_box(address: str) -> bytes:
-    return b"wrk_" + algosdk.encoding.decode_address(address)
-
-
-def test_add_worker(
+def test_register_worker_writes_both_maps(
     algorand_client: AlgorandClient,
     deployer: SigningAccount,
     worker_account: SigningAccount,
     registry_client: WorkerRegistryClient,
 ) -> None:
-    """Admin adds a worker with personal details."""
-    box_name = _worker_box(worker_account.address)
+    phone_hash = _phone_hash()
+    _send_mbr(algorand_client, deployer, registry_client.app_address, 300_000)
 
-    mbr_pay = algorand_client.create_transaction.payment(
-        algokit_utils.PaymentParams(
-            sender=deployer.address,
-            receiver=registry_client.app_address,
-            amount=AlgoAmount.from_micro_algo(100_000),
-        )
+    registry_client.send.register_worker(
+        args=RegisterWorkerArgs(phone_hash=phone_hash, handle="raj_kumar"),
+        params=CommonAppCallParams(sender=worker_account.address),
+        send_params={"populate_app_call_resources": True},
     )
 
-    registry_client.send.add_worker(
-        args={
-            "worker": worker_account.address,
-            "name": b"Raj Kumar",
-            "phone": b"9876543210",
-            "upi_id": b"raj@paytm",
-            "rating": 45,
-            "mbr_pay": mbr_pay,
-        },
-        params=CommonAppCallParams(
-            sender=deployer.address,
-            box_references=[
-                algokit_utils.BoxReference(app_id=0, name=box_name),
-            ],
-        ),
+    info = registry_client.send.get_worker_info(
+        args=GetWorkerInfoArgs(addr=worker_account.address),
+        send_params={"populate_app_call_resources": True},
     )
+    assert info.abi_return.handle == "raj_kumar"
+    assert bytes(info.abi_return.phone_hash) == phone_hash
 
-    # Verify worker rating
-    result = registry_client.send.get_worker_rating(
-        args={"worker": worker_account.address},
-        params=CommonAppCallParams(
-            box_references=[
-                algokit_utils.BoxReference(app_id=0, name=box_name),
-            ],
-        ),
+    looked_up = registry_client.send.lookup_by_phone_hash(
+        args=LookupByPhoneHashArgs(phone_hash=phone_hash),
+        send_params={"populate_app_call_resources": True},
     )
-    assert result.abi_return == 45
+    assert looked_up.abi_return == worker_account.address
 
 
-def test_update_rating(
+def test_register_worker_rejects_duplicate_phone(
     algorand_client: AlgorandClient,
     deployer: SigningAccount,
     worker_account: SigningAccount,
     registry_client: WorkerRegistryClient,
 ) -> None:
-    """Admin updates a worker's rating."""
-    box_name = _worker_box(worker_account.address)
-    box_ref = algokit_utils.BoxReference(app_id=0, name=box_name)
+    phone_hash = _phone_hash()
+    _send_mbr(algorand_client, deployer, registry_client.app_address, 500_000)
 
-    mbr_pay = algorand_client.create_transaction.payment(
-        algokit_utils.PaymentParams(
-            sender=deployer.address,
-            receiver=registry_client.app_address,
-            amount=AlgoAmount.from_micro_algo(100_000),
+    registry_client.send.register_worker(
+        args=RegisterWorkerArgs(phone_hash=phone_hash, handle="first_user"),
+        params=CommonAppCallParams(sender=worker_account.address),
+        send_params={"populate_app_call_resources": True},
+    )
+
+    other = algorand_client.account.random()
+    algorand_client.account.ensure_funded_from_environment(
+        account_to_fund=other.address,
+        min_spending_balance=AlgoAmount.from_algo(2),
+    )
+    with pytest.raises(LogicError):
+        registry_client.send.register_worker(
+            args=RegisterWorkerArgs(
+                phone_hash=phone_hash, handle="second_user"
+            ),
+            params=CommonAppCallParams(sender=other.address),
+            send_params={"populate_app_call_resources": True},
         )
-    )
-
-    registry_client.send.add_worker(
-        args={
-            "worker": worker_account.address,
-            "name": b"Priya Singh",
-            "phone": b"9123456789",
-            "upi_id": b"priya@gpay",
-            "rating": 30,
-            "mbr_pay": mbr_pay,
-        },
-        params=CommonAppCallParams(
-            sender=deployer.address,
-            box_references=[box_ref],
-        ),
-    )
-
-    registry_client.send.update_rating(
-        args={"worker": worker_account.address, "new_rating": 42},
-        params=CommonAppCallParams(
-            sender=deployer.address,
-            box_references=[box_ref],
-        ),
-    )
-
-    result = registry_client.send.get_worker_rating(
-        args={"worker": worker_account.address},
-        params=CommonAppCallParams(
-            box_references=[box_ref],
-        ),
-    )
-    assert result.abi_return == 42
 
 
-def test_increment_earnings(
+def test_register_worker_rejects_duplicate_address(
     algorand_client: AlgorandClient,
     deployer: SigningAccount,
     worker_account: SigningAccount,
     registry_client: WorkerRegistryClient,
 ) -> None:
-    """Test incrementing worker earnings."""
-    box_name = _worker_box(worker_account.address)
-    box_ref = algokit_utils.BoxReference(app_id=0, name=box_name)
+    _send_mbr(algorand_client, deployer, registry_client.app_address, 500_000)
 
-    mbr_pay = algorand_client.create_transaction.payment(
-        algokit_utils.PaymentParams(
-            sender=deployer.address,
-            receiver=registry_client.app_address,
-            amount=AlgoAmount.from_micro_algo(100_000),
+    registry_client.send.register_worker(
+        args=RegisterWorkerArgs(phone_hash=_phone_hash(), handle="user_one"),
+        params=CommonAppCallParams(sender=worker_account.address),
+        send_params={"populate_app_call_resources": True},
+    )
+
+    with pytest.raises(LogicError):
+        registry_client.send.register_worker(
+            args=RegisterWorkerArgs(
+                phone_hash=_phone_hash(), handle="user_two"
+            ),
+            params=CommonAppCallParams(sender=worker_account.address),
+            send_params={"populate_app_call_resources": True},
         )
+
+
+def test_update_handle_modifies_only_handle(
+    algorand_client: AlgorandClient,
+    deployer: SigningAccount,
+    worker_account: SigningAccount,
+    registry_client: WorkerRegistryClient,
+) -> None:
+    phone_hash = _phone_hash()
+    _send_mbr(algorand_client, deployer, registry_client.app_address, 300_000)
+
+    registry_client.send.register_worker(
+        args=RegisterWorkerArgs(phone_hash=phone_hash, handle="old_handle"),
+        params=CommonAppCallParams(sender=worker_account.address),
+        send_params={"populate_app_call_resources": True},
+    )
+    pre = registry_client.send.get_worker_info(
+        args=GetWorkerInfoArgs(addr=worker_account.address),
+        send_params={"populate_app_call_resources": True},
+    ).abi_return
+    pre_registered_at = pre.registered_at
+
+    registry_client.send.update_handle(
+        args=UpdateHandleArgs(handle="new_handle"),
+        params=CommonAppCallParams(sender=worker_account.address),
+        send_params={"populate_app_call_resources": True},
     )
 
-    registry_client.send.add_worker(
-        args={
-            "worker": worker_account.address,
-            "name": b"Aman Verma",
-            "phone": b"9988776655",
-            "upi_id": b"aman@upi",
-            "rating": 40,
-            "mbr_pay": mbr_pay,
-        },
-        params=CommonAppCallParams(
-            sender=deployer.address,
-            box_references=[box_ref],
-        ),
+    post = registry_client.send.get_worker_info(
+        args=GetWorkerInfoArgs(addr=worker_account.address),
+        send_params={"populate_app_call_resources": True},
+    ).abi_return
+    assert post.handle == "new_handle"
+    assert bytes(post.phone_hash) == phone_hash
+    assert post.registered_at == pre_registered_at
+
+
+def test_update_handle_unregistered_fails(
+    algorand_client: AlgorandClient,
+    deployer: SigningAccount,
+    worker_account: SigningAccount,
+    registry_client: WorkerRegistryClient,
+) -> None:
+    with pytest.raises(LogicError):
+        registry_client.send.update_handle(
+            args=UpdateHandleArgs(handle="nope_user"),
+            params=CommonAppCallParams(sender=worker_account.address),
+            send_params={"populate_app_call_resources": True},
+        )
+
+
+def test_handle_length_validation(
+    algorand_client: AlgorandClient,
+    deployer: SigningAccount,
+    worker_account: SigningAccount,
+    registry_client: WorkerRegistryClient,
+) -> None:
+    _send_mbr(algorand_client, deployer, registry_client.app_address, 300_000)
+
+    # Handles outside the contract's bounds should fail. The contract
+    # enforces 4 <= encoded_length <= 32 (encoded = utf8 + 2-byte length
+    # prefix from arc4.String), so we use unambiguously-out-of-range values.
+    with pytest.raises(LogicError):
+        registry_client.send.register_worker(
+            args=RegisterWorkerArgs(phone_hash=_phone_hash(), handle=""),
+            params=CommonAppCallParams(sender=worker_account.address),
+            send_params={"populate_app_call_resources": True},
+        )
+
+    with pytest.raises(LogicError):
+        registry_client.send.register_worker(
+            args=RegisterWorkerArgs(
+                phone_hash=_phone_hash(), handle="x" * 100
+            ),
+            params=CommonAppCallParams(sender=worker_account.address),
+            send_params={"populate_app_call_resources": True},
+        )
+
+
+def test_lookup_unknown_phone_fails(
+    algorand_client: AlgorandClient,
+    deployer: SigningAccount,
+    registry_client: WorkerRegistryClient,
+) -> None:
+    with pytest.raises(LogicError):
+        registry_client.send.lookup_by_phone_hash(
+            args=LookupByPhoneHashArgs(phone_hash=_phone_hash()),
+            send_params={"populate_app_call_resources": True},
+        )
+
+
+def test_is_registered_returns_correct_flag(
+    algorand_client: AlgorandClient,
+    deployer: SigningAccount,
+    worker_account: SigningAccount,
+    registry_client: WorkerRegistryClient,
+) -> None:
+    pre = registry_client.send.is_registered(
+        args=IsRegisteredArgs(addr=worker_account.address),
+        send_params={"populate_app_call_resources": True},
+    )
+    assert pre.abi_return is False
+
+    _send_mbr(algorand_client, deployer, registry_client.app_address, 300_000)
+    registry_client.send.register_worker(
+        args=RegisterWorkerArgs(phone_hash=_phone_hash(), handle="checker"),
+        params=CommonAppCallParams(sender=worker_account.address),
+        send_params={"populate_app_call_resources": True},
     )
 
-    registry_client.send.increment_earnings(
-        args={"worker": worker_account.address, "amount": 1_000_000},
-        params=CommonAppCallParams(
-            sender=deployer.address,
-            box_references=[box_ref],
-        ),
+    post = registry_client.send.is_registered(
+        args=IsRegisteredArgs(addr=worker_account.address),
+        send_params={"populate_app_call_resources": True},
     )
-
-    # get_worker_info returns raw bytes, check it exists
-    result = registry_client.send.get_worker_info(
-        args={"worker": worker_account.address},
-        params=CommonAppCallParams(
-            box_references=[box_ref],
-        ),
-    )
-    assert len(result.abi_return) == 120
+    assert post.abi_return is True

@@ -1,164 +1,93 @@
 import React, { useState } from 'react'
-import algosdk from 'algosdk'
-import { useWorkerRegistry } from '../../hooks/useWorkerRegistry'
+import { useWallet } from '@txnlab/use-wallet-react'
+import { isValidPhone, verifyAndHash } from '../../services/phone'
+import { registerWorker } from '../../services/registry'
 
 interface Props {
-  walletAddress: string
+  onRegistered: () => void
 }
 
-const RegisterWorker: React.FC<Props> = ({ walletAddress }) => {
-  const { applyWorker, loading } = useWorkerRegistry()
-  const [platformAddress, setPlatformAddress] = useState('')
-  const [name, setName] = useState('')
+const RegisterWorker: React.FC<Props> = ({ onRegistered }) => {
+  const { activeAddress, transactionSigner } = useWallet()
+  const [handle, setHandle] = useState('')
   const [phone, setPhone] = useState('')
-  const [upiId, setUpiId] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const isValidPlatform = platformAddress.length === 58 && algosdk.isValidAddress(platformAddress)
+  const handleValid = handle.length >= 4 && handle.length <= 30
+  const phoneValid = isValidPhone(phone)
+  const canSubmit = handleValid && phoneValid && !submitting && !!activeAddress
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!name.trim() || !isValidPlatform) return
-
+    if (!canSubmit || !activeAddress || !transactionSigner) return
+    setSubmitting(true)
     setError(null)
-
     try {
-      await applyWorker(platformAddress.trim(), name.trim(), phone.trim(), upiId.trim())
-      setSubmitted(true)
-    } catch (err: any) {
-      const msg = err?.message || 'Application failed'
-      if (msg.includes('already')) {
-        setError('You already have a pending application to this platform')
-      } else {
-        setError(msg.length > 120 ? msg.slice(0, 120) + '...' : msg)
-      }
+      const phoneHash = await verifyAndHash(phone)
+      await registerWorker({
+        sender: activeAddress,
+        signer: transactionSigner,
+        phoneHash,
+        handle,
+      })
+      onRegistered()
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Registration failed'
+      setError(msg.length > 200 ? `${msg.slice(0, 200)}…` : msg)
+    } finally {
+      setSubmitting(false)
     }
   }
 
-  if (submitted) {
-    return (
-      <div className="max-w-md mx-auto mt-12">
-        <div className="nb-card bg-white p-8 text-center shadow-brutal-sage">
-          <div className="w-12 h-12 bg-sage-light rounded-lg border-2 border-sage flex items-center justify-center mx-auto mb-4">
-            <span className="text-sage text-xl font-bold">✓</span>
-          </div>
-          <h2 className="font-display text-xl font-bold text-charcoal mb-2">Application Submitted</h2>
-          <p className="text-muted text-sm leading-relaxed max-w-sm mx-auto mb-4">
-            Your application is stored on-chain. The platform will review and approve your registration.
-          </p>
-          <div className="space-y-2">
-            <div className="bg-cream border-2 border-charcoal/10 rounded-lg px-3 py-2">
-              <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-1">Applied As</div>
-              <div className="text-sm text-charcoal font-display font-bold">{name}</div>
-            </div>
-            <div className="bg-cream border-2 border-charcoal/10 rounded-lg px-3 py-2">
-              <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-1">Platform</div>
-              <div className="text-xs font-mono text-muted break-all">{platformAddress}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="max-w-md mx-auto mt-12">
-      <div className="nb-card bg-white p-8 shadow-brutal-terra">
-        <div className="text-center mb-6">
-          <div className="w-10 h-10 bg-terra-light rounded-lg border-2 border-terra flex items-center justify-center mx-auto mb-4">
-            <span className="text-terra text-lg font-bold">+</span>
-          </div>
-          <h2 className="font-display text-xl font-bold text-charcoal mb-2">Apply to Join</h2>
-          <p className="text-muted text-sm leading-relaxed max-w-sm mx-auto">
-            Your wallet isn't registered yet. Submit your details on-chain and the platform will review your application.
-          </p>
-        </div>
+    <div className="max-w-lg mx-auto mt-12">
+      <div className="nb-card bg-white p-8 shadow-brutal-lg">
+        <span className="nb-tag bg-sage-light text-sage border-sage/40 text-[9px] mb-4">Step 1 of 1</span>
+        <h2 className="font-display text-2xl font-extrabold text-charcoal mb-2">Register your worker identity</h2>
+        <p className="text-charcoal/55 text-sm leading-relaxed mb-6">
+          Choose a public handle and verify your phone. The phone is hashed locally — Alora never sees the number itself, just a 32-byte
+          fingerprint that lets future employers find your record.
+        </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">Platform / Employer Address</label>
+            <label className="block text-[10px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-2">Handle</label>
             <input
               type="text"
-              value={platformAddress}
-              onChange={(e) => setPlatformAddress(e.target.value)}
-              placeholder="ALGO... (merchant wallet address)"
-              className="nb-input nb-input-mono"
+              value={handle}
+              onChange={(e) => setHandle(e.target.value)}
+              maxLength={30}
+              placeholder="e.g. ravi_freelance"
+              className="w-full px-4 py-3 border-[2.5px] border-charcoal/15 focus:border-charcoal rounded-lg bg-cream focus:outline-none transition-colors font-mono text-sm"
             />
-            {platformAddress.length > 0 && !isValidPlatform && (
-              <span className="text-[10px] text-terra font-display font-semibold mt-1 block">Invalid Algorand address</span>
-            )}
-            <p className="text-[10px] text-muted/60 mt-1">Ask your employer for their platform wallet address</p>
-          </div>
-
-          <div className="h-[2px] bg-charcoal/10" />
-
-          <div>
-            <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">Your Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Full name"
-              maxLength={32}
-              className="nb-input"
-            />
+            <div className="text-[11px] text-charcoal/40 mt-1">4–30 characters. Visible to anyone who queries your record.</div>
           </div>
 
           <div>
-            <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">Phone</label>
+            <label className="block text-[10px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-2">Phone</label>
             <input
-              type="text"
+              type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              placeholder="+91-9876543210"
-              maxLength={16}
-              className="nb-input"
+              placeholder="+91 98765 43210"
+              className="w-full px-4 py-3 border-[2.5px] border-charcoal/15 focus:border-charcoal rounded-lg bg-cream focus:outline-none transition-colors font-mono text-sm"
             />
-          </div>
-
-          <div>
-            <label className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold block mb-1.5">UPI / Bank ID</label>
-            <input
-              type="text"
-              value={upiId}
-              onChange={(e) => setUpiId(e.target.value)}
-              placeholder="name@paytm"
-              maxLength={32}
-              className="nb-input"
-            />
-          </div>
-
-          {error && (
-            <div className="bg-terra/5 border-2 border-terra/20 rounded-lg px-3 py-2.5">
-              <span className="text-xs text-terra font-display font-semibold">{error}</span>
+            <div className="text-[11px] text-charcoal/40 mt-1">
+              Hashed locally before submission. V1 stub — real OTP verification ships in Phase 7.
             </div>
-          )}
+          </div>
+
+          {error && <div className="border-[2px] border-terra/30 bg-terra-light text-terra text-xs px-3 py-2 rounded-lg">{error}</div>}
 
           <button
             type="submit"
-            disabled={loading || !name.trim() || !isValidPlatform}
-            className="nb-btn-primary"
+            disabled={!canSubmit}
+            className="nb-btn bg-terra text-cream w-full py-4 font-display font-bold tracking-wide uppercase text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? (
-              <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white animate-spin rounded-full" />
-                Submitting On-Chain...
-              </>
-            ) : (
-              'Submit Application'
-            )}
+            {submitting ? 'Registering…' : 'Register on Algorand'}
           </button>
-
-          <p className="text-[10px] text-muted/60 text-center font-display">
-            This requires a small MBR payment (~0.1 ALGO) to store your application on-chain.
-          </p>
         </form>
-
-        <div className="mt-4 pt-4 border-t-2 border-charcoal/10 text-center">
-          <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-1">Your Wallet</div>
-          <div className="text-xs font-mono text-muted break-all">{walletAddress}</div>
-        </div>
       </div>
     </div>
   )

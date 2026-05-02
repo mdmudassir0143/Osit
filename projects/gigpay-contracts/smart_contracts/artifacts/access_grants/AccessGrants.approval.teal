@@ -1,0 +1,325 @@
+#pragma version 11
+#pragma typetrack false
+
+// algopy.arc4.ARC4Contract.approval_program() -> uint64:
+main:
+    intcblock 32 1 4
+    bytecblock 0x676e74 0x151f7c75
+    // smart_contracts/access_grants/contract.py:38
+    // class AccessGrants(ARC4Contract):
+    txn NumAppArgs
+    bz main___algopy_default_create@13
+    txn OnCompletion
+    !
+    assert
+    txn ApplicationID
+    assert
+    pushbytess 0xd4b18c15 0xad32abec 0xf081b968 0xc3e1be45 // method "grant_access(address,uint32,uint64,uint32)void", method "revoke_access(address)void", method "check_grant(address,address)(address,address,uint32,uint64,uint64,uint32,uint32,bool)", method "grant_exists(address,address)bool"
+    txna ApplicationArgs 0
+    match grant_access revoke_access check_grant grant_exists
+    err
+
+main___algopy_default_create@13:
+    txn OnCompletion
+    !
+    txn ApplicationID
+    !
+    &&
+    return
+
+
+// smart_contracts.access_grants.contract.AccessGrants.grant_access[routing]() -> void:
+grant_access:
+    // smart_contracts/access_grants/contract.py:43
+    // @arc4.abimethod
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_0 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    txna ApplicationArgs 2
+    dup
+    len
+    intc_2 // 4
+    ==
+    assert // invalid number of bytes for arc4.uint32
+    txna ApplicationArgs 3
+    dup
+    len
+    pushint 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    txna ApplicationArgs 4
+    dup
+    len
+    intc_2 // 4
+    ==
+    assert // invalid number of bytes for arc4.uint32
+    // smart_contracts/access_grants/contract.py:51
+    // worker = arc4.Address(Txn.sender)
+    txn Sender
+    // smart_contracts/access_grants/contract.py:52
+    // key = GrantKey.from_bytes(op.sha256(worker.bytes + consumer.bytes))
+    uncover 4
+    concat
+    dup
+    sha256
+    // smart_contracts/access_grants/contract.py:57
+    // granted_at=arc4.UInt64(Global.latest_timestamp),
+    global LatestTimestamp
+    itob
+    // smart_contracts/access_grants/contract.py:53-62
+    // self.grants[key] = Grant(
+    //     worker=worker.copy(),
+    //     consumer=consumer.copy(),
+    //     scope_bitmask=scope_bitmask,
+    //     granted_at=arc4.UInt64(Global.latest_timestamp),
+    //     expires_at=expires_at,
+    //     query_limit=query_limit,
+    //     queries_used=arc4.UInt32(0),
+    //     revoked=arc4.Bool(False),  # noqa: FBT003
+    // )
+    uncover 2
+    uncover 5
+    concat
+    swap
+    concat
+    uncover 3
+    concat
+    uncover 2
+    concat
+    pushbytes 0x0000000000
+    concat
+    // smart_contracts/access_grants/contract.py:53
+    // self.grants[key] = Grant(
+    bytec_0 // 0x676e74
+    uncover 2
+    concat
+    // smart_contracts/access_grants/contract.py:53-62
+    // self.grants[key] = Grant(
+    //     worker=worker.copy(),
+    //     consumer=consumer.copy(),
+    //     scope_bitmask=scope_bitmask,
+    //     granted_at=arc4.UInt64(Global.latest_timestamp),
+    //     expires_at=expires_at,
+    //     query_limit=query_limit,
+    //     queries_used=arc4.UInt32(0),
+    //     revoked=arc4.Bool(False),  # noqa: FBT003
+    // )
+    swap
+    box_put
+    // smart_contracts/access_grants/contract.py:43
+    // @arc4.abimethod
+    intc_1 // 1
+    return
+
+
+// smart_contracts.access_grants.contract.AccessGrants.revoke_access[routing]() -> void:
+revoke_access:
+    // smart_contracts/access_grants/contract.py:64
+    // @arc4.abimethod
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_0 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    // smart_contracts/access_grants/contract.py:66
+    // worker = arc4.Address(Txn.sender)
+    txn Sender
+    // smart_contracts/access_grants/contract.py:67
+    // key = GrantKey.from_bytes(op.sha256(worker.bytes + consumer.bytes))
+    swap
+    concat
+    sha256
+    // smart_contracts/access_grants/contract.py:68
+    // assert key in self.grants, "no grant to revoke"
+    bytec_0 // 0x676e74
+    swap
+    concat
+    dup
+    box_len
+    bury 1
+    assert // no grant to revoke
+    // smart_contracts/access_grants/contract.py:69
+    // existing = self.grants[key].copy()
+    dup
+    box_get
+    pop
+    // smart_contracts/access_grants/contract.py:71
+    // worker=existing.worker.copy(),
+    dup
+    extract 0 32
+    // smart_contracts/access_grants/contract.py:72
+    // consumer=existing.consumer.copy(),
+    dig 1
+    extract 32 32
+    // smart_contracts/access_grants/contract.py:73
+    // scope_bitmask=existing.scope_bitmask,
+    dig 2
+    extract 64 4
+    // smart_contracts/access_grants/contract.py:74
+    // granted_at=existing.granted_at,
+    dig 3
+    extract 68 8
+    // smart_contracts/access_grants/contract.py:75
+    // expires_at=existing.expires_at,
+    dig 4
+    extract 76 8
+    // smart_contracts/access_grants/contract.py:76
+    // query_limit=existing.query_limit,
+    dig 5
+    extract 84 4
+    // smart_contracts/access_grants/contract.py:77
+    // queries_used=existing.queries_used,
+    uncover 6
+    extract 88 4
+    // smart_contracts/access_grants/contract.py:70-79
+    // self.grants[key] = Grant(
+    //     worker=existing.worker.copy(),
+    //     consumer=existing.consumer.copy(),
+    //     scope_bitmask=existing.scope_bitmask,
+    //     granted_at=existing.granted_at,
+    //     expires_at=existing.expires_at,
+    //     query_limit=existing.query_limit,
+    //     queries_used=existing.queries_used,
+    //     revoked=arc4.Bool(True),  # noqa: FBT003
+    // )
+    uncover 6
+    uncover 6
+    concat
+    uncover 5
+    concat
+    uncover 4
+    concat
+    uncover 3
+    concat
+    uncover 2
+    concat
+    swap
+    concat
+    // smart_contracts/access_grants/contract.py:78
+    // revoked=arc4.Bool(True),  # noqa: FBT003
+    pushbytes 0x80
+    // smart_contracts/access_grants/contract.py:70-79
+    // self.grants[key] = Grant(
+    //     worker=existing.worker.copy(),
+    //     consumer=existing.consumer.copy(),
+    //     scope_bitmask=existing.scope_bitmask,
+    //     granted_at=existing.granted_at,
+    //     expires_at=existing.expires_at,
+    //     query_limit=existing.query_limit,
+    //     queries_used=existing.queries_used,
+    //     revoked=arc4.Bool(True),  # noqa: FBT003
+    // )
+    concat
+    box_put
+    // smart_contracts/access_grants/contract.py:64
+    // @arc4.abimethod
+    intc_1 // 1
+    return
+
+
+// smart_contracts.access_grants.contract.AccessGrants.check_grant[routing]() -> void:
+check_grant:
+    // smart_contracts/access_grants/contract.py:81
+    // @arc4.abimethod(readonly=True)
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_0 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    txna ApplicationArgs 2
+    dup
+    len
+    intc_0 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    // smart_contracts/access_grants/contract.py:87
+    // key = GrantKey.from_bytes(op.sha256(worker.bytes + consumer.bytes))
+    concat
+    sha256
+    // smart_contracts/access_grants/contract.py:88
+    // if key in self.grants:
+    bytec_0 // 0x676e74
+    swap
+    concat
+    dup
+    box_len
+    bury 1
+    bz check_grant_after_if_else@3
+    // smart_contracts/access_grants/contract.py:89
+    // return self.grants[key]
+    dup
+    box_get
+    assert // check self.grants entry exists
+
+check_grant_after_inlined_smart_contracts.access_grants.contract.AccessGrants.check_grant@4:
+    // smart_contracts/access_grants/contract.py:81
+    // @arc4.abimethod(readonly=True)
+    bytec_1 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_1 // 1
+    return
+
+check_grant_after_if_else@3:
+    // smart_contracts/access_grants/contract.py:91-100
+    // return Grant(
+    //     worker=zero.copy(),
+    //     consumer=zero.copy(),
+    //     scope_bitmask=arc4.UInt32(0),
+    //     granted_at=arc4.UInt64(0),
+    //     expires_at=arc4.UInt64(0),
+    //     query_limit=arc4.UInt32(0),
+    //     queries_used=arc4.UInt32(0),
+    //     revoked=arc4.Bool(False),  # noqa: FBT003
+    // )
+    pushbytes base32(AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
+    // smart_contracts/access_grants/contract.py:81
+    // @arc4.abimethod(readonly=True)
+    b check_grant_after_inlined_smart_contracts.access_grants.contract.AccessGrants.check_grant@4
+
+
+// smart_contracts.access_grants.contract.AccessGrants.grant_exists[routing]() -> void:
+grant_exists:
+    // smart_contracts/access_grants/contract.py:102
+    // @arc4.abimethod(readonly=True)
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_0 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    txna ApplicationArgs 2
+    dup
+    len
+    intc_0 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    // smart_contracts/access_grants/contract.py:106
+    // key = GrantKey.from_bytes(op.sha256(worker.bytes + consumer.bytes))
+    concat
+    sha256
+    // smart_contracts/access_grants/contract.py:107
+    // return arc4.Bool(key in self.grants)
+    bytec_0 // 0x676e74
+    swap
+    concat
+    box_len
+    bury 1
+    pushbytes 0x00
+    pushint 0
+    uncover 2
+    setbit
+    // smart_contracts/access_grants/contract.py:102
+    // @arc4.abimethod(readonly=True)
+    bytec_1 // 0x151f7c75
+    swap
+    concat
+    log
+    intc_1 // 1
+    return

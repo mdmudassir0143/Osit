@@ -19,7 +19,7 @@ from algosdk.v2client.models import SimulateTraceConfig
 import algokit_utils
 from algokit_utils import AlgorandClient as _AlgoKitAlgorandClient
 
-_APP_SPEC_JSON = r"""{"arcs": [22, 28], "bareActions": {"call": [], "create": ["NoOp"]}, "methods": [{"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "byte[32]", "name": "phone_hash"}, {"type": "string", "name": "handle"}], "name": "register_worker", "returns": {"type": "void"}, "events": [], "readonly": false, "recommendations": {}}, {"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "string", "name": "handle"}], "name": "update_handle", "returns": {"type": "void"}, "events": [], "readonly": false, "recommendations": {}}, {"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "byte[32]", "name": "phone_hash"}], "name": "lookup_by_phone_hash", "returns": {"type": "address"}, "events": [], "readonly": true, "recommendations": {}}, {"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "address", "name": "addr"}], "name": "get_worker_info", "returns": {"type": "(string,byte[32],uint64)", "struct": "WorkerInfo"}, "events": [], "readonly": true, "recommendations": {}}, {"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "address", "name": "addr"}], "name": "is_registered", "returns": {"type": "bool"}, "events": [], "readonly": true, "recommendations": {}}], "name": "WorkerRegistry", "state": {"keys": {"box": {}, "global": {}, "local": {}}, "maps": {"box": {"workers": {"keyType": "address", "valueType": "WorkerInfo", "prefix": "d2ty"}, "phone_index": {"keyType": "byte[32]", "valueType": "address", "prefix": "cGhu"}}, "global": {}, "local": {}}, "schema": {"global": {"bytes": 0, "ints": 0}, "local": {"bytes": 0, "ints": 0}}}, "structs": {"WorkerInfo": [{"name": "handle", "type": "string"}, {"name": "phone_hash", "type": "byte[32]"}, {"name": "registered_at", "type": "uint64"}]}, "byteCode": {"approval": "CyAEIAEAAiYEA3drcgQVH3x1A3BobgIAKjEbQQAyMRkURDEYRIIFBEGKRbcEcUZvqwQ26xbDBOWSFoQEkZwC3zYaAI4FAAkAWQCYALAAyAAxGRQxGBQQQzYaAUkVIhJENhoCSSRZJQhLARVJTwISRDEASwGBBA9ETCIORChLAVBJvUUBFEQqSwRQSb1FARREMgcWK08GUExQTwRQSwK8SE8CTL9MvyNDNhoBSSRZJQhLARVJTwISRDEASwGBBA9ETCIORChMUEm9RQFESSUiuksBgwIiCLorTwJQTFBPAlBLAbxIvyNDNhoBSRUiEkQqTFBJvUUBRL5IKUxQsCNDNhoBSRUiEkQoTFBJvUUBRL5IKUxQsCNDNhoBSRUiEkQoTFC9RQGAAQAkTwJUKUxQsCND", "clear": "C4EBQw=="}, "events": [], "networks": {}, "source": {"approval": "I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuYXBwcm92YWxfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIGludGNibG9jayAzMiAxIDAgMgogICAgYnl0ZWNibG9jayAweDc3NmI3MiAweDE1MWY3Yzc1IDB4NzA2ODZlIDB4MDAyYQogICAgLy8gc21hcnRfY29udHJhY3RzL3dvcmtlcl9yZWdpc3RyeS9jb250cmFjdC5weTozMAogICAgLy8gY2xhc3MgV29ya2VyUmVnaXN0cnkoQVJDNENvbnRyYWN0KToKICAgIHR4biBOdW1BcHBBcmdzCiAgICBieiBtYWluX19fYWxnb3B5X2RlZmF1bHRfY3JlYXRlQDE0CiAgICB0eG4gT25Db21wbGV0aW9uCiAgICAhCiAgICBhc3NlcnQKICAgIHR4biBBcHBsaWNhdGlvbklECiAgICBhc3NlcnQKICAgIHB1c2hieXRlc3MgMHg0MThhNDViNyAweDcxNDY2ZmFiIDB4MzZlYjE2YzMgMHhlNTkyMTY4NCAweDkxOWMwMmRmIC8vIG1ldGhvZCAicmVnaXN0ZXJfd29ya2VyKGJ5dGVbMzJdLHN0cmluZyl2b2lkIiwgbWV0aG9kICJ1cGRhdGVfaGFuZGxlKHN0cmluZyl2b2lkIiwgbWV0aG9kICJsb29rdXBfYnlfcGhvbmVfaGFzaChieXRlWzMyXSlhZGRyZXNzIiwgbWV0aG9kICJnZXRfd29ya2VyX2luZm8oYWRkcmVzcykoc3RyaW5nLGJ5dGVbMzJdLHVpbnQ2NCkiLCBtZXRob2QgImlzX3JlZ2lzdGVyZWQoYWRkcmVzcylib29sIgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMAogICAgbWF0Y2ggcmVnaXN0ZXJfd29ya2VyIHVwZGF0ZV9oYW5kbGUgbG9va3VwX2J5X3Bob25lX2hhc2ggZ2V0X3dvcmtlcl9pbmZvIGlzX3JlZ2lzdGVyZWQKICAgIGVycgoKbWFpbl9fX2FsZ29weV9kZWZhdWx0X2NyZWF0ZUAxNDoKICAgIHR4biBPbkNvbXBsZXRpb24KICAgICEKICAgIHR4biBBcHBsaWNhdGlvbklECiAgICAhCiAgICAmJgogICAgcmV0dXJuCgoKLy8gc21hcnRfY29udHJhY3RzLndvcmtlcl9yZWdpc3RyeS5jb250cmFjdC5Xb3JrZXJSZWdpc3RyeS5yZWdpc3Rlcl93b3JrZXJbcm91dGluZ10oKSAtPiB2b2lkOgpyZWdpc3Rlcl93b3JrZXI6CiAgICAvLyBzbWFydF9jb250cmFjdHMvd29ya2VyX3JlZ2lzdHJ5L2NvbnRyYWN0LnB5OjM3CiAgICAvLyBAYXJjNC5hYmltZXRob2QKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzAgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMgogICAgZHVwCiAgICBpbnRjXzIgLy8gMAogICAgZXh0cmFjdF91aW50MTYgLy8gb24gZXJyb3I6IGludmFsaWQgYXJyYXkgbGVuZ3RoIGhlYWRlcgogICAgaW50Y18zIC8vIDIKICAgICsKICAgIGRpZyAxCiAgICBsZW4KICAgIGR1cAogICAgdW5jb3ZlciAyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LmR5bmFtaWNfYXJyYXk8YXJjNC51aW50OD4KICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy93b3JrZXJfcmVnaXN0cnkvY29udHJhY3QucHk6NDMKICAgIC8vIHNlbmRlciA9IGFyYzQuQWRkcmVzcyhUeG4uc2VuZGVyKQogICAgdHhuIFNlbmRlcgogICAgLy8gc21hcnRfY29udHJhY3RzL3dvcmtlcl9yZWdpc3RyeS9jb250cmFjdC5weTo0NQogICAgLy8gYXNzZXJ0IGhhbmRsZV9sZW4gPj0gTUlOX0hBTkRMRV9MRU4sICJoYW5kbGUgdG9vIHNob3J0IgogICAgZGlnIDEKICAgIHB1c2hpbnQgNAogICAgPj0KICAgIGFzc2VydCAvLyBoYW5kbGUgdG9vIHNob3J0CiAgICAvLyBzbWFydF9jb250cmFjdHMvd29ya2VyX3JlZ2lzdHJ5L2NvbnRyYWN0LnB5OjQ2CiAgICAvLyBhc3NlcnQgaGFuZGxlX2xlbiA8PSBNQVhfSEFORExFX0xFTiwgImhhbmRsZSB0b28gbG9uZyIKICAgIHN3YXAKICAgIGludGNfMCAvLyAzMgogICAgPD0KICAgIGFzc2VydCAvLyBoYW5kbGUgdG9vIGxvbmcKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy93b3JrZXJfcmVnaXN0cnkvY29udHJhY3QucHk6NDcKICAgIC8vIGFzc2VydCBzZW5kZXIgbm90IGluIHNlbGYud29ya2VycywgImFkZHJlc3MgYWxyZWFkeSByZWdpc3RlcmVkIgogICAgYnl0ZWNfMCAvLyAweDc3NmI3MgogICAgZGlnIDEKICAgIGNvbmNhdAogICAgZHVwCiAgICBib3hfbGVuCiAgICBidXJ5IDEKICAgICEKICAgIGFzc2VydCAvLyBhZGRyZXNzIGFscmVhZHkgcmVnaXN0ZXJlZAogICAgLy8gc21hcnRfY29udHJhY3RzL3dvcmtlcl9yZWdpc3RyeS9jb250cmFjdC5weTo0OAogICAgLy8gYXNzZXJ0IHBob25lX2hhc2ggbm90IGluIHNlbGYucGhvbmVfaW5kZXgsICJwaG9uZSBhbHJlYWR5IHJlZ2lzdGVyZWQiCiAgICBieXRlY18yIC8vIDB4NzA2ODZlCiAgICBkaWcgNAogICAgY29uY2F0CiAgICBkdXAKICAgIGJveF9sZW4KICAgIGJ1cnkgMQogICAgIQogICAgYXNzZXJ0IC8vIHBob25lIGFscmVhZHkgcmVnaXN0ZXJlZAogICAgLy8gc21hcnRfY29udHJhY3RzL3dvcmtlcl9yZWdpc3RyeS9jb250cmFjdC5weTo1MwogICAgLy8gcmVnaXN0ZXJlZF9hdD1hcmM0LlVJbnQ2NChHbG9iYWwubGF0ZXN0X3RpbWVzdGFtcCksCiAgICBnbG9iYWwgTGF0ZXN0VGltZXN0YW1wCiAgICBpdG9iCiAgICAvLyBzbWFydF9jb250cmFjdHMvd29ya2VyX3JlZ2lzdHJ5L2NvbnRyYWN0LnB5OjUwLTU0CiAgICAvLyBzZWxmLndvcmtlcnNbc2VuZGVyXSA9IFdvcmtlckluZm8oCiAgICAvLyAgICAgaGFuZGxlPWhhbmRsZSwKICAgIC8vICAgICBwaG9uZV9oYXNoPXBob25lX2hhc2guY29weSgpLAogICAgLy8gICAgIHJlZ2lzdGVyZWRfYXQ9YXJjNC5VSW50NjQoR2xvYmFsLmxhdGVzdF90aW1lc3RhbXApLAogICAgLy8gKQogICAgYnl0ZWNfMyAvLyAweDAwMmEKICAgIHVuY292ZXIgNgogICAgY29uY2F0CiAgICBzd2FwCiAgICBjb25jYXQKICAgIHVuY292ZXIgNAogICAgY29uY2F0CiAgICBkaWcgMgogICAgYm94X2RlbAogICAgcG9wCiAgICB1bmNvdmVyIDIKICAgIHN3YXAKICAgIGJveF9wdXQKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy93b3JrZXJfcmVnaXN0cnkvY29udHJhY3QucHk6NTUKICAgIC8vIHNlbGYucGhvbmVfaW5kZXhbcGhvbmVfaGFzaF0gPSBzZW5kZXIuY29weSgpCiAgICBzd2FwCiAgICBib3hfcHV0CiAgICAvLyBzbWFydF9jb250cmFjdHMvd29ya2VyX3JlZ2lzdHJ5L2NvbnRyYWN0LnB5OjM3CiAgICAvLyBAYXJjNC5hYmltZXRob2QKICAgIGludGNfMSAvLyAxCiAgICByZXR1cm4KCgovLyBzbWFydF9jb250cmFjdHMud29ya2VyX3JlZ2lzdHJ5LmNvbnRyYWN0LldvcmtlclJlZ2lzdHJ5LnVwZGF0ZV9oYW5kbGVbcm91dGluZ10oKSAtPiB2b2lkOgp1cGRhdGVfaGFuZGxlOgogICAgLy8gc21hcnRfY29udHJhY3RzL3dvcmtlcl9yZWdpc3RyeS9jb250cmFjdC5weTo1NwogICAgLy8gQGFyYzQuYWJpbWV0aG9kCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGludGNfMiAvLyAwCiAgICBleHRyYWN0X3VpbnQxNiAvLyBvbiBlcnJvcjogaW52YWxpZCBhcnJheSBsZW5ndGggaGVhZGVyCiAgICBpbnRjXzMgLy8gMgogICAgKwogICAgZGlnIDEKICAgIGxlbgogICAgZHVwCiAgICB1bmNvdmVyIDIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuZHluYW1pY19hcnJheTxhcmM0LnVpbnQ4PgogICAgLy8gc21hcnRfY29udHJhY3RzL3dvcmtlcl9yZWdpc3RyeS9jb250cmFjdC5weTo1OQogICAgLy8gc2VuZGVyID0gYXJjNC5BZGRyZXNzKFR4bi5zZW5kZXIpCiAgICB0eG4gU2VuZGVyCiAgICAvLyBzbWFydF9jb250cmFjdHMvd29ya2VyX3JlZ2lzdHJ5L2NvbnRyYWN0LnB5OjYxCiAgICAvLyBhc3NlcnQgaGFuZGxlX2xlbiA+PSBNSU5fSEFORExFX0xFTiwgImhhbmRsZSB0b28gc2hvcnQiCiAgICBkaWcgMQogICAgcHVzaGludCA0CiAgICA+PQogICAgYXNzZXJ0IC8vIGhhbmRsZSB0b28gc2hvcnQKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy93b3JrZXJfcmVnaXN0cnkvY29udHJhY3QucHk6NjIKICAgIC8vIGFzc2VydCBoYW5kbGVfbGVuIDw9IE1BWF9IQU5ETEVfTEVOLCAiaGFuZGxlIHRvbyBsb25nIgogICAgc3dhcAogICAgaW50Y18wIC8vIDMyCiAgICA8PQogICAgYXNzZXJ0IC8vIGhhbmRsZSB0b28gbG9uZwogICAgLy8gc21hcnRfY29udHJhY3RzL3dvcmtlcl9yZWdpc3RyeS9jb250cmFjdC5weTo2MwogICAgLy8gYXNzZXJ0IHNlbmRlciBpbiBzZWxmLndvcmtlcnMsICJub3QgcmVnaXN0ZXJlZCIKICAgIGJ5dGVjXzAgLy8gMHg3NzZiNzIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgZHVwCiAgICBib3hfbGVuCiAgICBidXJ5IDEKICAgIGFzc2VydCAvLyBub3QgcmVnaXN0ZXJlZAogICAgLy8gc21hcnRfY29udHJhY3RzL3dvcmtlcl9yZWdpc3RyeS9jb250cmFjdC5weTo2NwogICAgLy8gcGhvbmVfaGFzaD1leGlzdGluZy5waG9uZV9oYXNoLmNvcHkoKSwKICAgIGR1cAogICAgaW50Y18zIC8vIDIKICAgIGludGNfMCAvLyAzMgogICAgYm94X2V4dHJhY3QgLy8gb24gZXJyb3I6IGluZGV4IG91dCBvZiBib3VuZHMKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy93b3JrZXJfcmVnaXN0cnkvY29udHJhY3QucHk6NjgKICAgIC8vIHJlZ2lzdGVyZWRfYXQ9ZXhpc3RpbmcucmVnaXN0ZXJlZF9hdCwKICAgIGRpZyAxCiAgICBwdXNoaW50cyAzNCA4CiAgICBib3hfZXh0cmFjdCAvLyBvbiBlcnJvcjogaW5kZXggb3V0IG9mIGJvdW5kcwogICAgLy8gc21hcnRfY29udHJhY3RzL3dvcmtlcl9yZWdpc3RyeS9jb250cmFjdC5weTo2NS02OQogICAgLy8gc2VsZi53b3JrZXJzW3NlbmRlcl0gPSBXb3JrZXJJbmZvKAogICAgLy8gICAgIGhhbmRsZT1oYW5kbGUsCiAgICAvLyAgICAgcGhvbmVfaGFzaD1leGlzdGluZy5waG9uZV9oYXNoLmNvcHkoKSwKICAgIC8vICAgICByZWdpc3RlcmVkX2F0PWV4aXN0aW5nLnJlZ2lzdGVyZWRfYXQsCiAgICAvLyApCiAgICBieXRlY18zIC8vIDB4MDAyYQogICAgdW5jb3ZlciAyCiAgICBjb25jYXQKICAgIHN3YXAKICAgIGNvbmNhdAogICAgdW5jb3ZlciAyCiAgICBjb25jYXQKICAgIGRpZyAxCiAgICBib3hfZGVsCiAgICBwb3AKICAgIGJveF9wdXQKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy93b3JrZXJfcmVnaXN0cnkvY29udHJhY3QucHk6NTcKICAgIC8vIEBhcmM0LmFiaW1ldGhvZAogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNtYXJ0X2NvbnRyYWN0cy53b3JrZXJfcmVnaXN0cnkuY29udHJhY3QuV29ya2VyUmVnaXN0cnkubG9va3VwX2J5X3Bob25lX2hhc2hbcm91dGluZ10oKSAtPiB2b2lkOgpsb29rdXBfYnlfcGhvbmVfaGFzaDoKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy93b3JrZXJfcmVnaXN0cnkvY29udHJhY3QucHk6NzEKICAgIC8vIEBhcmM0LmFiaW1ldGhvZChyZWFkb25seT1UcnVlKQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMCAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICAvLyBzbWFydF9jb250cmFjdHMvd29ya2VyX3JlZ2lzdHJ5L2NvbnRyYWN0LnB5OjczCiAgICAvLyBhc3NlcnQgcGhvbmVfaGFzaCBpbiBzZWxmLnBob25lX2luZGV4LCAicGhvbmUgbm90IHJlZ2lzdGVyZWQiCiAgICBieXRlY18yIC8vIDB4NzA2ODZlCiAgICBzd2FwCiAgICBjb25jYXQKICAgIGR1cAogICAgYm94X2xlbgogICAgYnVyeSAxCiAgICBhc3NlcnQgLy8gcGhvbmUgbm90IHJlZ2lzdGVyZWQKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy93b3JrZXJfcmVnaXN0cnkvY29udHJhY3QucHk6NzQKICAgIC8vIHJldHVybiBzZWxmLnBob25lX2luZGV4W3Bob25lX2hhc2hdCiAgICBib3hfZ2V0CiAgICBwb3AKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy93b3JrZXJfcmVnaXN0cnkvY29udHJhY3QucHk6NzEKICAgIC8vIEBhcmM0LmFiaW1ldGhvZChyZWFkb25seT1UcnVlKQogICAgYnl0ZWNfMSAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNtYXJ0X2NvbnRyYWN0cy53b3JrZXJfcmVnaXN0cnkuY29udHJhY3QuV29ya2VyUmVnaXN0cnkuZ2V0X3dvcmtlcl9pbmZvW3JvdXRpbmddKCkgLT4gdm9pZDoKZ2V0X3dvcmtlcl9pbmZvOgogICAgLy8gc21hcnRfY29udHJhY3RzL3dvcmtlcl9yZWdpc3RyeS9jb250cmFjdC5weTo3NgogICAgLy8gQGFyYzQuYWJpbWV0aG9kKHJlYWRvbmx5PVRydWUpCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18wIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy93b3JrZXJfcmVnaXN0cnkvY29udHJhY3QucHk6NzgKICAgIC8vIGFzc2VydCBhZGRyIGluIHNlbGYud29ya2VycywgIm5vdCByZWdpc3RlcmVkIgogICAgYnl0ZWNfMCAvLyAweDc3NmI3MgogICAgc3dhcAogICAgY29uY2F0CiAgICBkdXAKICAgIGJveF9sZW4KICAgIGJ1cnkgMQogICAgYXNzZXJ0IC8vIG5vdCByZWdpc3RlcmVkCiAgICAvLyBzbWFydF9jb250cmFjdHMvd29ya2VyX3JlZ2lzdHJ5L2NvbnRyYWN0LnB5Ojc5CiAgICAvLyByZXR1cm4gc2VsZi53b3JrZXJzW2FkZHJdCiAgICBib3hfZ2V0CiAgICBwb3AKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy93b3JrZXJfcmVnaXN0cnkvY29udHJhY3QucHk6NzYKICAgIC8vIEBhcmM0LmFiaW1ldGhvZChyZWFkb25seT1UcnVlKQogICAgYnl0ZWNfMSAvLyAweDE1MWY3Yzc1CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGxvZwogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNtYXJ0X2NvbnRyYWN0cy53b3JrZXJfcmVnaXN0cnkuY29udHJhY3QuV29ya2VyUmVnaXN0cnkuaXNfcmVnaXN0ZXJlZFtyb3V0aW5nXSgpIC0+IHZvaWQ6CmlzX3JlZ2lzdGVyZWQ6CiAgICAvLyBzbWFydF9jb250cmFjdHMvd29ya2VyX3JlZ2lzdHJ5L2NvbnRyYWN0LnB5OjgxCiAgICAvLyBAYXJjNC5hYmltZXRob2QocmVhZG9ubHk9VHJ1ZSkKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDEKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzAgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgLy8gc21hcnRfY29udHJhY3RzL3dvcmtlcl9yZWdpc3RyeS9jb250cmFjdC5weTo4MwogICAgLy8gcmV0dXJuIGFyYzQuQm9vbChhZGRyIGluIHNlbGYud29ya2VycykKICAgIGJ5dGVjXzAgLy8gMHg3NzZiNzIKICAgIHN3YXAKICAgIGNvbmNhdAogICAgYm94X2xlbgogICAgYnVyeSAxCiAgICBwdXNoYnl0ZXMgMHgwMAogICAgaW50Y18yIC8vIDAKICAgIHVuY292ZXIgMgogICAgc2V0Yml0CiAgICAvLyBzbWFydF9jb250cmFjdHMvd29ya2VyX3JlZ2lzdHJ5L2NvbnRyYWN0LnB5OjgxCiAgICAvLyBAYXJjNC5hYmltZXRob2QocmVhZG9ubHk9VHJ1ZSkKICAgIGJ5dGVjXzEgLy8gMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIGludGNfMSAvLyAxCiAgICByZXR1cm4K", "clear": "I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuY2xlYXJfc3RhdGVfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIHB1c2hpbnQgMQogICAgcmV0dXJuCg=="}, "sourceInfo": {"approval": {"pcOffsetMethod": "none", "sourceInfo": [{"pc": [133], "errorMessage": "address already registered"}, {"pc": [123, 195], "errorMessage": "handle too long"}, {"pc": [119, 191], "errorMessage": "handle too short"}, {"pc": [207, 214], "errorMessage": "index out of bounds"}, {"pc": [101, 173], "errorMessage": "invalid array length header"}, {"pc": [111, 183], "errorMessage": "invalid number of bytes for arc4.dynamic_array<arc4.uint8>"}, {"pc": [95, 238, 262, 286], "errorMessage": "invalid number of bytes for arc4.static_array<arc4.uint8, 32>"}, {"pc": [203, 270], "errorMessage": "not registered"}, {"pc": [143], "errorMessage": "phone already registered"}, {"pc": [246], "errorMessage": "phone not registered"}]}, "clear": {"pcOffsetMethod": "none", "sourceInfo": []}}, "templateVariables": {}}"""
+_APP_SPEC_JSON = r"""{"arcs": [22, 28], "bareActions": {"call": [], "create": ["NoOp"]}, "methods": [{"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "address", "name": "consumer"}, {"type": "uint32", "name": "scope_bitmask"}, {"type": "uint64", "name": "expires_at"}, {"type": "uint32", "name": "query_limit"}], "name": "grant_access", "returns": {"type": "void"}, "events": [], "readonly": false, "recommendations": {}}, {"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "address", "name": "consumer"}], "name": "revoke_access", "returns": {"type": "void"}, "events": [], "readonly": false, "recommendations": {}}, {"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "address", "name": "worker"}, {"type": "address", "name": "consumer"}], "name": "check_grant", "returns": {"type": "(address,address,uint32,uint64,uint64,uint32,uint32,bool)", "struct": "Grant"}, "events": [], "readonly": true, "recommendations": {}}, {"actions": {"call": ["NoOp"], "create": []}, "args": [{"type": "address", "name": "worker"}, {"type": "address", "name": "consumer"}], "name": "grant_exists", "returns": {"type": "bool"}, "events": [], "readonly": true, "recommendations": {}}], "name": "AccessGrants", "state": {"keys": {"box": {}, "global": {}, "local": {}}, "maps": {"box": {"grants": {"keyType": "byte[32]", "valueType": "Grant", "prefix": "Z250"}}, "global": {}, "local": {}}, "schema": {"global": {"bytes": 0, "ints": 0}, "local": {"bytes": 0, "ints": 0}}}, "structs": {"Grant": [{"name": "worker", "type": "address"}, {"name": "consumer", "type": "address"}, {"name": "scope_bitmask", "type": "uint32"}, {"name": "granted_at", "type": "uint64"}, {"name": "expires_at", "type": "uint64"}, {"name": "query_limit", "type": "uint32"}, {"name": "queries_used", "type": "uint32"}, {"name": "revoked", "type": "bool"}]}, "byteCode": {"approval": "CyADIAEEJgIDZ250BBUffHUxG0EAKzEZFEQxGESCBATUsYwVBK0yq+wE8IG5aATD4b5FNhoAjgQACQBRAKUBLAAxGRQxGBQQQzYaAUkVIhJENhoCSRUkEkQ2GgNJFYEIEkQ2GgRJFSQSRDEATwRQSQEyBxZPAk8FUExQTwNQTwJQgAUAAAAAAFAoTwJQTL8jQzYaAUkVIhJEMQBMUAEoTFBJvUUBREm+SElXACBLAVcgIEsCV0AESwNXRAhLBFdMCEsFV1QETwZXWARPBk8GUE8FUE8EUE8DUE8CUExQgAGAUL8jQzYaAUkVIhJENhoCSRUiEkRQAShMUEm9RQFBAAlJvkQpTFCwI0OAXQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEL/mDYaAUkVIhJENhoCSRUiEkRQAShMUL1FAYABAIEATwJUKUxQsCND", "clear": "C4EBQw=="}, "events": [], "networks": {}, "source": {"approval": "I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuYXBwcm92YWxfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIGludGNibG9jayAzMiAxIDQKICAgIGJ5dGVjYmxvY2sgMHg2NzZlNzQgMHgxNTFmN2M3NQogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6MzgKICAgIC8vIGNsYXNzIEFjY2Vzc0dyYW50cyhBUkM0Q29udHJhY3QpOgogICAgdHhuIE51bUFwcEFyZ3MKICAgIGJ6IG1haW5fX19hbGdvcHlfZGVmYXVsdF9jcmVhdGVAMTMKICAgIHR4biBPbkNvbXBsZXRpb24KICAgICEKICAgIGFzc2VydAogICAgdHhuIEFwcGxpY2F0aW9uSUQKICAgIGFzc2VydAogICAgcHVzaGJ5dGVzcyAweGQ0YjE4YzE1IDB4YWQzMmFiZWMgMHhmMDgxYjk2OCAweGMzZTFiZTQ1IC8vIG1ldGhvZCAiZ3JhbnRfYWNjZXNzKGFkZHJlc3MsdWludDMyLHVpbnQ2NCx1aW50MzIpdm9pZCIsIG1ldGhvZCAicmV2b2tlX2FjY2VzcyhhZGRyZXNzKXZvaWQiLCBtZXRob2QgImNoZWNrX2dyYW50KGFkZHJlc3MsYWRkcmVzcykoYWRkcmVzcyxhZGRyZXNzLHVpbnQzMix1aW50NjQsdWludDY0LHVpbnQzMix1aW50MzIsYm9vbCkiLCBtZXRob2QgImdyYW50X2V4aXN0cyhhZGRyZXNzLGFkZHJlc3MpYm9vbCIKICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDAKICAgIG1hdGNoIGdyYW50X2FjY2VzcyByZXZva2VfYWNjZXNzIGNoZWNrX2dyYW50IGdyYW50X2V4aXN0cwogICAgZXJyCgptYWluX19fYWxnb3B5X2RlZmF1bHRfY3JlYXRlQDEzOgogICAgdHhuIE9uQ29tcGxldGlvbgogICAgIQogICAgdHhuIEFwcGxpY2F0aW9uSUQKICAgICEKICAgICYmCiAgICByZXR1cm4KCgovLyBzbWFydF9jb250cmFjdHMuYWNjZXNzX2dyYW50cy5jb250cmFjdC5BY2Nlc3NHcmFudHMuZ3JhbnRfYWNjZXNzW3JvdXRpbmddKCkgLT4gdm9pZDoKZ3JhbnRfYWNjZXNzOgogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6NDMKICAgIC8vIEBhcmM0LmFiaW1ldGhvZAogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMCAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAyCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18yIC8vIDQKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQudWludDMyCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAzCiAgICBkdXAKICAgIGxlbgogICAgcHVzaGludCA4CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQ2NAogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgNAogICAgZHVwCiAgICBsZW4KICAgIGludGNfMiAvLyA0CiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnVpbnQzMgogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6NTEKICAgIC8vIHdvcmtlciA9IGFyYzQuQWRkcmVzcyhUeG4uc2VuZGVyKQogICAgdHhuIFNlbmRlcgogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6NTIKICAgIC8vIGtleSA9IEdyYW50S2V5LmZyb21fYnl0ZXMob3Auc2hhMjU2KHdvcmtlci5ieXRlcyArIGNvbnN1bWVyLmJ5dGVzKSkKICAgIHVuY292ZXIgNAogICAgY29uY2F0CiAgICBkdXAKICAgIHNoYTI1NgogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6NTcKICAgIC8vIGdyYW50ZWRfYXQ9YXJjNC5VSW50NjQoR2xvYmFsLmxhdGVzdF90aW1lc3RhbXApLAogICAgZ2xvYmFsIExhdGVzdFRpbWVzdGFtcAogICAgaXRvYgogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6NTMtNjIKICAgIC8vIHNlbGYuZ3JhbnRzW2tleV0gPSBHcmFudCgKICAgIC8vICAgICB3b3JrZXI9d29ya2VyLmNvcHkoKSwKICAgIC8vICAgICBjb25zdW1lcj1jb25zdW1lci5jb3B5KCksCiAgICAvLyAgICAgc2NvcGVfYml0bWFzaz1zY29wZV9iaXRtYXNrLAogICAgLy8gICAgIGdyYW50ZWRfYXQ9YXJjNC5VSW50NjQoR2xvYmFsLmxhdGVzdF90aW1lc3RhbXApLAogICAgLy8gICAgIGV4cGlyZXNfYXQ9ZXhwaXJlc19hdCwKICAgIC8vICAgICBxdWVyeV9saW1pdD1xdWVyeV9saW1pdCwKICAgIC8vICAgICBxdWVyaWVzX3VzZWQ9YXJjNC5VSW50MzIoMCksCiAgICAvLyAgICAgcmV2b2tlZD1hcmM0LkJvb2woRmFsc2UpLCAgIyBub3FhOiBGQlQwMDMKICAgIC8vICkKICAgIHVuY292ZXIgMgogICAgdW5jb3ZlciA1CiAgICBjb25jYXQKICAgIHN3YXAKICAgIGNvbmNhdAogICAgdW5jb3ZlciAzCiAgICBjb25jYXQKICAgIHVuY292ZXIgMgogICAgY29uY2F0CiAgICBwdXNoYnl0ZXMgMHgwMDAwMDAwMDAwCiAgICBjb25jYXQKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hY2Nlc3NfZ3JhbnRzL2NvbnRyYWN0LnB5OjUzCiAgICAvLyBzZWxmLmdyYW50c1trZXldID0gR3JhbnQoCiAgICBieXRlY18wIC8vIDB4Njc2ZTc0CiAgICB1bmNvdmVyIDIKICAgIGNvbmNhdAogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6NTMtNjIKICAgIC8vIHNlbGYuZ3JhbnRzW2tleV0gPSBHcmFudCgKICAgIC8vICAgICB3b3JrZXI9d29ya2VyLmNvcHkoKSwKICAgIC8vICAgICBjb25zdW1lcj1jb25zdW1lci5jb3B5KCksCiAgICAvLyAgICAgc2NvcGVfYml0bWFzaz1zY29wZV9iaXRtYXNrLAogICAgLy8gICAgIGdyYW50ZWRfYXQ9YXJjNC5VSW50NjQoR2xvYmFsLmxhdGVzdF90aW1lc3RhbXApLAogICAgLy8gICAgIGV4cGlyZXNfYXQ9ZXhwaXJlc19hdCwKICAgIC8vICAgICBxdWVyeV9saW1pdD1xdWVyeV9saW1pdCwKICAgIC8vICAgICBxdWVyaWVzX3VzZWQ9YXJjNC5VSW50MzIoMCksCiAgICAvLyAgICAgcmV2b2tlZD1hcmM0LkJvb2woRmFsc2UpLCAgIyBub3FhOiBGQlQwMDMKICAgIC8vICkKICAgIHN3YXAKICAgIGJveF9wdXQKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hY2Nlc3NfZ3JhbnRzL2NvbnRyYWN0LnB5OjQzCiAgICAvLyBAYXJjNC5hYmltZXRob2QKICAgIGludGNfMSAvLyAxCiAgICByZXR1cm4KCgovLyBzbWFydF9jb250cmFjdHMuYWNjZXNzX2dyYW50cy5jb250cmFjdC5BY2Nlc3NHcmFudHMucmV2b2tlX2FjY2Vzc1tyb3V0aW5nXSgpIC0+IHZvaWQ6CnJldm9rZV9hY2Nlc3M6CiAgICAvLyBzbWFydF9jb250cmFjdHMvYWNjZXNzX2dyYW50cy9jb250cmFjdC5weTo2NAogICAgLy8gQGFyYzQuYWJpbWV0aG9kCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18wIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hY2Nlc3NfZ3JhbnRzL2NvbnRyYWN0LnB5OjY2CiAgICAvLyB3b3JrZXIgPSBhcmM0LkFkZHJlc3MoVHhuLnNlbmRlcikKICAgIHR4biBTZW5kZXIKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hY2Nlc3NfZ3JhbnRzL2NvbnRyYWN0LnB5OjY3CiAgICAvLyBrZXkgPSBHcmFudEtleS5mcm9tX2J5dGVzKG9wLnNoYTI1Nih3b3JrZXIuYnl0ZXMgKyBjb25zdW1lci5ieXRlcykpCiAgICBzd2FwCiAgICBjb25jYXQKICAgIHNoYTI1NgogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6NjgKICAgIC8vIGFzc2VydCBrZXkgaW4gc2VsZi5ncmFudHMsICJubyBncmFudCB0byByZXZva2UiCiAgICBieXRlY18wIC8vIDB4Njc2ZTc0CiAgICBzd2FwCiAgICBjb25jYXQKICAgIGR1cAogICAgYm94X2xlbgogICAgYnVyeSAxCiAgICBhc3NlcnQgLy8gbm8gZ3JhbnQgdG8gcmV2b2tlCiAgICAvLyBzbWFydF9jb250cmFjdHMvYWNjZXNzX2dyYW50cy9jb250cmFjdC5weTo2OQogICAgLy8gZXhpc3RpbmcgPSBzZWxmLmdyYW50c1trZXldLmNvcHkoKQogICAgZHVwCiAgICBib3hfZ2V0CiAgICBwb3AKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hY2Nlc3NfZ3JhbnRzL2NvbnRyYWN0LnB5OjcxCiAgICAvLyB3b3JrZXI9ZXhpc3Rpbmcud29ya2VyLmNvcHkoKSwKICAgIGR1cAogICAgZXh0cmFjdCAwIDMyCiAgICAvLyBzbWFydF9jb250cmFjdHMvYWNjZXNzX2dyYW50cy9jb250cmFjdC5weTo3MgogICAgLy8gY29uc3VtZXI9ZXhpc3RpbmcuY29uc3VtZXIuY29weSgpLAogICAgZGlnIDEKICAgIGV4dHJhY3QgMzIgMzIKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hY2Nlc3NfZ3JhbnRzL2NvbnRyYWN0LnB5OjczCiAgICAvLyBzY29wZV9iaXRtYXNrPWV4aXN0aW5nLnNjb3BlX2JpdG1hc2ssCiAgICBkaWcgMgogICAgZXh0cmFjdCA2NCA0CiAgICAvLyBzbWFydF9jb250cmFjdHMvYWNjZXNzX2dyYW50cy9jb250cmFjdC5weTo3NAogICAgLy8gZ3JhbnRlZF9hdD1leGlzdGluZy5ncmFudGVkX2F0LAogICAgZGlnIDMKICAgIGV4dHJhY3QgNjggOAogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6NzUKICAgIC8vIGV4cGlyZXNfYXQ9ZXhpc3RpbmcuZXhwaXJlc19hdCwKICAgIGRpZyA0CiAgICBleHRyYWN0IDc2IDgKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hY2Nlc3NfZ3JhbnRzL2NvbnRyYWN0LnB5Ojc2CiAgICAvLyBxdWVyeV9saW1pdD1leGlzdGluZy5xdWVyeV9saW1pdCwKICAgIGRpZyA1CiAgICBleHRyYWN0IDg0IDQKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hY2Nlc3NfZ3JhbnRzL2NvbnRyYWN0LnB5Ojc3CiAgICAvLyBxdWVyaWVzX3VzZWQ9ZXhpc3RpbmcucXVlcmllc191c2VkLAogICAgdW5jb3ZlciA2CiAgICBleHRyYWN0IDg4IDQKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hY2Nlc3NfZ3JhbnRzL2NvbnRyYWN0LnB5OjcwLTc5CiAgICAvLyBzZWxmLmdyYW50c1trZXldID0gR3JhbnQoCiAgICAvLyAgICAgd29ya2VyPWV4aXN0aW5nLndvcmtlci5jb3B5KCksCiAgICAvLyAgICAgY29uc3VtZXI9ZXhpc3RpbmcuY29uc3VtZXIuY29weSgpLAogICAgLy8gICAgIHNjb3BlX2JpdG1hc2s9ZXhpc3Rpbmcuc2NvcGVfYml0bWFzaywKICAgIC8vICAgICBncmFudGVkX2F0PWV4aXN0aW5nLmdyYW50ZWRfYXQsCiAgICAvLyAgICAgZXhwaXJlc19hdD1leGlzdGluZy5leHBpcmVzX2F0LAogICAgLy8gICAgIHF1ZXJ5X2xpbWl0PWV4aXN0aW5nLnF1ZXJ5X2xpbWl0LAogICAgLy8gICAgIHF1ZXJpZXNfdXNlZD1leGlzdGluZy5xdWVyaWVzX3VzZWQsCiAgICAvLyAgICAgcmV2b2tlZD1hcmM0LkJvb2woVHJ1ZSksICAjIG5vcWE6IEZCVDAwMwogICAgLy8gKQogICAgdW5jb3ZlciA2CiAgICB1bmNvdmVyIDYKICAgIGNvbmNhdAogICAgdW5jb3ZlciA1CiAgICBjb25jYXQKICAgIHVuY292ZXIgNAogICAgY29uY2F0CiAgICB1bmNvdmVyIDMKICAgIGNvbmNhdAogICAgdW5jb3ZlciAyCiAgICBjb25jYXQKICAgIHN3YXAKICAgIGNvbmNhdAogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6NzgKICAgIC8vIHJldm9rZWQ9YXJjNC5Cb29sKFRydWUpLCAgIyBub3FhOiBGQlQwMDMKICAgIHB1c2hieXRlcyAweDgwCiAgICAvLyBzbWFydF9jb250cmFjdHMvYWNjZXNzX2dyYW50cy9jb250cmFjdC5weTo3MC03OQogICAgLy8gc2VsZi5ncmFudHNba2V5XSA9IEdyYW50KAogICAgLy8gICAgIHdvcmtlcj1leGlzdGluZy53b3JrZXIuY29weSgpLAogICAgLy8gICAgIGNvbnN1bWVyPWV4aXN0aW5nLmNvbnN1bWVyLmNvcHkoKSwKICAgIC8vICAgICBzY29wZV9iaXRtYXNrPWV4aXN0aW5nLnNjb3BlX2JpdG1hc2ssCiAgICAvLyAgICAgZ3JhbnRlZF9hdD1leGlzdGluZy5ncmFudGVkX2F0LAogICAgLy8gICAgIGV4cGlyZXNfYXQ9ZXhpc3RpbmcuZXhwaXJlc19hdCwKICAgIC8vICAgICBxdWVyeV9saW1pdD1leGlzdGluZy5xdWVyeV9saW1pdCwKICAgIC8vICAgICBxdWVyaWVzX3VzZWQ9ZXhpc3RpbmcucXVlcmllc191c2VkLAogICAgLy8gICAgIHJldm9rZWQ9YXJjNC5Cb29sKFRydWUpLCAgIyBub3FhOiBGQlQwMDMKICAgIC8vICkKICAgIGNvbmNhdAogICAgYm94X3B1dAogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6NjQKICAgIC8vIEBhcmM0LmFiaW1ldGhvZAogICAgaW50Y18xIC8vIDEKICAgIHJldHVybgoKCi8vIHNtYXJ0X2NvbnRyYWN0cy5hY2Nlc3NfZ3JhbnRzLmNvbnRyYWN0LkFjY2Vzc0dyYW50cy5jaGVja19ncmFudFtyb3V0aW5nXSgpIC0+IHZvaWQ6CmNoZWNrX2dyYW50OgogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6ODEKICAgIC8vIEBhcmM0LmFiaW1ldGhvZChyZWFkb25seT1UcnVlKQogICAgdHhuYSBBcHBsaWNhdGlvbkFyZ3MgMQogICAgZHVwCiAgICBsZW4KICAgIGludGNfMCAvLyAzMgogICAgPT0KICAgIGFzc2VydCAvLyBpbnZhbGlkIG51bWJlciBvZiBieXRlcyBmb3IgYXJjNC5zdGF0aWNfYXJyYXk8YXJjNC51aW50OCwgMzI+CiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAyCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18wIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hY2Nlc3NfZ3JhbnRzL2NvbnRyYWN0LnB5Ojg3CiAgICAvLyBrZXkgPSBHcmFudEtleS5mcm9tX2J5dGVzKG9wLnNoYTI1Nih3b3JrZXIuYnl0ZXMgKyBjb25zdW1lci5ieXRlcykpCiAgICBjb25jYXQKICAgIHNoYTI1NgogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6ODgKICAgIC8vIGlmIGtleSBpbiBzZWxmLmdyYW50czoKICAgIGJ5dGVjXzAgLy8gMHg2NzZlNzQKICAgIHN3YXAKICAgIGNvbmNhdAogICAgZHVwCiAgICBib3hfbGVuCiAgICBidXJ5IDEKICAgIGJ6IGNoZWNrX2dyYW50X2FmdGVyX2lmX2Vsc2VAMwogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6ODkKICAgIC8vIHJldHVybiBzZWxmLmdyYW50c1trZXldCiAgICBkdXAKICAgIGJveF9nZXQKICAgIGFzc2VydCAvLyBjaGVjayBzZWxmLmdyYW50cyBlbnRyeSBleGlzdHMKCmNoZWNrX2dyYW50X2FmdGVyX2lubGluZWRfc21hcnRfY29udHJhY3RzLmFjY2Vzc19ncmFudHMuY29udHJhY3QuQWNjZXNzR3JhbnRzLmNoZWNrX2dyYW50QDQ6CiAgICAvLyBzbWFydF9jb250cmFjdHMvYWNjZXNzX2dyYW50cy9jb250cmFjdC5weTo4MQogICAgLy8gQGFyYzQuYWJpbWV0aG9kKHJlYWRvbmx5PVRydWUpCiAgICBieXRlY18xIC8vIDB4MTUxZjdjNzUKICAgIHN3YXAKICAgIGNvbmNhdAogICAgbG9nCiAgICBpbnRjXzEgLy8gMQogICAgcmV0dXJuCgpjaGVja19ncmFudF9hZnRlcl9pZl9lbHNlQDM6CiAgICAvLyBzbWFydF9jb250cmFjdHMvYWNjZXNzX2dyYW50cy9jb250cmFjdC5weTo5MS0xMDAKICAgIC8vIHJldHVybiBHcmFudCgKICAgIC8vICAgICB3b3JrZXI9emVyby5jb3B5KCksCiAgICAvLyAgICAgY29uc3VtZXI9emVyby5jb3B5KCksCiAgICAvLyAgICAgc2NvcGVfYml0bWFzaz1hcmM0LlVJbnQzMigwKSwKICAgIC8vICAgICBncmFudGVkX2F0PWFyYzQuVUludDY0KDApLAogICAgLy8gICAgIGV4cGlyZXNfYXQ9YXJjNC5VSW50NjQoMCksCiAgICAvLyAgICAgcXVlcnlfbGltaXQ9YXJjNC5VSW50MzIoMCksCiAgICAvLyAgICAgcXVlcmllc191c2VkPWFyYzQuVUludDMyKDApLAogICAgLy8gICAgIHJldm9rZWQ9YXJjNC5Cb29sKEZhbHNlKSwgICMgbm9xYTogRkJUMDAzCiAgICAvLyApCiAgICBwdXNoYnl0ZXMgYmFzZTMyKEFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBKQogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6ODEKICAgIC8vIEBhcmM0LmFiaW1ldGhvZChyZWFkb25seT1UcnVlKQogICAgYiBjaGVja19ncmFudF9hZnRlcl9pbmxpbmVkX3NtYXJ0X2NvbnRyYWN0cy5hY2Nlc3NfZ3JhbnRzLmNvbnRyYWN0LkFjY2Vzc0dyYW50cy5jaGVja19ncmFudEA0CgoKLy8gc21hcnRfY29udHJhY3RzLmFjY2Vzc19ncmFudHMuY29udHJhY3QuQWNjZXNzR3JhbnRzLmdyYW50X2V4aXN0c1tyb3V0aW5nXSgpIC0+IHZvaWQ6CmdyYW50X2V4aXN0czoKICAgIC8vIHNtYXJ0X2NvbnRyYWN0cy9hY2Nlc3NfZ3JhbnRzL2NvbnRyYWN0LnB5OjEwMgogICAgLy8gQGFyYzQuYWJpbWV0aG9kKHJlYWRvbmx5PVRydWUpCiAgICB0eG5hIEFwcGxpY2F0aW9uQXJncyAxCiAgICBkdXAKICAgIGxlbgogICAgaW50Y18wIC8vIDMyCiAgICA9PQogICAgYXNzZXJ0IC8vIGludmFsaWQgbnVtYmVyIG9mIGJ5dGVzIGZvciBhcmM0LnN0YXRpY19hcnJheTxhcmM0LnVpbnQ4LCAzMj4KICAgIHR4bmEgQXBwbGljYXRpb25BcmdzIDIKICAgIGR1cAogICAgbGVuCiAgICBpbnRjXzAgLy8gMzIKICAgID09CiAgICBhc3NlcnQgLy8gaW52YWxpZCBudW1iZXIgb2YgYnl0ZXMgZm9yIGFyYzQuc3RhdGljX2FycmF5PGFyYzQudWludDgsIDMyPgogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6MTA2CiAgICAvLyBrZXkgPSBHcmFudEtleS5mcm9tX2J5dGVzKG9wLnNoYTI1Nih3b3JrZXIuYnl0ZXMgKyBjb25zdW1lci5ieXRlcykpCiAgICBjb25jYXQKICAgIHNoYTI1NgogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6MTA3CiAgICAvLyByZXR1cm4gYXJjNC5Cb29sKGtleSBpbiBzZWxmLmdyYW50cykKICAgIGJ5dGVjXzAgLy8gMHg2NzZlNzQKICAgIHN3YXAKICAgIGNvbmNhdAogICAgYm94X2xlbgogICAgYnVyeSAxCiAgICBwdXNoYnl0ZXMgMHgwMAogICAgcHVzaGludCAwCiAgICB1bmNvdmVyIDIKICAgIHNldGJpdAogICAgLy8gc21hcnRfY29udHJhY3RzL2FjY2Vzc19ncmFudHMvY29udHJhY3QucHk6MTAyCiAgICAvLyBAYXJjNC5hYmltZXRob2QocmVhZG9ubHk9VHJ1ZSkKICAgIGJ5dGVjXzEgLy8gMHgxNTFmN2M3NQogICAgc3dhcAogICAgY29uY2F0CiAgICBsb2cKICAgIGludGNfMSAvLyAxCiAgICByZXR1cm4K", "clear": "I3ByYWdtYSB2ZXJzaW9uIDExCiNwcmFnbWEgdHlwZXRyYWNrIGZhbHNlCgovLyBhbGdvcHkuYXJjNC5BUkM0Q29udHJhY3QuY2xlYXJfc3RhdGVfcHJvZ3JhbSgpIC0+IHVpbnQ2NDoKbWFpbjoKICAgIHB1c2hpbnQgMQogICAgcmV0dXJuCg=="}, "sourceInfo": {"approval": {"pcOffsetMethod": "none", "sourceInfo": [{"pc": [259], "errorMessage": "check self.grants entry exists"}, {"pc": [80, 152, 236, 244, 371, 379], "errorMessage": "invalid number of bytes for arc4.static_array<arc4.uint8, 32>"}, {"pc": [88, 105], "errorMessage": "invalid number of bytes for arc4.uint32"}, {"pc": [97], "errorMessage": "invalid number of bytes for arc4.uint64"}, {"pc": [165], "errorMessage": "no grant to revoke"}]}, "clear": {"pcOffsetMethod": "none", "sourceInfo": []}}, "templateVariables": {}}"""
 APP_SPEC = algokit_utils.Arc56Contract.from_json(_APP_SPEC_JSON)
 
 def _parse_abi_args(args: object | None = None) -> list[object] | None:
@@ -65,126 +65,113 @@ def _init_dataclass(cls: type, data: dict) -> object:
     return cls(**field_values)
 
 @dataclasses.dataclass(frozen=True)
-class WorkerInfo:
-    """Struct for WorkerInfo"""
-    handle: str
-    phone_hash: bytes
-    registered_at: int
+class Grant:
+    """Struct for Grant"""
+    worker: str
+    consumer: str
+    scope_bitmask: int
+    granted_at: int
+    expires_at: int
+    query_limit: int
+    queries_used: int
+    revoked: bool
 
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
-class RegisterWorkerArgs:
-    """Dataclass for register_worker arguments"""
-    phone_hash: bytes | str | tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int]
-    handle: str
+class GrantAccessArgs:
+    """Dataclass for grant_access arguments"""
+    consumer: str
+    scope_bitmask: int
+    expires_at: int
+    query_limit: int
 
     @property
     def abi_method_signature(self) -> str:
-        return "register_worker(byte[32],string)void"
+        return "grant_access(address,uint32,uint64,uint32)void"
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
-class UpdateHandleArgs:
-    """Dataclass for update_handle arguments"""
-    handle: str
+class RevokeAccessArgs:
+    """Dataclass for revoke_access arguments"""
+    consumer: str
 
     @property
     def abi_method_signature(self) -> str:
-        return "update_handle(string)void"
+        return "revoke_access(address)void"
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
-class LookupByPhoneHashArgs:
-    """Dataclass for lookup_by_phone_hash arguments"""
-    phone_hash: bytes | str | tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int]
+class CheckGrantArgs:
+    """Dataclass for check_grant arguments"""
+    worker: str
+    consumer: str
 
     @property
     def abi_method_signature(self) -> str:
-        return "lookup_by_phone_hash(byte[32])address"
+        return "check_grant(address,address)(address,address,uint32,uint64,uint64,uint32,uint32,bool)"
 
 @dataclasses.dataclass(frozen=True, kw_only=True)
-class GetWorkerInfoArgs:
-    """Dataclass for get_worker_info arguments"""
-    addr: str
+class GrantExistsArgs:
+    """Dataclass for grant_exists arguments"""
+    worker: str
+    consumer: str
 
     @property
     def abi_method_signature(self) -> str:
-        return "get_worker_info(address)(string,byte[32],uint64)"
-
-@dataclasses.dataclass(frozen=True, kw_only=True)
-class IsRegisteredArgs:
-    """Dataclass for is_registered arguments"""
-    addr: str
-
-    @property
-    def abi_method_signature(self) -> str:
-        return "is_registered(address)bool"
+        return "grant_exists(address,address)bool"
 
 
-class WorkerRegistryParams:
+class AccessGrantsParams:
     def __init__(self, app_client: algokit_utils.AppClient):
         self.app_client = app_client
 
-    def register_worker(
+    def grant_access(
         self,
-        args: tuple[bytes | str | tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int], str] | RegisterWorkerArgs,
+        args: tuple[str, int, int, int] | GrantAccessArgs,
         params: algokit_utils.CommonAppCallParams | None = None
     ) -> algokit_utils.AppCallMethodCallParams:
         method_args = _parse_abi_args(args)
         params = params or algokit_utils.CommonAppCallParams()
         return self.app_client.params.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "register_worker(byte[32],string)void",
+            "method": "grant_access(address,uint32,uint64,uint32)void",
             "args": method_args,
         }))
 
-    def update_handle(
+    def revoke_access(
         self,
-        args: tuple[str] | UpdateHandleArgs,
+        args: tuple[str] | RevokeAccessArgs,
         params: algokit_utils.CommonAppCallParams | None = None
     ) -> algokit_utils.AppCallMethodCallParams:
         method_args = _parse_abi_args(args)
         params = params or algokit_utils.CommonAppCallParams()
         return self.app_client.params.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "update_handle(string)void",
+            "method": "revoke_access(address)void",
             "args": method_args,
         }))
 
-    def lookup_by_phone_hash(
+    def check_grant(
         self,
-        args: tuple[bytes | str | tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int]] | LookupByPhoneHashArgs,
+        args: tuple[str, str] | CheckGrantArgs,
         params: algokit_utils.CommonAppCallParams | None = None
     ) -> algokit_utils.AppCallMethodCallParams:
         method_args = _parse_abi_args(args)
         params = params or algokit_utils.CommonAppCallParams()
         return self.app_client.params.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "lookup_by_phone_hash(byte[32])address",
+            "method": "check_grant(address,address)(address,address,uint32,uint64,uint64,uint32,uint32,bool)",
             "args": method_args,
         }))
 
-    def get_worker_info(
+    def grant_exists(
         self,
-        args: tuple[str] | GetWorkerInfoArgs,
+        args: tuple[str, str] | GrantExistsArgs,
         params: algokit_utils.CommonAppCallParams | None = None
     ) -> algokit_utils.AppCallMethodCallParams:
         method_args = _parse_abi_args(args)
         params = params or algokit_utils.CommonAppCallParams()
         return self.app_client.params.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "get_worker_info(address)(string,byte[32],uint64)",
-            "args": method_args,
-        }))
-
-    def is_registered(
-        self,
-        args: tuple[str] | IsRegisteredArgs,
-        params: algokit_utils.CommonAppCallParams | None = None
-    ) -> algokit_utils.AppCallMethodCallParams:
-        method_args = _parse_abi_args(args)
-        params = params or algokit_utils.CommonAppCallParams()
-        return self.app_client.params.call(algokit_utils.AppClientMethodCallParams(**{
-            **dataclasses.asdict(params),
-            "method": "is_registered(address)bool",
+            "method": "grant_exists(address,address)bool",
             "args": method_args,
         }))
 
@@ -199,72 +186,59 @@ class WorkerRegistryParams:
         )
 
 
-class WorkerRegistryCreateTransactionParams:
+class AccessGrantsCreateTransactionParams:
     def __init__(self, app_client: algokit_utils.AppClient):
         self.app_client = app_client
 
-    def register_worker(
+    def grant_access(
         self,
-        args: tuple[bytes | str | tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int], str] | RegisterWorkerArgs,
+        args: tuple[str, int, int, int] | GrantAccessArgs,
         params: algokit_utils.CommonAppCallParams | None = None
     ) -> algokit_utils.BuiltTransactions:
         method_args = _parse_abi_args(args)
         params = params or algokit_utils.CommonAppCallParams()
         return self.app_client.create_transaction.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "register_worker(byte[32],string)void",
+            "method": "grant_access(address,uint32,uint64,uint32)void",
             "args": method_args,
         }))
 
-    def update_handle(
+    def revoke_access(
         self,
-        args: tuple[str] | UpdateHandleArgs,
+        args: tuple[str] | RevokeAccessArgs,
         params: algokit_utils.CommonAppCallParams | None = None
     ) -> algokit_utils.BuiltTransactions:
         method_args = _parse_abi_args(args)
         params = params or algokit_utils.CommonAppCallParams()
         return self.app_client.create_transaction.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "update_handle(string)void",
+            "method": "revoke_access(address)void",
             "args": method_args,
         }))
 
-    def lookup_by_phone_hash(
+    def check_grant(
         self,
-        args: tuple[bytes | str | tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int]] | LookupByPhoneHashArgs,
+        args: tuple[str, str] | CheckGrantArgs,
         params: algokit_utils.CommonAppCallParams | None = None
     ) -> algokit_utils.BuiltTransactions:
         method_args = _parse_abi_args(args)
         params = params or algokit_utils.CommonAppCallParams()
         return self.app_client.create_transaction.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "lookup_by_phone_hash(byte[32])address",
+            "method": "check_grant(address,address)(address,address,uint32,uint64,uint64,uint32,uint32,bool)",
             "args": method_args,
         }))
 
-    def get_worker_info(
+    def grant_exists(
         self,
-        args: tuple[str] | GetWorkerInfoArgs,
+        args: tuple[str, str] | GrantExistsArgs,
         params: algokit_utils.CommonAppCallParams | None = None
     ) -> algokit_utils.BuiltTransactions:
         method_args = _parse_abi_args(args)
         params = params or algokit_utils.CommonAppCallParams()
         return self.app_client.create_transaction.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "get_worker_info(address)(string,byte[32],uint64)",
-            "args": method_args,
-        }))
-
-    def is_registered(
-        self,
-        args: tuple[str] | IsRegisteredArgs,
-        params: algokit_utils.CommonAppCallParams | None = None
-    ) -> algokit_utils.BuiltTransactions:
-        method_args = _parse_abi_args(args)
-        params = params or algokit_utils.CommonAppCallParams()
-        return self.app_client.create_transaction.call(algokit_utils.AppClientMethodCallParams(**{
-            **dataclasses.asdict(params),
-            "method": "is_registered(address)bool",
+            "method": "grant_exists(address,address)bool",
             "args": method_args,
         }))
 
@@ -279,13 +253,13 @@ class WorkerRegistryCreateTransactionParams:
         )
 
 
-class WorkerRegistrySend:
+class AccessGrantsSend:
     def __init__(self, app_client: algokit_utils.AppClient):
         self.app_client = app_client
 
-    def register_worker(
+    def grant_access(
         self,
-        args: tuple[bytes | str | tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int], str] | RegisterWorkerArgs,
+        args: tuple[str, int, int, int] | GrantAccessArgs,
         params: algokit_utils.CommonAppCallParams | None = None,
         send_params: algokit_utils.SendParams | None = None
     ) -> algokit_utils.SendAppTransactionResult[None]:
@@ -293,15 +267,15 @@ class WorkerRegistrySend:
         params = params or algokit_utils.CommonAppCallParams()
         response = self.app_client.send.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "register_worker(byte[32],string)void",
+            "method": "grant_access(address,uint32,uint64,uint32)void",
             "args": method_args,
         }), send_params=send_params)
         parsed_response = response
         return typing.cast(algokit_utils.SendAppTransactionResult[None], parsed_response)
 
-    def update_handle(
+    def revoke_access(
         self,
-        args: tuple[str] | UpdateHandleArgs,
+        args: tuple[str] | RevokeAccessArgs,
         params: algokit_utils.CommonAppCallParams | None = None,
         send_params: algokit_utils.SendParams | None = None
     ) -> algokit_utils.SendAppTransactionResult[None]:
@@ -309,47 +283,31 @@ class WorkerRegistrySend:
         params = params or algokit_utils.CommonAppCallParams()
         response = self.app_client.send.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "update_handle(string)void",
+            "method": "revoke_access(address)void",
             "args": method_args,
         }), send_params=send_params)
         parsed_response = response
         return typing.cast(algokit_utils.SendAppTransactionResult[None], parsed_response)
 
-    def lookup_by_phone_hash(
+    def check_grant(
         self,
-        args: tuple[bytes | str | tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int]] | LookupByPhoneHashArgs,
+        args: tuple[str, str] | CheckGrantArgs,
         params: algokit_utils.CommonAppCallParams | None = None,
         send_params: algokit_utils.SendParams | None = None
-    ) -> algokit_utils.SendAppTransactionResult[str]:
+    ) -> algokit_utils.SendAppTransactionResult[Grant]:
         method_args = _parse_abi_args(args)
         params = params or algokit_utils.CommonAppCallParams()
         response = self.app_client.send.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "lookup_by_phone_hash(byte[32])address",
+            "method": "check_grant(address,address)(address,address,uint32,uint64,uint64,uint32,uint32,bool)",
             "args": method_args,
         }), send_params=send_params)
-        parsed_response = response
-        return typing.cast(algokit_utils.SendAppTransactionResult[str], parsed_response)
+        parsed_response = dataclasses.replace(response, abi_return=_init_dataclass(Grant, typing.cast(dict, response.abi_return))) # type: ignore
+        return typing.cast(algokit_utils.SendAppTransactionResult[Grant], parsed_response)
 
-    def get_worker_info(
+    def grant_exists(
         self,
-        args: tuple[str] | GetWorkerInfoArgs,
-        params: algokit_utils.CommonAppCallParams | None = None,
-        send_params: algokit_utils.SendParams | None = None
-    ) -> algokit_utils.SendAppTransactionResult[WorkerInfo]:
-        method_args = _parse_abi_args(args)
-        params = params or algokit_utils.CommonAppCallParams()
-        response = self.app_client.send.call(algokit_utils.AppClientMethodCallParams(**{
-            **dataclasses.asdict(params),
-            "method": "get_worker_info(address)(string,byte[32],uint64)",
-            "args": method_args,
-        }), send_params=send_params)
-        parsed_response = dataclasses.replace(response, abi_return=_init_dataclass(WorkerInfo, typing.cast(dict, response.abi_return))) # type: ignore
-        return typing.cast(algokit_utils.SendAppTransactionResult[WorkerInfo], parsed_response)
-
-    def is_registered(
-        self,
-        args: tuple[str] | IsRegisteredArgs,
+        args: tuple[str, str] | GrantExistsArgs,
         params: algokit_utils.CommonAppCallParams | None = None,
         send_params: algokit_utils.SendParams | None = None
     ) -> algokit_utils.SendAppTransactionResult[bool]:
@@ -357,7 +315,7 @@ class WorkerRegistrySend:
         params = params or algokit_utils.CommonAppCallParams()
         response = self.app_client.send.call(algokit_utils.AppClientMethodCallParams(**{
             **dataclasses.asdict(params),
-            "method": "is_registered(address)bool",
+            "method": "grant_exists(address,address)bool",
             "args": method_args,
         }), send_params=send_params)
         parsed_response = response
@@ -374,8 +332,8 @@ class WorkerRegistrySend:
         )
 
 
-class WorkerRegistryState:
-    """Methods to access state for the current WorkerRegistry app"""
+class AccessGrantsState:
+    """Methods to access state for the current AccessGrants app"""
 
     def __init__(self, app_client: algokit_utils.AppClient):
         self.app_client = app_client
@@ -393,7 +351,7 @@ class _BoxState:
         
         # Pre-generated mapping of value types to their struct classes
         self._struct_classes: dict[str, typing.Type[typing.Any]] = {
-            "WorkerInfo": WorkerInfo
+            "Grant": Grant
         }
 
     def get_all(self) -> dict[str, typing.Any]:
@@ -413,21 +371,12 @@ class _BoxState:
         return converted
 
     @property
-    def workers(self) -> "_MapState[str, WorkerInfo]":
-        """Get values from the workers map in box state"""
+    def grants(self) -> "_MapState[bytes | str | tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int], Grant]":
+        """Get values from the grants map in box state"""
         return _MapState(
             self.app_client.state.box,
-            "workers",
-            self._struct_classes.get("WorkerInfo")
-        )
-
-    @property
-    def phone_index(self) -> "_MapState[bytes | str | tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int], str]":
-        """Get values from the phone_index map in box state"""
-        return _MapState(
-            self.app_client.state.box,
-            "phone_index",
-            None
+            "grants",
+            self._struct_classes.get("Grant")
         )
 
 _KeyType = typing.TypeVar("_KeyType")
@@ -465,8 +414,8 @@ class _MapState(typing.Generic[_KeyType, _ValueType]):
         return typing.cast(_ValueType | None, value)
 
 
-class WorkerRegistryClient:
-    """Client for interacting with WorkerRegistry smart contract"""
+class AccessGrantsClient:
+    """Client for interacting with AccessGrants smart contract"""
 
     @typing.overload
     def __init__(self, app_client: algokit_utils.AppClient) -> None: ...
@@ -514,10 +463,10 @@ class WorkerRegistryClient:
         else:
             raise ValueError("Either app_client or algorand and app_id must be provided")
     
-        self.params = WorkerRegistryParams(self.app_client)
-        self.create_transaction = WorkerRegistryCreateTransactionParams(self.app_client)
-        self.send = WorkerRegistrySend(self.app_client)
-        self.state = WorkerRegistryState(self.app_client)
+        self.params = AccessGrantsParams(self.app_client)
+        self.create_transaction = AccessGrantsCreateTransactionParams(self.app_client)
+        self.send = AccessGrantsSend(self.app_client)
+        self.state = AccessGrantsState(self.app_client)
 
     @staticmethod
     def from_creator_and_name(
@@ -530,8 +479,8 @@ class WorkerRegistryClient:
         clear_source_map: SourceMap | None = None,
         ignore_cache: bool | None = None,
         app_lookup_cache: algokit_utils.ApplicationLookup | None = None,
-    ) -> "WorkerRegistryClient":
-        return WorkerRegistryClient(
+    ) -> "AccessGrantsClient":
+        return AccessGrantsClient(
             algokit_utils.AppClient.from_creator_and_name(
                 creator_address=creator_address,
                 app_name=app_name,
@@ -554,8 +503,8 @@ class WorkerRegistryClient:
         default_signer: TransactionSigner | None = None,
         approval_source_map: SourceMap | None = None,
         clear_source_map: SourceMap | None = None,
-    ) -> "WorkerRegistryClient":
-        return WorkerRegistryClient(
+    ) -> "AccessGrantsClient":
+        return AccessGrantsClient(
             algokit_utils.AppClient.from_network(
                 app_spec=APP_SPEC,
                 algorand=algorand,
@@ -594,8 +543,8 @@ class WorkerRegistryClient:
         default_signer: TransactionSigner | None = None,
         approval_source_map: SourceMap | None = None,
         clear_source_map: SourceMap | None = None,
-    ) -> "WorkerRegistryClient":
-        return WorkerRegistryClient(
+    ) -> "AccessGrantsClient":
+        return AccessGrantsClient(
             self.app_client.clone(
                 app_name=app_name,
                 default_sender=default_sender,
@@ -605,37 +554,31 @@ class WorkerRegistryClient:
             )
         )
 
-    def new_group(self) -> "WorkerRegistryComposer":
-        return WorkerRegistryComposer(self)
+    def new_group(self) -> "AccessGrantsComposer":
+        return AccessGrantsComposer(self)
 
     @typing.overload
     def decode_return_value(
         self,
-        method: typing.Literal["register_worker(byte[32],string)void"],
+        method: typing.Literal["grant_access(address,uint32,uint64,uint32)void"],
         return_value: algokit_utils.ABIReturn | None
     ) -> None: ...
     @typing.overload
     def decode_return_value(
         self,
-        method: typing.Literal["update_handle(string)void"],
+        method: typing.Literal["revoke_access(address)void"],
         return_value: algokit_utils.ABIReturn | None
     ) -> None: ...
     @typing.overload
     def decode_return_value(
         self,
-        method: typing.Literal["lookup_by_phone_hash(byte[32])address"],
+        method: typing.Literal["check_grant(address,address)(address,address,uint32,uint64,uint64,uint32,uint32,bool)"],
         return_value: algokit_utils.ABIReturn | None
-    ) -> str | None: ...
+    ) -> Grant | None: ...
     @typing.overload
     def decode_return_value(
         self,
-        method: typing.Literal["get_worker_info(address)(string,byte[32],uint64)"],
-        return_value: algokit_utils.ABIReturn | None
-    ) -> WorkerInfo | None: ...
-    @typing.overload
-    def decode_return_value(
-        self,
-        method: typing.Literal["is_registered(address)bool"],
+        method: typing.Literal["grant_exists(address,address)bool"],
         return_value: algokit_utils.ABIReturn | None
     ) -> bool | None: ...
     @typing.overload
@@ -649,7 +592,7 @@ class WorkerRegistryClient:
         self,
         method: str,
         return_value: algokit_utils.ABIReturn | None
-    ) -> algokit_utils.ABIValue | algokit_utils.ABIStruct | None | WorkerInfo | bool | str:
+    ) -> algokit_utils.ABIValue | algokit_utils.ABIStruct | Grant | None | bool:
         """Decode ABI return value for the given method."""
         if return_value is None:
             return None
@@ -669,15 +612,15 @@ class WorkerRegistryClient:
 
 
 @dataclasses.dataclass(frozen=True)
-class WorkerRegistryBareCallCreateParams(algokit_utils.AppClientBareCallCreateParams):
-    """Parameters for creating WorkerRegistry contract with bare calls"""
+class AccessGrantsBareCallCreateParams(algokit_utils.AppClientBareCallCreateParams):
+    """Parameters for creating AccessGrants contract with bare calls"""
     on_complete: typing.Literal[OnComplete.NoOpOC] | None = None
 
     def to_algokit_utils_params(self) -> algokit_utils.AppClientBareCallCreateParams:
         return algokit_utils.AppClientBareCallCreateParams(**self.__dict__)
 
-class WorkerRegistryFactory(algokit_utils.TypedAppFactoryProtocol[WorkerRegistryBareCallCreateParams, None, None]):
-    """Factory for deploying and managing WorkerRegistryClient smart contracts"""
+class AccessGrantsFactory(algokit_utils.TypedAppFactoryProtocol[AccessGrantsBareCallCreateParams, None, None]):
+    """Factory for deploying and managing AccessGrantsClient smart contracts"""
 
     def __init__(
         self,
@@ -700,9 +643,9 @@ class WorkerRegistryFactory(algokit_utils.TypedAppFactoryProtocol[WorkerRegistry
                 compilation_params=compilation_params,
             )
         )
-        self.params = WorkerRegistryFactoryParams(self.app_factory)
-        self.create_transaction = WorkerRegistryFactoryCreateTransaction(self.app_factory)
-        self.send = WorkerRegistryFactorySend(self.app_factory)
+        self.params = AccessGrantsFactoryParams(self.app_factory)
+        self.create_transaction = AccessGrantsFactoryCreateTransaction(self.app_factory)
+        self.send = AccessGrantsFactorySend(self.app_factory)
 
     @property
     def app_name(self) -> str:
@@ -721,7 +664,7 @@ class WorkerRegistryFactory(algokit_utils.TypedAppFactoryProtocol[WorkerRegistry
         *,
         on_update: algokit_utils.OnUpdate | None = None,
         on_schema_break: algokit_utils.OnSchemaBreak | None = None,
-        create_params: WorkerRegistryBareCallCreateParams | None = None,
+        create_params: AccessGrantsBareCallCreateParams | None = None,
         update_params: None = None,
         delete_params: None = None,
         existing_deployments: algokit_utils.ApplicationLookup | None = None,
@@ -729,7 +672,7 @@ class WorkerRegistryFactory(algokit_utils.TypedAppFactoryProtocol[WorkerRegistry
         app_name: str | None = None,
         compilation_params: algokit_utils.AppClientCompilationParams | None = None,
         send_params: algokit_utils.SendParams | None = None,
-    ) -> tuple[WorkerRegistryClient, algokit_utils.AppFactoryDeployResult]:
+    ) -> tuple[AccessGrantsClient, algokit_utils.AppFactoryDeployResult]:
         """Deploy the application"""
         deploy_response = self.app_factory.deploy(
             on_update=on_update,
@@ -744,7 +687,7 @@ class WorkerRegistryFactory(algokit_utils.TypedAppFactoryProtocol[WorkerRegistry
             send_params=send_params,
         )
 
-        return WorkerRegistryClient(deploy_response[0]), deploy_response[1]
+        return AccessGrantsClient(deploy_response[0]), deploy_response[1]
 
     def get_app_client_by_creator_and_name(
         self,
@@ -756,9 +699,9 @@ class WorkerRegistryFactory(algokit_utils.TypedAppFactoryProtocol[WorkerRegistry
         app_lookup_cache: algokit_utils.ApplicationLookup | None = None,
         approval_source_map: SourceMap | None = None,
         clear_source_map: SourceMap | None = None,
-    ) -> WorkerRegistryClient:
+    ) -> AccessGrantsClient:
         """Get an app client by creator address and name"""
-        return WorkerRegistryClient(
+        return AccessGrantsClient(
             self.app_factory.get_app_client_by_creator_and_name(
                 creator_address,
                 app_name,
@@ -779,9 +722,9 @@ class WorkerRegistryFactory(algokit_utils.TypedAppFactoryProtocol[WorkerRegistry
         default_signer: TransactionSigner | None = None,
         approval_source_map: SourceMap | None = None,
         clear_source_map: SourceMap | None = None,
-    ) -> WorkerRegistryClient:
+    ) -> AccessGrantsClient:
         """Get an app client by app ID"""
-        return WorkerRegistryClient(
+        return AccessGrantsClient(
             self.app_factory.get_app_client_by_id(
                 app_id,
                 app_name,
@@ -793,17 +736,17 @@ class WorkerRegistryFactory(algokit_utils.TypedAppFactoryProtocol[WorkerRegistry
         )
 
 
-class WorkerRegistryFactoryParams:
-    """Parameters for creating transactions for WorkerRegistry contract"""
+class AccessGrantsFactoryParams:
+    """Parameters for creating transactions for AccessGrants contract"""
 
     def __init__(self, app_factory: algokit_utils.AppFactory):
         self.app_factory = app_factory
-        self.create = WorkerRegistryFactoryCreateParams(app_factory)
-        self.update = WorkerRegistryFactoryUpdateParams(app_factory)
-        self.delete = WorkerRegistryFactoryDeleteParams(app_factory)
+        self.create = AccessGrantsFactoryCreateParams(app_factory)
+        self.update = AccessGrantsFactoryUpdateParams(app_factory)
+        self.delete = AccessGrantsFactoryDeleteParams(app_factory)
 
-class WorkerRegistryFactoryCreateParams:
-    """Parameters for 'create' operations of WorkerRegistry contract"""
+class AccessGrantsFactoryCreateParams:
+    """Parameters for 'create' operations of AccessGrants contract"""
 
     def __init__(self, app_factory: algokit_utils.AppFactory):
         self.app_factory = app_factory
@@ -820,108 +763,88 @@ class WorkerRegistryFactoryCreateParams:
             algokit_utils.AppFactoryCreateParams(**dataclasses.asdict(params)),
             compilation_params=compilation_params)
 
-    def register_worker(
+    def grant_access(
         self,
-        args: tuple[bytes | str | tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int], str] | RegisterWorkerArgs,
+        args: tuple[str, int, int, int] | GrantAccessArgs,
         *,
         params: algokit_utils.CommonAppCallCreateParams | None = None,
         compilation_params: algokit_utils.AppClientCompilationParams | None = None
     ) -> algokit_utils.AppCreateMethodCallParams:
-        """Creates a new instance using the register_worker(byte[32],string)void ABI method"""
+        """Creates a new instance using the grant_access(address,uint32,uint64,uint32)void ABI method"""
         params = params or algokit_utils.CommonAppCallCreateParams()
         return self.app_factory.params.create(
             algokit_utils.AppFactoryCreateMethodCallParams(
                 **{
                 **dataclasses.asdict(params),
-                "method": "register_worker(byte[32],string)void",
+                "method": "grant_access(address,uint32,uint64,uint32)void",
                 "args": _parse_abi_args(args),
                 }
             ),
             compilation_params=compilation_params
         )
 
-    def update_handle(
+    def revoke_access(
         self,
-        args: tuple[str] | UpdateHandleArgs,
+        args: tuple[str] | RevokeAccessArgs,
         *,
         params: algokit_utils.CommonAppCallCreateParams | None = None,
         compilation_params: algokit_utils.AppClientCompilationParams | None = None
     ) -> algokit_utils.AppCreateMethodCallParams:
-        """Creates a new instance using the update_handle(string)void ABI method"""
+        """Creates a new instance using the revoke_access(address)void ABI method"""
         params = params or algokit_utils.CommonAppCallCreateParams()
         return self.app_factory.params.create(
             algokit_utils.AppFactoryCreateMethodCallParams(
                 **{
                 **dataclasses.asdict(params),
-                "method": "update_handle(string)void",
+                "method": "revoke_access(address)void",
                 "args": _parse_abi_args(args),
                 }
             ),
             compilation_params=compilation_params
         )
 
-    def lookup_by_phone_hash(
+    def check_grant(
         self,
-        args: tuple[bytes | str | tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int]] | LookupByPhoneHashArgs,
+        args: tuple[str, str] | CheckGrantArgs,
         *,
         params: algokit_utils.CommonAppCallCreateParams | None = None,
         compilation_params: algokit_utils.AppClientCompilationParams | None = None
     ) -> algokit_utils.AppCreateMethodCallParams:
-        """Creates a new instance using the lookup_by_phone_hash(byte[32])address ABI method"""
+        """Creates a new instance using the check_grant(address,address)(address,address,uint32,uint64,uint64,uint32,uint32,bool) ABI method"""
         params = params or algokit_utils.CommonAppCallCreateParams()
         return self.app_factory.params.create(
             algokit_utils.AppFactoryCreateMethodCallParams(
                 **{
                 **dataclasses.asdict(params),
-                "method": "lookup_by_phone_hash(byte[32])address",
+                "method": "check_grant(address,address)(address,address,uint32,uint64,uint64,uint32,uint32,bool)",
                 "args": _parse_abi_args(args),
                 }
             ),
             compilation_params=compilation_params
         )
 
-    def get_worker_info(
+    def grant_exists(
         self,
-        args: tuple[str] | GetWorkerInfoArgs,
+        args: tuple[str, str] | GrantExistsArgs,
         *,
         params: algokit_utils.CommonAppCallCreateParams | None = None,
         compilation_params: algokit_utils.AppClientCompilationParams | None = None
     ) -> algokit_utils.AppCreateMethodCallParams:
-        """Creates a new instance using the get_worker_info(address)(string,byte[32],uint64) ABI method"""
+        """Creates a new instance using the grant_exists(address,address)bool ABI method"""
         params = params or algokit_utils.CommonAppCallCreateParams()
         return self.app_factory.params.create(
             algokit_utils.AppFactoryCreateMethodCallParams(
                 **{
                 **dataclasses.asdict(params),
-                "method": "get_worker_info(address)(string,byte[32],uint64)",
+                "method": "grant_exists(address,address)bool",
                 "args": _parse_abi_args(args),
                 }
             ),
             compilation_params=compilation_params
         )
 
-    def is_registered(
-        self,
-        args: tuple[str] | IsRegisteredArgs,
-        *,
-        params: algokit_utils.CommonAppCallCreateParams | None = None,
-        compilation_params: algokit_utils.AppClientCompilationParams | None = None
-    ) -> algokit_utils.AppCreateMethodCallParams:
-        """Creates a new instance using the is_registered(address)bool ABI method"""
-        params = params or algokit_utils.CommonAppCallCreateParams()
-        return self.app_factory.params.create(
-            algokit_utils.AppFactoryCreateMethodCallParams(
-                **{
-                **dataclasses.asdict(params),
-                "method": "is_registered(address)bool",
-                "args": _parse_abi_args(args),
-                }
-            ),
-            compilation_params=compilation_params
-        )
-
-class WorkerRegistryFactoryUpdateParams:
-    """Parameters for 'update' operations of WorkerRegistry contract"""
+class AccessGrantsFactoryUpdateParams:
+    """Parameters for 'update' operations of AccessGrants contract"""
 
     def __init__(self, app_factory: algokit_utils.AppFactory):
         self.app_factory = app_factory
@@ -938,8 +861,8 @@ class WorkerRegistryFactoryUpdateParams:
             algokit_utils.AppClientBareCallParams(**dataclasses.asdict(params)),
             )
 
-class WorkerRegistryFactoryDeleteParams:
-    """Parameters for 'delete' operations of WorkerRegistry contract"""
+class AccessGrantsFactoryDeleteParams:
+    """Parameters for 'delete' operations of AccessGrants contract"""
 
     def __init__(self, app_factory: algokit_utils.AppFactory):
         self.app_factory = app_factory
@@ -957,16 +880,16 @@ class WorkerRegistryFactoryDeleteParams:
             )
 
 
-class WorkerRegistryFactoryCreateTransaction:
-    """Create transactions for WorkerRegistry contract"""
+class AccessGrantsFactoryCreateTransaction:
+    """Create transactions for AccessGrants contract"""
 
     def __init__(self, app_factory: algokit_utils.AppFactory):
         self.app_factory = app_factory
-        self.create = WorkerRegistryFactoryCreateTransactionCreate(app_factory)
+        self.create = AccessGrantsFactoryCreateTransactionCreate(app_factory)
 
 
-class WorkerRegistryFactoryCreateTransactionCreate:
-    """Create new instances of WorkerRegistry contract"""
+class AccessGrantsFactoryCreateTransactionCreate:
+    """Create new instances of AccessGrants contract"""
 
     def __init__(self, app_factory: algokit_utils.AppFactory):
         self.app_factory = app_factory
@@ -982,16 +905,16 @@ class WorkerRegistryFactoryCreateTransactionCreate:
         )
 
 
-class WorkerRegistryFactorySend:
-    """Send calls to WorkerRegistry contract"""
+class AccessGrantsFactorySend:
+    """Send calls to AccessGrants contract"""
 
     def __init__(self, app_factory: algokit_utils.AppFactory):
         self.app_factory = app_factory
-        self.create = WorkerRegistryFactorySendCreate(app_factory)
+        self.create = AccessGrantsFactorySendCreate(app_factory)
 
 
-class WorkerRegistryFactorySendCreate:
-    """Send create calls to WorkerRegistry contract"""
+class AccessGrantsFactorySendCreate:
+    """Send create calls to AccessGrants contract"""
 
     def __init__(self, app_factory: algokit_utils.AppFactory):
         self.app_factory = app_factory
@@ -1002,7 +925,7 @@ class WorkerRegistryFactorySendCreate:
         params: algokit_utils.CommonAppCallCreateParams | None = None,
         send_params: algokit_utils.SendParams | None = None,
         compilation_params: algokit_utils.AppClientCompilationParams | None = None,
-    ) -> tuple[WorkerRegistryClient, algokit_utils.SendAppCreateTransactionResult]:
+    ) -> tuple[AccessGrantsClient, algokit_utils.SendAppCreateTransactionResult]:
         """Creates a new instance using a bare call"""
         params = params or algokit_utils.CommonAppCallCreateParams()
         result = self.app_factory.send.bare.create(
@@ -1010,103 +933,85 @@ class WorkerRegistryFactorySendCreate:
             send_params=send_params,
             compilation_params=compilation_params
         )
-        return WorkerRegistryClient(result[0]), result[1]
+        return AccessGrantsClient(result[0]), result[1]
 
 
-class WorkerRegistryComposer:
-    """Composer for creating transaction groups for WorkerRegistry contract calls"""
+class AccessGrantsComposer:
+    """Composer for creating transaction groups for AccessGrants contract calls"""
 
-    def __init__(self, client: "WorkerRegistryClient"):
+    def __init__(self, client: "AccessGrantsClient"):
         self.client = client
         self._composer = client.algorand.new_group()
         self._result_mappers: list[typing.Callable[[algokit_utils.ABIReturn | None], object] | None] = []
 
-    def register_worker(
+    def grant_access(
         self,
-        args: tuple[bytes | str | tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int], str] | RegisterWorkerArgs,
+        args: tuple[str, int, int, int] | GrantAccessArgs,
         params: algokit_utils.CommonAppCallParams | None = None
-    ) -> "WorkerRegistryComposer":
+    ) -> "AccessGrantsComposer":
         self._composer.add_app_call_method_call(
-            self.client.params.register_worker(
+            self.client.params.grant_access(
                 args=args,
                 params=params,
             )
         )
         self._result_mappers.append(
             lambda v: self.client.decode_return_value(
-                "register_worker(byte[32],string)void", v
+                "grant_access(address,uint32,uint64,uint32)void", v
             )
         )
         return self
 
-    def update_handle(
+    def revoke_access(
         self,
-        args: tuple[str] | UpdateHandleArgs,
+        args: tuple[str] | RevokeAccessArgs,
         params: algokit_utils.CommonAppCallParams | None = None
-    ) -> "WorkerRegistryComposer":
+    ) -> "AccessGrantsComposer":
         self._composer.add_app_call_method_call(
-            self.client.params.update_handle(
+            self.client.params.revoke_access(
                 args=args,
                 params=params,
             )
         )
         self._result_mappers.append(
             lambda v: self.client.decode_return_value(
-                "update_handle(string)void", v
+                "revoke_access(address)void", v
             )
         )
         return self
 
-    def lookup_by_phone_hash(
+    def check_grant(
         self,
-        args: tuple[bytes | str | tuple[int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int, int]] | LookupByPhoneHashArgs,
+        args: tuple[str, str] | CheckGrantArgs,
         params: algokit_utils.CommonAppCallParams | None = None
-    ) -> "WorkerRegistryComposer":
+    ) -> "AccessGrantsComposer":
         self._composer.add_app_call_method_call(
-            self.client.params.lookup_by_phone_hash(
+            self.client.params.check_grant(
                 args=args,
                 params=params,
             )
         )
         self._result_mappers.append(
             lambda v: self.client.decode_return_value(
-                "lookup_by_phone_hash(byte[32])address", v
+                "check_grant(address,address)(address,address,uint32,uint64,uint64,uint32,uint32,bool)", v
             )
         )
         return self
 
-    def get_worker_info(
+    def grant_exists(
         self,
-        args: tuple[str] | GetWorkerInfoArgs,
+        args: tuple[str, str] | GrantExistsArgs,
         params: algokit_utils.CommonAppCallParams | None = None
-    ) -> "WorkerRegistryComposer":
+    ) -> "AccessGrantsComposer":
         self._composer.add_app_call_method_call(
-            self.client.params.get_worker_info(
+            self.client.params.grant_exists(
                 args=args,
                 params=params,
             )
         )
         self._result_mappers.append(
             lambda v: self.client.decode_return_value(
-                "get_worker_info(address)(string,byte[32],uint64)", v
-            )
-        )
-        return self
-
-    def is_registered(
-        self,
-        args: tuple[str] | IsRegisteredArgs,
-        params: algokit_utils.CommonAppCallParams | None = None
-    ) -> "WorkerRegistryComposer":
-        self._composer.add_app_call_method_call(
-            self.client.params.is_registered(
-                args=args,
-                params=params,
-            )
-        )
-        self._result_mappers.append(
-            lambda v: self.client.decode_return_value(
-                "is_registered(address)bool", v
+                "grant_exists(address,address)bool", v
             )
         )
         return self
@@ -1116,7 +1021,7 @@ class WorkerRegistryComposer:
         *,
         args: list[bytes] | None = None,
         params: algokit_utils.CommonAppCallParams | None = None,
-    ) -> "WorkerRegistryComposer":
+    ) -> "AccessGrantsComposer":
         params=params or algokit_utils.CommonAppCallParams()
         self._composer.add_app_call(
             self.client.params.clear_state(
@@ -1132,7 +1037,7 @@ class WorkerRegistryComposer:
     
     def add_transaction(
         self, txn: Transaction, signer: TransactionSigner | None = None
-    ) -> "WorkerRegistryComposer":
+    ) -> "AccessGrantsComposer":
         self._composer.add_transaction(txn, signer)
         return self
     

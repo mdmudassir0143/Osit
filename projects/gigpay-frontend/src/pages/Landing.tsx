@@ -3,79 +3,117 @@ import { useNavigate } from 'react-router-dom'
 import AloraLogo from '../components/shared/AloraLogo'
 
 const TICKER_ITEMS = [
-  'ATOMIC SETTLEMENTS',
-  'RATING-BASED PAYOUTS',
-  'ESCROW-PROTECTED',
-  'USDC ON ALGORAND',
-  'GST-COMPLIANT',
-  'INVOICE ENGINE',
-  'REAL-TIME DELIVERY',
-  'UPI OFF-RAMP',
+  'PORTABLE WORK HISTORY',
+  'CRYPTOGRAPHICALLY SIGNED',
+  'WORKER-OWNED RECORDS',
+  'CONSENT-GATED API',
+  'OPEN STANDARD CANDIDATE',
+  'ALGORAND-NATIVE',
+  'ANY DOMAIN, ANY GEOGRAPHY',
+  'NO FINANCIAL CUSTODY',
 ]
 
 const STATS = [
-  { value: '300M+', label: 'Gig workers in India', accent: 'bg-sun' },
-  { value: '45%', label: 'Face delayed payments', accent: 'bg-terra' },
-  { value: '72K', label: 'Monthly disputes (avg)', accent: 'bg-lavender' },
-  { value: '14 days', label: 'Typical payout cycle', accent: 'bg-sage' },
+  { value: '2B+', label: 'Informal workers globally', accent: 'bg-sun' },
+  { value: '~80%', label: 'Have no verifiable work record', accent: 'bg-terra' },
+  { value: '0%', label: 'Reputation portable across employers', accent: 'bg-lavender' },
+  { value: 'Lost', label: 'When workers change jobs or borders', accent: 'bg-sage' },
 ]
 
-const RATING_TABLE = [
-  { stars: '5.0', rating: 50, multiplier: 150, label: 'Exceptional', pct: 100 },
-  { stars: '4.0', rating: 40, multiplier: 128, label: 'Great', pct: 85 },
-  { stars: '3.0', rating: 30, multiplier: 106, label: 'Standard', pct: 71 },
-  { stars: '2.0', rating: 20, multiplier: 84, label: 'Below avg', pct: 56 },
-  { stars: '1.0', rating: 10, multiplier: 62, label: 'Poor', pct: 41 },
+const ATTESTATION_CATEGORIES = [
+  {
+    name: 'Work Event',
+    code: 1,
+    examples: 'Shifts, deliveries, projects',
+    desc: 'A discrete unit of work performed and verified by an issuer.',
+    accent: 'bg-sage',
+  },
+  {
+    name: 'Skill',
+    code: 2,
+    examples: 'Certifications, demonstrated abilities',
+    desc: 'A capability claim — verified by a trainer, employer, or peer.',
+    accent: 'bg-sun',
+  },
+  {
+    name: 'Payment Proof',
+    code: 3,
+    examples: 'Earned income, settled invoices',
+    desc: 'On-chain or off-chain evidence of compensation received.',
+    accent: 'bg-terra',
+  },
+  {
+    name: 'Vouch',
+    code: 4,
+    examples: 'Peer endorsements, references',
+    desc: 'A weighted endorsement from another verified actor.',
+    accent: 'bg-lavender',
+  },
+  {
+    name: 'Other',
+    code: 5,
+    examples: 'Domain-specific extensions',
+    desc: "Free-form claims for use cases the canonical schema doesn't cover.",
+    accent: 'bg-cream',
+  },
+]
+
+const TECH_STACK = [
+  'Algorand AVM',
+  'PuyaPy Smart Contracts',
+  'ARC-56 App Specs',
+  'AlgoKit Utils',
+  'Box Storage',
+  'IPFS / Encrypted Vault',
+  'Hono Read API',
+  'React + TypeScript',
+  'use-wallet',
 ]
 
 const FLOW_STEPS = [
   {
     step: '01',
-    title: 'Merchant deposits USDC',
-    detail: 'Platform admin funds the EscrowPool contract. Funds locked on-chain, visible and auditable.',
-    tag: 'ESCROW',
-    color: 'bg-sun text-charcoal',
-    shadow: 'shadow-brutal-sun',
-  },
-  {
-    step: '02',
-    title: 'Workers registered on-chain',
-    detail: 'Workers added to the registry with name, phone, UPI, and initial rating. All in Algorand box storage.',
-    tag: 'REGISTRY',
+    title: 'Worker registers their wallet',
+    detail:
+      'One-time signup: connect Pera/Defly + verify a phone number. Phone hash maps to wallet address — sybil anchor without storing PII.',
+    tag: 'IDENTITY',
     color: 'bg-sage text-white',
     shadow: 'shadow-brutal-sage',
   },
   {
+    step: '02',
+    title: 'Any issuer attests to work',
+    detail:
+      'A hotel manager, freelance client, film producer, or training institute issues a signed attestation: who, what, when. Free, frictionless, on-chain.',
+    tag: 'ISSUE',
+    color: 'bg-sun text-charcoal',
+    shadow: 'shadow-brutal-sun',
+  },
+  {
     step: '03',
-    title: 'Orders assigned to workers',
-    detail: 'Delivery orders created in the DeliveryManager — customer, pickup, dropoff, base amount, assigned worker.',
-    tag: 'DELIVERY',
+    title: 'Records stay encrypted by default',
+    detail:
+      'On-chain holds only metadata + content pointer. The claim itself sits encrypted in the worker-owned vault. No PII visible to the public.',
+    tag: 'PRIVACY',
     color: 'bg-lavender text-charcoal',
     shadow: 'shadow-brutal-lavender',
   },
   {
     step: '04',
-    title: 'Worker picks up & delivers',
-    detail: 'Merchant marks pickup. On delivery, a single "Confirm & Pay" triggers everything atomically.',
-    tag: 'STATUS',
-    color: 'bg-cream text-charcoal',
-    shadow: 'shadow-brutal',
-  },
-  {
-    step: '05',
-    title: 'Atomic on-chain payment',
-    detail: 'One signature fires 4 contract calls: confirm → release USDC → mark paid → update earnings. All or nothing.',
-    tag: 'ATOMIC',
+    title: 'Worker grants access on demand',
+    detail: 'A lender, insurer, or new employer requests access. Worker reviews scope and signs a per-consumer grant. Revocable any time.',
+    tag: 'CONSENT',
     color: 'bg-terra text-white',
     shadow: 'shadow-brutal-terra',
   },
   {
-    step: '06',
-    title: 'Worker gets USDC → off-ramps',
-    detail: 'USDC lands instantly. Off-ramp to INR via UPI. No payroll cycles, no intermediaries.',
-    tag: 'SETTLE',
-    color: 'bg-sun text-charcoal',
-    shadow: 'shadow-brutal-sun',
+    step: '05',
+    title: 'Consumer queries the read API',
+    detail:
+      'Subscription-gated, grant-verified. Returns structured attestations + issuer metadata. Consumers compute their own scores. Alora is never opinionated.',
+    tag: 'QUERY',
+    color: 'bg-cream text-charcoal',
+    shadow: 'shadow-brutal',
   },
 ]
 
@@ -83,29 +121,29 @@ const CONTRACTS = [
   {
     name: 'WorkerRegistry',
     tag: 'IDENTITY',
-    desc: 'Worker profiles in box storage — name, phone, UPI ID, rating, earnings, tasks completed. 120 bytes per worker, fully on-chain.',
-    methods: ['add_worker', 'update_rating', 'increment_earnings', 'get_worker_info'],
-    storage: 'Box: wrk_{address} → 120B',
+    desc: 'Maps phone-hash to wallet address. Sybil anchor with zero PII on-chain. Workers register once with a verified phone and connected wallet.',
+    methods: ['register_worker', 'update_handle', 'lookup_by_phone_hash', 'get_worker_info'],
+    storage: 'Box: wkr_{address} → ~64B',
     accent: 'bg-sage',
     shadow: 'shadow-brutal-sage',
     tagBg: 'bg-sage-light text-sage',
   },
   {
-    name: 'DeliveryManager',
-    tag: 'LOGISTICS',
-    desc: 'Tracks delivery lifecycle from creation to payment. Calculates final payout via the rating multiplier formula.',
-    methods: ['create_delivery', 'mark_picked_up', 'confirm_delivery', 'mark_paid'],
-    storage: 'Box: dlv_{id} → 168B',
+    name: 'AttestationLog',
+    tag: 'ATTESTATIONS',
+    desc: 'Canonical attestation entries. Fixed core fields + content pointer to the encrypted off-chain vault. Generic across domains and geographies.',
+    methods: ['issue_attestation', 'revoke_attestation', 'get_attestation', 'list_by_subject'],
+    storage: 'Box: att_{id} → ~120B',
     accent: 'bg-terra',
     shadow: 'shadow-brutal-terra',
     tagBg: 'bg-terra-light text-terra',
   },
   {
-    name: 'EscrowPool',
-    tag: 'TREASURY',
-    desc: 'Custodies USDC and releases payments to workers via inner transactions. Tracks deposits and releases.',
-    methods: ['initialize', 'deposit_funds', 'release_payment', 'withdraw_unused'],
-    storage: 'Box: pay_{worker}{id} → 24B',
+    name: 'AccessGrants',
+    tag: 'CONSENT',
+    desc: 'Per-consumer access grants from workers. Scope, expiry, query limits. Read API enforces grants on every query — no grant, no data.',
+    methods: ['grant_access', 'revoke_access', 'check_grant'],
+    storage: 'Box: gnt_{worker}_{consumer} → ~80B',
     accent: 'bg-sun',
     shadow: 'shadow-brutal-sun',
     tagBg: 'bg-sun-light text-charcoal',
@@ -136,39 +174,40 @@ const Landing: React.FC = () => {
       <nav className="relative z-50 flex items-center justify-between px-6 md:px-12 lg:px-20 py-5 border-b-[2.5px] border-charcoal bg-cream">
         <AloraLogo size="md" />
         <div className="flex items-center gap-8">
-          <a href="#flow" className="text-sm font-medium text-charcoal/50 hover:text-charcoal transition-colors hidden md:block">Flow</a>
-          <a href="#architecture" className="text-sm font-medium text-charcoal/50 hover:text-charcoal transition-colors hidden md:block">Architecture</a>
-          <a href="#payouts" className="text-sm font-medium text-charcoal/50 hover:text-charcoal transition-colors hidden md:block">Payouts</a>
+          <a href="#flow" className="text-sm font-medium text-charcoal/50 hover:text-charcoal transition-colors hidden md:block">
+            Flow
+          </a>
+          <a href="#architecture" className="text-sm font-medium text-charcoal/50 hover:text-charcoal transition-colors hidden md:block">
+            Architecture
+          </a>
+          <a href="#categories" className="text-sm font-medium text-charcoal/50 hover:text-charcoal transition-colors hidden md:block">
+            Categories
+          </a>
           <div className="relative">
             <button
-              onClick={(e) => { e.stopPropagation(); setAppMenuOpen((v) => !v) }}
+              onClick={(e) => {
+                e.stopPropagation()
+                setAppMenuOpen((v) => !v)
+              }}
               className="nb-btn bg-terra text-cream px-5 py-2.5 text-sm font-display font-bold flex items-center gap-2.5 shadow-brutal-sm"
             >
               Launch App
-              <svg className={`w-3.5 h-3.5 transition-transform ${appMenuOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+              <svg
+                className={`w-3.5 h-3.5 transition-transform ${appMenuOpen ? 'rotate-180' : ''}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={3}
+              >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
 
             {appMenuOpen && (
-              <div className="absolute right-0 top-full mt-2 w-56 bg-white border-[2.5px] border-charcoal rounded-xl shadow-brutal-lg overflow-hidden z-50">
-                <button
-                  onClick={() => navigate('/platform')}
-                  className="w-full text-left px-5 py-4 hover:bg-sun/10 transition-colors border-b-2 border-charcoal/10 group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-terra rounded-lg border-2 border-charcoal flex items-center justify-center flex-shrink-0">
-                      <span className="text-cream text-xs font-bold">M</span>
-                    </div>
-                    <div>
-                      <div className="font-display text-sm font-bold group-hover:text-terra transition-colors">Merchant</div>
-                      <div className="text-[11px] text-charcoal/40">Manage escrow & workers</div>
-                    </div>
-                  </div>
-                </button>
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white border-[2.5px] border-charcoal rounded-xl shadow-brutal-lg overflow-hidden z-50">
                 <button
                   onClick={() => navigate('/worker')}
-                  className="w-full text-left px-5 py-4 hover:bg-sage/10 transition-colors group"
+                  className="w-full text-left px-5 py-4 hover:bg-sage/10 transition-colors border-b-2 border-charcoal/10 group"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-sage rounded-lg border-2 border-charcoal flex items-center justify-center flex-shrink-0">
@@ -176,7 +215,35 @@ const Landing: React.FC = () => {
                     </div>
                     <div>
                       <div className="font-display text-sm font-bold group-hover:text-sage transition-colors">Worker</div>
-                      <div className="text-[11px] text-charcoal/40">View earnings & deliveries</div>
+                      <div className="text-[11px] text-charcoal/40">View attestations, grant access</div>
+                    </div>
+                  </div>
+                </button>
+                <button
+                  onClick={() => navigate('/issuer')}
+                  className="w-full text-left px-5 py-4 hover:bg-terra/10 transition-colors border-b-2 border-charcoal/10 group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-terra rounded-lg border-2 border-charcoal flex items-center justify-center flex-shrink-0">
+                      <span className="text-cream text-xs font-bold">I</span>
+                    </div>
+                    <div>
+                      <div className="font-display text-sm font-bold group-hover:text-terra transition-colors">Issuer</div>
+                      <div className="text-[11px] text-charcoal/40">Attest to work or skills</div>
+                    </div>
+                  </div>
+                </button>
+                <button
+                  onClick={() => navigate('/consumer')}
+                  className="w-full text-left px-5 py-4 hover:bg-sun/10 transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-sun rounded-lg border-2 border-charcoal flex items-center justify-center flex-shrink-0">
+                      <span className="text-charcoal text-xs font-bold">C</span>
+                    </div>
+                    <div>
+                      <div className="font-display text-sm font-bold group-hover:text-charcoal transition-colors">Consumer</div>
+                      <div className="text-[11px] text-charcoal/40">Query attestations via API</div>
                     </div>
                   </div>
                 </button>
@@ -193,30 +260,29 @@ const Landing: React.FC = () => {
         <div className="relative grid md:grid-cols-12 gap-10 items-start">
           {/* Left — headline */}
           <div className={`md:col-span-7 ${mounted ? 'animate-fade-up' : 'opacity-0'}`}>
-
             <h1 className="font-display text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold leading-[0.95] tracking-tight mb-8">
-              Real-time{' '}
+              Portable{' '}
               <span className="relative inline-block">
-                payouts
+                work history
                 <svg className="absolute -bottom-1 left-0 w-full" height="8" viewBox="0 0 200 8" preserveAspectRatio="none">
                   <path d="M0 5 Q50 0 100 5 T200 5" stroke="#c44b2b" strokeWidth="3" fill="none" />
                 </svg>
               </span>
               <br />
-              <span className="font-serif italic text-terra font-normal">for gig platforms.</span>
+              <span className="font-serif italic text-terra font-normal">for every worker.</span>
             </h1>
 
             <p className="text-charcoal/55 text-lg md:text-xl max-w-lg leading-relaxed mb-10">
-              Plug into any delivery platform. Instant USDC settlements,
-              rating-based payouts, and built-in GST compliance — all on-chain.
+              The open reputation layer for gig workers, freelancers, and informal labor. Cryptographically signed, worker-owned,
+              consent-gated. Built on Algorand.
             </p>
 
             <div className="flex flex-wrap gap-4">
               <button
-                onClick={() => navigate('/platform')}
+                onClick={() => navigate('/issuer')}
                 className="nb-btn bg-terra text-cream px-8 py-4 text-sm tracking-wide font-display font-bold uppercase"
               >
-                Merchant Dashboard &rarr;
+                Issue an Attestation &rarr;
               </button>
               <button
                 onClick={() => navigate('/worker')}
@@ -235,17 +301,13 @@ const Landing: React.FC = () => {
                 <span className="text-charcoal text-lg">!</span>
               </div>
 
-              <span className="nb-tag bg-terra-light text-terra border-terra/40 text-[9px] mb-6">
-                The Problem Today
-              </span>
+              <span className="nb-tag bg-terra-light text-terra border-terra/40 text-[9px] mb-6">Why this matters</span>
 
               <div className="grid grid-cols-2 gap-5 mt-6">
                 {STATS.map((stat, i) => (
                   <div key={i} className="relative">
                     <div className={`w-2.5 h-2.5 ${stat.accent} rounded-full border-[1.5px] border-charcoal mb-2`} />
-                    <div className="font-display text-2xl md:text-3xl font-extrabold text-charcoal leading-none mb-1">
-                      {stat.value}
-                    </div>
+                    <div className="font-display text-2xl md:text-3xl font-extrabold text-charcoal leading-none mb-1">{stat.value}</div>
                     <div className="text-xs text-charcoal/40 font-medium">{stat.label}</div>
                   </div>
                 ))}
@@ -254,7 +316,7 @@ const Landing: React.FC = () => {
               <div className="mt-7 pt-5 border-t-2 border-dashed border-charcoal/10">
                 <div className="flex items-center gap-2.5">
                   <div className="w-2 h-2 bg-terra rounded-full animate-pulse" />
-                  <span className="text-xs text-terra font-semibold">Alora fixes this</span>
+                  <span className="text-xs text-terra font-semibold">Alora gives them a record</span>
                 </div>
               </div>
             </div>
@@ -280,23 +342,19 @@ const Landing: React.FC = () => {
       <section id="flow" className="relative z-10 bg-cream px-6 md:px-12 lg:px-20 py-24 md:py-32">
         <div className="max-w-6xl mx-auto">
           <div className="mb-14">
-            <span className="nb-tag bg-sun-light text-charcoal border-charcoal/20 font-mono text-[9px] mb-4">End-to-End Flow</span>
+            <span className="nb-tag bg-sun-light text-charcoal border-charcoal/20 font-mono text-[9px] mb-4">How It Works</span>
             <h2 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mt-4 mb-3">
-              From deposit to{' '}
-              <span className="font-serif italic text-terra font-normal">bank account</span>
+              From signup to <span className="font-serif italic text-terra font-normal">verifiable record</span>
             </h2>
             <p className="text-charcoal/45 text-base max-w-xl">
-              A single delivery payment touches 3 smart contracts in one atomic
-              transaction. The worker sees USDC before the merchant closes the tab.
+              A worker's reputation goes from invisible to portable in five steps. No payments, no escrow — just signed claims, owned by the
+              worker, queryable by consent.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
             {FLOW_STEPS.map((item) => (
-              <div
-                key={item.step}
-                className={`nb-card bg-white rounded-xl p-6 ${item.shadow} relative`}
-              >
+              <div key={item.step} className={`nb-card bg-white rounded-xl p-6 ${item.shadow} relative`}>
                 <div className="flex items-center justify-between mb-4">
                   <div className={`w-10 h-10 ${item.color} rounded-lg border-2 border-charcoal flex items-center justify-center`}>
                     <span className="font-mono text-sm font-bold">{item.step}</span>
@@ -331,19 +389,17 @@ const Landing: React.FC = () => {
           <div className="max-w-6xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
               <h2 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight">
-                Three contracts,{' '}
-                <span className="font-serif italic text-terra font-normal">one atomic flow</span>
+                Three contracts, <span className="font-serif italic text-terra font-normal">one open protocol</span>
               </h2>
-              <span className="nb-tag bg-sun-light text-charcoal border-charcoal/15 font-mono text-[9px]">Algorand TestNet</span>
+              <span className="nb-tag bg-sun-light text-charcoal border-charcoal/15 font-mono text-[9px]">
+                Algorand TestNet · Open Standard Candidate
+              </span>
             </div>
 
             {/* Contract cards */}
             <div className="grid md:grid-cols-3 gap-5 mb-12 stagger-children">
               {CONTRACTS.map((contract) => (
-                <div
-                  key={contract.name}
-                  className={`nb-card bg-white rounded-2xl p-6 ${contract.shadow} group relative overflow-hidden`}
-                >
+                <div key={contract.name} className={`nb-card bg-white rounded-2xl p-6 ${contract.shadow} group relative overflow-hidden`}>
                   {/* Top accent bar */}
                   <div className={`absolute top-0 left-0 right-0 h-1.5 ${contract.accent} rounded-t-2xl`} />
 
@@ -351,18 +407,17 @@ const Landing: React.FC = () => {
                     <div className={`w-9 h-9 ${contract.accent} rounded-lg border-2 border-charcoal flex items-center justify-center`}>
                       <span className="text-white text-xs font-bold font-mono">{contract.name.charAt(0)}</span>
                     </div>
-                    <span className={`nb-tag ${contract.tagBg} border-charcoal/10 text-[9px]`}>
-                      {contract.tag}
-                    </span>
+                    <span className={`nb-tag ${contract.tagBg} border-charcoal/10 text-[9px]`}>{contract.tag}</span>
                   </div>
 
-                  <h3 className="font-display text-lg font-bold mb-2 group-hover:text-terra transition-colors">
-                    {contract.name}
-                  </h3>
+                  <h3 className="font-display text-lg font-bold mb-2 group-hover:text-terra transition-colors">{contract.name}</h3>
 
                   <div className="flex flex-wrap gap-1.5 mb-4">
                     {contract.methods.map((m) => (
-                      <span key={m} className="font-mono text-[10px] bg-cream text-charcoal/50 px-2 py-0.5 rounded-md border border-charcoal/10">
+                      <span
+                        key={m}
+                        className="font-mono text-[10px] bg-cream text-charcoal/50 px-2 py-0.5 rounded-md border border-charcoal/10"
+                      >
                         {m}()
                       </span>
                     ))}
@@ -375,23 +430,21 @@ const Landing: React.FC = () => {
               ))}
             </div>
 
-            {/* Atomic flow diagram */}
+            {/* Query flow diagram */}
             <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal">
               <div className="flex items-center gap-3 mb-6">
                 <div className="w-8 h-8 bg-terra rounded-lg border-2 border-charcoal flex items-center justify-center">
                   <span className="text-cream text-xs font-bold">&#9889;</span>
                 </div>
-                <span className="font-display text-sm font-bold uppercase tracking-wide">
-                  Atomic "Confirm &amp; Pay"
-                </span>
+                <span className="font-display text-sm font-bold uppercase tracking-wide">Read API · Grant-Verified Query</span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                 {[
-                  { num: '1', contract: 'DeliveryManager', method: 'confirm_delivery()', color: 'bg-terra' },
-                  { num: '2', contract: 'EscrowPool', method: 'release_payment()', color: 'bg-sun' },
-                  { num: '3', contract: 'DeliveryManager', method: 'mark_paid()', color: 'bg-lavender' },
-                  { num: '4', contract: 'WorkerRegistry', method: 'increment_earnings()', color: 'bg-sage' },
+                  { num: '1', contract: 'Read API', method: 'verify_subscription()', color: 'bg-terra' },
+                  { num: '2', contract: 'AccessGrants', method: 'check_grant()', color: 'bg-sun' },
+                  { num: '3', contract: 'AttestationLog', method: 'list_by_subject()', color: 'bg-lavender' },
+                  { num: '4', contract: 'Vault', method: 'decrypt_payload()', color: 'bg-sage' },
                 ].map((txn, i) => (
                   <div key={i} className="relative">
                     <div className="border-[2px] border-charcoal/10 rounded-xl p-4 hover:bg-cream/50 transition-colors h-full">
@@ -412,9 +465,9 @@ const Landing: React.FC = () => {
 
               <div className="mt-5 pt-4 border-t-2 border-dashed border-charcoal/8 flex flex-wrap items-center gap-5">
                 {[
-                  { color: 'bg-sage', text: 'All-or-nothing' },
-                  { color: 'bg-terra', text: 'Single signature' },
-                  { color: 'bg-sun', text: '~4s finality' },
+                  { color: 'bg-sage', text: 'No grant, no data' },
+                  { color: 'bg-terra', text: 'Subscription-gated' },
+                  { color: 'bg-sun', text: 'Worker can revoke any time' },
                 ].map((item) => (
                   <div key={item.text} className="flex items-center gap-2">
                     <div className={`w-2.5 h-2.5 ${item.color} rounded-full border-[1.5px] border-charcoal`} />
@@ -427,7 +480,7 @@ const Landing: React.FC = () => {
         </div>
       </section>
 
-      {/* ═══════════ SECTION DIVIDER — PAYOUTS ═══════════ */}
+      {/* ═══════════ SECTION DIVIDER — CATEGORIES ═══════════ */}
       <div className="relative z-10 bg-cream">
         <div className="max-w-6xl mx-auto px-6 md:px-12 lg:px-20">
           <div className="border-t-[2.5px] border-charcoal/10" />
@@ -435,248 +488,43 @@ const Landing: React.FC = () => {
         <div className="flex items-center justify-center -mt-4">
           <div className="bg-cream px-6 flex items-center gap-3">
             <div className="w-3 h-3 bg-lavender rounded-full border-2 border-charcoal" />
-            <span className="font-mono text-[10px] tracking-[0.25em] text-charcoal/30 uppercase font-medium">Payout Engine</span>
+            <span className="font-mono text-[10px] tracking-[0.25em] text-charcoal/30 uppercase font-medium">Attestation Categories</span>
             <div className="w-3 h-3 bg-lavender rounded-full border-2 border-charcoal" />
           </div>
         </div>
       </div>
 
-      {/* ═══════════ PAYOUT — HEADER ═══════════ */}
-      <section id="payouts" className="relative z-10 bg-cream px-6 md:px-12 lg:px-20 pt-12 pb-10">
-        <div className="max-w-6xl mx-auto text-center">
-          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4">
-            Performance determines{' '}
-            <span className="font-serif italic text-terra font-normal">pay</span>
-          </h2>
-          <p className="text-charcoal/45 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
-            Every payout is calculated on-chain using a rating-based multiplier.
-            Higher-rated workers earn more per delivery. The formula is transparent,
-            immutable, and verifiable by anyone.
-          </p>
-        </div>
-      </section>
-
-      {/* ═══════════ PAYOUT — FORMULA + FEATURES ═══════════ */}
-      <section className="relative z-10 bg-cream px-6 md:px-12 lg:px-20 pb-10">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-5">
-          {/* Formula card — takes 2 cols */}
-          <div className="md:col-span-2 nb-card bg-charcoal rounded-xl p-6 md:p-8 shadow-brutal-terra text-cream">
-            <div className="flex items-center justify-between mb-5">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-terra" />
-                <div className="w-3 h-3 rounded-full bg-sun" />
-                <div className="w-3 h-3 rounded-full bg-sage" />
-                <span className="text-cream/25 font-mono text-[10px] ml-3">contract.py</span>
-              </div>
-              <span className="nb-tag bg-cream/10 text-cream/50 border-cream/15 text-[9px]">On-Chain Formula</span>
-            </div>
-            <pre className="text-cream/60 text-sm md:text-base leading-relaxed font-mono overflow-x-auto"><code>{`# On-chain payout formula
-multiplier = 40 + (rating * 22) / 10
-final_amount = (base * multiplier) / 100
-
-# Example: 4.0 star worker, $0.25 base
-# multiplier = 40 + (40 * 22) / 10 = 128
-# final = ($0.25 * 128) / 100 = $0.32`}</code></pre>
-          </div>
-
-          {/* Features — 1 col, stacked cards */}
-          <div className="space-y-4">
-            {[
-              { color: 'bg-sage', shadow: 'shadow-brutal-sage', title: 'Transparent', desc: 'Formula lives in the smart contract — anyone can verify on-chain' },
-              { color: 'bg-terra', shadow: 'shadow-brutal-terra', title: 'Immutable', desc: 'No one can change the math after deployment' },
-              { color: 'bg-sun', shadow: 'shadow-brutal-sun', title: 'Instant', desc: 'Calculated and paid in the same atomic txn' },
-            ].map((item) => (
-              <div key={item.title} className={`nb-card bg-white rounded-xl p-5 ${item.shadow}`}>
-                <div className="flex items-center gap-3 mb-1.5">
-                  <div className={`w-3 h-3 ${item.color} rounded-sm border-[1.5px] border-charcoal flex-shrink-0`} />
-                  <span className="font-display text-sm font-bold">{item.title}</span>
-                </div>
-                <p className="text-xs text-charcoal/45 leading-relaxed pl-6">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ PAYOUT — RATING TABLE ═══════════ */}
-      <section className="relative z-10 bg-cream px-6 md:px-12 lg:px-20 pb-24 md:pb-32">
+      {/* ═══════════ CATEGORIES ═══════════ */}
+      <section id="categories" className="relative z-10 bg-cream px-6 md:px-12 lg:px-20 pt-12 pb-24 md:pb-32">
         <div className="max-w-6xl mx-auto">
-          <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal-lg">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-lavender rounded-lg border-2 border-charcoal flex items-center justify-center">
-                  <span className="text-white text-xs font-bold">&#9733;</span>
-                </div>
-                <span className="font-display text-base font-bold uppercase tracking-wide">Rating Multiplier Table</span>
-              </div>
-              <span className="nb-tag bg-cream text-charcoal/50 border-charcoal/10 text-[9px]">base = $0.25 USDC</span>
-            </div>
-
-            {/* Header */}
-            <div className="grid grid-cols-12 gap-3 pb-3 border-b-[2.5px] border-charcoal/10 font-mono text-[9px] tracking-widest text-charcoal/30 uppercase">
-              <div className="col-span-2">Rating</div>
-              <div className="col-span-2">Multiplier</div>
-              <div className="col-span-5">Payout Scale</div>
-              <div className="col-span-2 text-right">Payout</div>
-              <div className="col-span-1 text-right">Delta</div>
-            </div>
-
-            {RATING_TABLE.map((row, i) => {
-              const payout = (0.25 * row.multiplier / 100).toFixed(3)
-              const delta = row.multiplier - 100
-              const isPositive = delta >= 0
-              const barColor = row.multiplier >= 120 ? 'bg-sage' : row.multiplier >= 100 ? 'bg-charcoal/20' : 'bg-terra'
-              return (
-                <div
-                  key={i}
-                  className="grid grid-cols-12 gap-3 py-4 border-b-2 border-charcoal/[0.05] items-center hover:bg-sun/5 transition-colors rounded-lg"
-                >
-                  <div className="col-span-2">
-                    <span className="text-sm font-display font-bold">{row.stars}</span>
-                    <span className="text-terra ml-1">&#9733;</span>
-                    <div className="text-[10px] text-charcoal/30 mt-0.5">{row.label}</div>
-                  </div>
-                  <div className="col-span-2">
-                    <span className={`font-mono text-sm font-semibold ${isPositive ? 'text-charcoal' : 'text-terra'}`}>{row.multiplier}%</span>
-                  </div>
-                  <div className="col-span-5 flex items-center gap-3">
-                    <div className="flex-1 h-3.5 bg-charcoal/[0.06] rounded-full overflow-hidden border-[1.5px] border-charcoal/10">
-                      <div
-                        className={`h-full ${barColor} rounded-full transition-all duration-700`}
-                        style={{ width: `${row.pct}%` }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-span-2 text-right">
-                    <span className="font-mono text-sm font-bold text-charcoal">${payout}</span>
-                  </div>
-                  <div className="col-span-1 text-right">
-                    <span className={`nb-tag text-[9px] py-0.5 px-2 ${isPositive ? 'bg-sage-light text-sage border-sage/30' : 'bg-terra-light text-terra border-terra/30'}`}>
-                      {isPositive ? '+' : ''}{delta}%
-                    </span>
-                  </div>
-                </div>
-              )
-            })}
-
-            <div className="mt-5 pt-4 border-t-[2.5px] border-dashed border-charcoal/10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="font-mono text-[11px] text-charcoal/35 leading-relaxed">
-                Formula: <span className="text-charcoal/55 font-semibold">multiplier = 40 + (rating &times; 22) / 10</span>
-                <span className="text-charcoal/25 ml-2">&middot;</span>
-                <span className="ml-2">Rating stored as integer 10&ndash;50</span>
-              </div>
-              <a href="#architecture" className="font-mono text-[10px] text-terra hover:text-terra-dark transition-colors tracking-wider uppercase">
-                View contracts &uarr;
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ SECTION DIVIDER — ANTI-FRAUD ═══════════ */}
-      <div className="relative z-10 bg-cream">
-        <div className="max-w-6xl mx-auto px-6 md:px-12 lg:px-20">
-          <div className="border-t-[2.5px] border-charcoal/10" />
-        </div>
-        <div className="flex items-center justify-center -mt-4">
-          <div className="bg-cream px-6 flex items-center gap-3">
-            <div className="w-3 h-3 bg-terra rounded-full border-2 border-charcoal" />
-            <span className="font-mono text-[10px] tracking-[0.25em] text-charcoal/30 uppercase font-medium">Anti-Fraud</span>
-            <div className="w-3 h-3 bg-terra rounded-full border-2 border-charcoal" />
-          </div>
-        </div>
-      </div>
-
-      {/* ═══════════ ANTI-FRAUD ═══════════ */}
-      <section id="fraud" className="relative z-10 bg-cream px-6 md:px-12 lg:px-20 pt-12 pb-24 md:pb-32">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
           <div className="text-center mb-12">
-            <h2 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mb-3">
-              Bad delivery?{' '}
-              <span className="font-serif italic text-terra font-normal">Money talks.</span>
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4">
+              Five categories, <span className="font-serif italic text-terra font-normal">one substrate</span>
             </h2>
-            <p className="text-charcoal/45 text-base max-w-xl mx-auto">
-              No bans, no disputes. Lower rating = lower multiplier = less pay. The math self-corrects.
+            <p className="text-charcoal/45 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+              The canonical schema is intentionally minimal. Domain-specific structure (industry, role, rating shape) lives in the encrypted
+              payload — consumers parse what they need.
             </p>
           </div>
 
-          {/* Side-by-side scenario cards */}
-          <div className="grid md:grid-cols-2 gap-5 mb-8">
-            {/* Good worker */}
-            <div className="nb-card bg-white rounded-2xl p-6 shadow-brutal-sage relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-sage rounded-t-2xl" />
-              <div className="flex items-center gap-2.5 mb-5 pt-1">
-                <div className="w-8 h-8 bg-sage rounded-lg border-2 border-charcoal flex items-center justify-center">
-                  <span className="text-white text-sm">&#9650;</span>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {ATTESTATION_CATEGORIES.map((cat, i) => (
+              <div
+                key={cat.code}
+                className={`nb-card bg-white rounded-2xl p-6 ${i % 2 === 0 ? 'shadow-brutal-sage' : 'shadow-brutal-sun'} relative overflow-hidden`}
+              >
+                <div className={`absolute top-0 left-0 right-0 h-1.5 ${cat.accent} rounded-t-2xl`} />
+                <div className="flex items-start justify-between mb-4 pt-2">
+                  <div className={`w-9 h-9 ${cat.accent} rounded-lg border-2 border-charcoal flex items-center justify-center`}>
+                    <span className="text-charcoal text-xs font-bold font-mono">{cat.code}</span>
+                  </div>
+                  <span className="nb-tag bg-cream text-charcoal/50 border-charcoal/15 font-mono text-[9px]">category = {cat.code}</span>
                 </div>
-                <span className="font-display text-sm font-bold uppercase tracking-wide">Good Worker</span>
-              </div>
-
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-sage-light rounded-xl p-3 border-2 border-sage/20 text-center">
-                  <div className="font-mono text-[9px] tracking-widest text-charcoal/35 uppercase mb-1">Rating</div>
-                  <div className="font-display text-2xl font-extrabold">4.5<span className="text-terra ml-0.5 text-sm">&#9733;</span></div>
+                <h3 className="font-display text-lg font-bold mb-2">{cat.name}</h3>
+                <p className="text-charcoal/50 text-sm leading-relaxed mb-3">{cat.desc}</p>
+                <div className="pt-3 border-t-2 border-dashed border-charcoal/8">
+                  <span className="font-mono text-[10px] text-charcoal/40">{cat.examples}</span>
                 </div>
-                <div className="bg-sage-light rounded-xl p-3 border-2 border-sage/20 text-center">
-                  <div className="font-mono text-[9px] tracking-widest text-charcoal/35 uppercase mb-1">Multiplier</div>
-                  <div className="font-display text-2xl font-extrabold text-sage">139%</div>
-                </div>
-                <div className="bg-sage-light rounded-xl p-3 border-2 border-sage/20 text-center">
-                  <div className="font-mono text-[9px] tracking-widest text-charcoal/35 uppercase mb-1">Payout</div>
-                  <div className="font-display text-2xl font-extrabold">$0.35</div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t-2 border-dashed border-charcoal/8">
-                <span className="nb-tag bg-sage-light text-sage border-sage/30 text-[9px]">+39% bonus per delivery</span>
-              </div>
-            </div>
-
-            {/* Fraud scenario */}
-            <div className="nb-card bg-white rounded-2xl p-6 shadow-brutal-terra relative overflow-hidden">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-terra rounded-t-2xl" />
-              <div className="flex items-center gap-2.5 mb-5 pt-1">
-                <div className="w-8 h-8 bg-terra rounded-lg border-2 border-charcoal flex items-center justify-center">
-                  <span className="text-white text-sm">&#9660;</span>
-                </div>
-                <span className="font-display text-sm font-bold uppercase tracking-wide">After Fraud</span>
-              </div>
-
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-terra-light rounded-xl p-3 border-2 border-terra/20 text-center">
-                  <div className="font-mono text-[9px] tracking-widest text-charcoal/35 uppercase mb-1">Rating</div>
-                  <div className="font-display text-2xl font-extrabold">2.0<span className="text-terra ml-0.5 text-sm">&#9733;</span></div>
-                </div>
-                <div className="bg-terra-light rounded-xl p-3 border-2 border-terra/20 text-center">
-                  <div className="font-mono text-[9px] tracking-widest text-charcoal/35 uppercase mb-1">Multiplier</div>
-                  <div className="font-display text-2xl font-extrabold text-terra">84%</div>
-                </div>
-                <div className="bg-terra-light rounded-xl p-3 border-2 border-terra/20 text-center">
-                  <div className="font-mono text-[9px] tracking-widest text-charcoal/35 uppercase mb-1">Payout</div>
-                  <div className="font-display text-2xl font-extrabold">$0.21</div>
-                </div>
-              </div>
-
-              <div className="mt-4 pt-3 border-t-2 border-dashed border-charcoal/8">
-                <span className="nb-tag bg-terra-light text-terra border-terra/30 text-[9px]">&minus;$0.14 per delivery (&minus;39% cut)</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom row — principles */}
-          <div className="grid grid-cols-3 gap-4">
-            {[
-              { icon: '&#9878;', title: 'No bans', desc: 'Economic penalty', shadow: 'shadow-brutal-sage', color: 'bg-sage' },
-              { icon: '&#9881;', title: 'No disputes', desc: 'Math is arbiter', shadow: 'shadow-brutal-sun', color: 'bg-sun' },
-              { icon: '&#8635;', title: 'Self-healing', desc: 'Good work restores', shadow: 'shadow-brutal-lavender', color: 'bg-lavender' },
-            ].map((item) => (
-              <div key={item.title} className={`nb-card bg-white rounded-xl p-5 ${item.shadow} text-center`}>
-                <div className={`w-9 h-9 ${item.color} rounded-lg border-2 border-charcoal flex items-center justify-center mx-auto mb-3`}>
-                  <span className="text-white text-sm" dangerouslySetInnerHTML={{ __html: item.icon }} />
-                </div>
-                <div className="font-display text-sm font-bold mb-0.5">{item.title}</div>
-                <div className="font-mono text-[9px] text-charcoal/35 uppercase tracking-wider">{item.desc}</div>
               </div>
             ))}
           </div>
@@ -690,12 +538,11 @@ final_amount = (base * multiplier) / 100
             <div className="md:col-span-4">
               <span className="nb-tag bg-sage-light text-sage border-sage/30 font-mono text-[9px] mb-4">Infrastructure</span>
               <h2 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mt-4 mb-4">
-                Why{' '}
-                <span className="font-serif italic text-terra font-normal">Algorand?</span>
+                Why <span className="font-serif italic text-terra font-normal">Algorand?</span>
               </h2>
               <p className="text-charcoal/45 text-base leading-relaxed max-w-sm">
-                Gig payments need sub-cent fees and instant finality. Algorand
-                settles in under 3 seconds for a fraction of a cent.
+                Reputation infrastructure needs cheap writes (every shift, every project, every skill) and instant reads. Algorand settles
+                in under 3 seconds at sub-cent fees, with box storage that scales to billions of attestations.
               </p>
             </div>
 
@@ -729,18 +576,11 @@ final_amount = (base * multiplier) / 100
             <span className="font-mono text-[10px] tracking-[0.3em] text-cream/50 uppercase font-medium">Tech Stack</span>
           </div>
           <div className="flex flex-wrap gap-3">
-            {[
-              'Algorand AVM',
-              'PuyaPy Smart Contracts',
-              'ARC-56 App Specs',
-              'AlgoKit Utils',
-              'USDC (ASA 10458941)',
-              'Box Storage',
-              'Inner Transactions',
-              'Atomic Groups',
-              'React + TypeScript',
-            ].map((tech) => (
-              <span key={tech} className="font-mono text-[11px] text-cream/60 border border-cream/10 px-3 py-2 hover:border-terra/40 hover:text-terra transition-colors">
+            {TECH_STACK.map((tech) => (
+              <span
+                key={tech}
+                className="font-mono text-[11px] text-cream/60 border border-cream/10 px-3 py-2 hover:border-terra/40 hover:text-terra transition-colors"
+              >
                 {tech}
               </span>
             ))}
@@ -748,79 +588,29 @@ final_amount = (base * multiplier) / 100
         </section>
       </div>
 
-      {/* ═══════════ COMPLIANCE SECTION ═══════════ */}
-      <section className="relative z-10 px-6 md:px-12 lg:px-20 pt-20 md:pt-28 pb-16 md:pb-24 bg-cream">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="nb-tag bg-sage/10 text-sage border-sage/20 text-[10px] tracking-[0.2em] uppercase mb-4 inline-block">India Ready</span>
-            <h2 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-              Built-in invoice &{' '}
-              <span className="font-serif italic text-sage font-normal">compliance layer</span>
-            </h2>
-            <p className="text-charcoal/50 text-lg max-w-2xl mx-auto leading-relaxed">
-              No serious company integrates a payout system without GST records, payout proofs, and audit logs. Alora generates all of it automatically from on-chain data.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="nb-card p-8 bg-white rounded-2xl shadow-brutal relative group hover:-translate-y-1 transition-transform">
-              <div className="w-10 h-10 bg-terra/10 rounded-lg border-2 border-terra/20 flex items-center justify-center mb-5">
-                <span className="text-terra font-bold text-lg">₹</span>
-              </div>
-              <h3 className="font-display text-lg font-bold mb-2">GST-Compliant Invoices</h3>
-              <p className="text-sm text-charcoal/50 leading-relaxed">
-                Every payout auto-generates an invoice with CGST/SGST breakdown, platform service fee, and INR equivalent. Ready for GSTR-1 filing.
-              </p>
-            </div>
-
-            <div className="nb-card p-8 bg-white rounded-2xl shadow-brutal relative group hover:-translate-y-1 transition-transform">
-              <div className="w-10 h-10 bg-sage/10 rounded-lg border-2 border-sage/20 flex items-center justify-center mb-5">
-                <span className="text-sage font-bold text-lg">PDF</span>
-              </div>
-              <h3 className="font-display text-lg font-bold mb-2">Payout Receipts</h3>
-              <p className="text-sm text-charcoal/50 leading-relaxed">
-                Workers and merchants can download PDF receipts for any payout — with on-chain transaction hash, amount breakdown, and Alora branding.
-              </p>
-            </div>
-
-            <div className="nb-card p-8 bg-white rounded-2xl shadow-brutal relative group hover:-translate-y-1 transition-transform">
-              <div className="w-10 h-10 bg-lavender/10 rounded-lg border-2 border-lavender/20 flex items-center justify-center mb-5">
-                <span className="text-lavender font-bold text-lg">log</span>
-              </div>
-              <h3 className="font-display text-lg font-bold mb-2">Audit Trail</h3>
-              <p className="text-sm text-charcoal/50 leading-relaxed">
-                Full compliance log: escrow deposits, payout releases, worker registrations — timestamped, on-chain verified, and exportable as CSV.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* ═══════════ CTA ═══════════ */}
       <section className="relative z-10 bg-cream px-6 md:px-12 lg:px-20 py-24 md:py-32">
         <div className="max-w-3xl mx-auto text-center">
           <div className="w-12 h-1 bg-terra rounded-full mx-auto mb-8" />
           <h2 className="font-display text-4xl md:text-6xl font-extrabold tracking-tight leading-[1.05] mb-6">
-            Stop running payroll{' '}
-            <span className="font-serif italic text-terra font-normal">manually.</span>
+            Build on the open <span className="font-serif italic text-terra font-normal">reputation layer.</span>
           </h2>
           <p className="text-charcoal/45 text-lg mb-10 max-w-lg mx-auto text-balance">
-            Your riders, drivers, and delivery partners deserve real-time pay
-            tied to real performance. One atomic transaction. No spreadsheets.
+            Issuers attest. Workers own. Consumers query. Alora is the protocol — your products are the application.
           </p>
 
           <div className="flex flex-wrap justify-center gap-4">
             <button
-              onClick={() => navigate('/platform')}
+              onClick={() => navigate('/issuer')}
               className="nb-btn bg-terra text-cream px-10 py-5 text-sm font-display font-bold tracking-widest uppercase"
             >
-              Merchant Dashboard &rarr;
+              Issuer Portal &rarr;
             </button>
             <button
-              onClick={() => navigate('/worker')}
+              onClick={() => navigate('/consumer')}
               className="nb-btn bg-cream text-charcoal px-10 py-5 text-sm font-display font-bold tracking-widest uppercase"
             >
-              Worker Dashboard
+              Consumer API
             </button>
           </div>
         </div>
@@ -831,14 +621,14 @@ final_amount = (base * multiplier) / 100
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
           <div className="flex items-center gap-3">
             <AloraLogo size="sm" />
-            <span className="text-charcoal/25 text-xs ml-1">Real-Time Payouts Infrastructure</span>
+            <span className="text-charcoal/25 text-xs ml-1">Open Reputation Infrastructure</span>
           </div>
           <div className="flex flex-wrap items-center gap-4 font-mono text-[10px] text-charcoal/30">
             <span>Built on Algorand</span>
             <span className="w-1.5 h-1.5 bg-charcoal/10 rounded-full" />
-            <span>USDC Settlements</span>
+            <span>Worker-Owned</span>
             <span className="w-1.5 h-1.5 bg-charcoal/10 rounded-full" />
-            <span>GST Compliant</span>
+            <span>Open Standard Candidate</span>
           </div>
         </div>
       </footer>

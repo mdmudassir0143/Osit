@@ -1,77 +1,42 @@
 import React from 'react'
-import { WorkerProfile as WorkerProfileData } from '../../hooks/useWorkerData'
-import { ellipseAddress } from '../../utils/ellipseAddress'
+import { WorkerProfile } from '../../services/registry'
+import { bytesToHex } from '../../services/vault'
 
-interface WorkerProfileProps {
-  profile: WorkerProfileData
+interface Props {
+  address: string
+  profile: WorkerProfile
 }
 
-const STATUS_MAP: Record<number, { label: string; color: string; bg: string }> = {
-  0: { label: 'Inactive', color: 'text-muted', bg: 'bg-cream' },
-  1: { label: 'Active', color: 'text-sage', bg: 'bg-sage-light' },
-  2: { label: 'Suspended', color: 'text-terra', bg: 'bg-terra-light' },
-}
+const truncate = (s: string, head = 6, tail = 4) => (s.length > head + tail + 3 ? `${s.slice(0, head)}…${s.slice(-tail)}` : s)
 
-const WorkerProfileCard: React.FC<WorkerProfileProps> = ({ profile }) => {
-  const statusInfo = STATUS_MAP[profile.status] || STATUS_MAP[0]
-  const stars = (profile.rating / 10).toFixed(1)
+const WorkerProfileCard: React.FC<Props> = ({ address, profile }) => {
+  const phoneFingerprint = bytesToHex(profile.phoneHash).slice(0, 16)
+  const registeredDate = new Date(Number(profile.registeredAt) * 1000)
 
   return (
-    <div className="nb-dash-card p-6 md:p-8">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="nb-section-heading">My Profile</h2>
-        <span className={`nb-tag ${statusInfo.bg} ${statusInfo.color}`}>{statusInfo.label}</span>
+    <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal-sage">
+      <div className="flex items-start justify-between mb-5">
+        <div>
+          <span className="nb-tag bg-sage-light text-sage border-sage/30 text-[9px] mb-2">Worker Identity</span>
+          <h2 className="font-display text-2xl font-extrabold text-charcoal mt-2">@{profile.handle}</h2>
+        </div>
+        <div className="w-10 h-10 bg-sage rounded-lg border-2 border-charcoal flex items-center justify-center">
+          <span className="text-cream text-sm font-bold">W</span>
+        </div>
       </div>
 
-      <div className="space-y-4">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg border-2 border-charcoal bg-terra-light flex items-center justify-center shadow-brutal-sm">
-            <span className="font-display text-lg font-bold text-terra">
-              {profile.name.charAt(0).toUpperCase()}
-            </span>
-          </div>
-          <div>
-            <div className="text-lg text-charcoal font-display font-bold">{profile.name}</div>
-            <div className="text-xs text-muted font-mono">{ellipseAddress(profile.address, 8)}</div>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="bg-cream rounded-lg p-3 border-[1.5px] border-charcoal/10">
+          <div className="text-[9px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-1">Wallet</div>
+          <div className="font-mono text-xs text-charcoal break-all">{truncate(address, 8, 6)}</div>
         </div>
-
-        <div className="border-t-2 border-charcoal/10 pt-4 grid grid-cols-2 gap-4">
-          <div>
-            <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-1">Phone</div>
-            <div className="text-sm text-charcoal">{profile.phone || '—'}</div>
-          </div>
-          <div>
-            <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-1">UPI / Bank</div>
-            <div className="text-sm text-charcoal font-mono">{profile.upiId || '—'}</div>
-          </div>
-          <div>
-            <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-1">Rating</div>
-            <div className="text-sm text-charcoal font-mono">
-              {stars} <span className="text-terra">★</span>
-            </div>
-          </div>
-          <div>
-            <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-1">Registered</div>
-            <div className="text-sm text-charcoal">
-              {profile.registeredAt > 0
-                ? new Date(profile.registeredAt * 1000).toLocaleDateString()
-                : '—'}
-            </div>
-          </div>
+        <div className="bg-cream rounded-lg p-3 border-[1.5px] border-charcoal/10">
+          <div className="text-[9px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-1">Phone Fingerprint</div>
+          <div className="font-mono text-xs text-charcoal/70 break-all">{phoneFingerprint}…</div>
         </div>
-
-        <div className="border-t-2 border-charcoal/10 pt-4">
-          <div className="text-[10px] tracking-[0.2em] uppercase text-muted font-display font-semibold mb-1">Wallet Address</div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-muted break-all leading-relaxed">{profile.address}</span>
-            <button
-              className="nb-btn-ghost !text-[10px] !py-0.5 !px-2"
-              onClick={() => navigator.clipboard.writeText(profile.address)}
-            >
-              Copy
-            </button>
-          </div>
+        <div className="bg-cream rounded-lg p-3 border-[1.5px] border-charcoal/10">
+          <div className="text-[9px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-1">Registered</div>
+          <div className="font-mono text-xs text-charcoal">{registeredDate.toLocaleDateString()}</div>
         </div>
       </div>
     </div>

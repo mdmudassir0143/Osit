@@ -2,8 +2,9 @@ import { SupportedWallet, WalletId, WalletManager, WalletProvider } from '@txnla
 import { SnackbarProvider } from 'notistack'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Landing from './pages/Landing'
-import PlatformDashboard from './pages/PlatformDashboard'
 import WorkerDashboard from './pages/WorkerDashboard'
+import IssuerDashboard from './pages/IssuerDashboard'
+import ConsumerDashboard from './pages/ConsumerDashboard'
 import { getAlgodConfigFromViteEnvironment, getKmdConfigFromViteEnvironment } from './utils/network/getAlgoClientConfigs'
 
 let supportedWallets: SupportedWallet[]
@@ -20,12 +21,7 @@ if (import.meta.env.VITE_ALGOD_NETWORK === 'localnet') {
     },
   ]
 } else {
-  supportedWallets = [
-    { id: WalletId.LUTE },
-    { id: WalletId.DEFLY },
-    { id: WalletId.PERA },
-    { id: WalletId.EXODUS },
-  ]
+  supportedWallets = [{ id: WalletId.LUTE }, { id: WalletId.DEFLY }, { id: WalletId.PERA }, { id: WalletId.EXODUS }]
 }
 
 export default function App() {
@@ -53,7 +49,8 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/worker" element={<WorkerDashboard />} />
-            <Route path="/platform" element={<PlatformDashboard />} />
+            <Route path="/issuer" element={<IssuerDashboard />} />
+            <Route path="/consumer" element={<ConsumerDashboard />} />
           </Routes>
         </BrowserRouter>
       </WalletProvider>
