@@ -2,6 +2,8 @@ import React from 'react'
 import { AttestationRecord, CATEGORY_LABELS, revokeAttestation } from '../../services/attestations'
 import { bytesToHex } from '../../services/vault'
 import { useWallet } from '@txnlab/use-wallet-react'
+import { appUrl } from '../../services/explorer'
+import { getAppIds } from '../../services/algorand'
 
 interface Props {
   history: AttestationRecord[]
@@ -68,6 +70,14 @@ const IssuanceHistory: React.FC<Props> = ({ history, loading, onChanged }) => {
                   <span>weight: {att.weight}</span>
                   <span>id: {bytesToHex(att.id).slice(0, 12)}…</span>
                 </div>
+                <a
+                  href={appUrl(getAppIds().attestationLog)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] font-display font-semibold tracking-wide uppercase text-charcoal/50 hover:text-charcoal transition-colors mr-4"
+                >
+                  On-chain ↗
+                </a>
                 {!att.revoked && (
                   <button
                     onClick={() => onRevoke(att.id)}

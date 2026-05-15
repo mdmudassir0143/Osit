@@ -25,3 +25,18 @@ export function getAppIds(): {
     accessGrants: BigInt(ag),
   }
 }
+
+// Address used as the simulation sender for read-only contract calls when
+// no wallet is connected (public worker page). Simulators don't validate
+// signers, so any valid address works.
+export function getPublicViewer(): string {
+  return (
+    (import.meta.env.VITE_PUBLIC_VIEWER_ADDRESS as string) ||
+    (import.meta.env.VITE_ADMIN_ADDRESS as string) ||
+    ''
+  )
+}
+
+export function getDemoWorker(): string {
+  return (import.meta.env.VITE_DEMO_WORKER_ADDRESS as string) || ''
+}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useWallet } from '@txnlab/use-wallet-react'
+import { useSearchParams } from 'react-router-dom'
 import DashboardLayout from '../layouts/DashboardLayout'
 import ConnectWallet from '../components/ConnectWallet'
 import AloraLogo from '../components/shared/AloraLogo'
@@ -12,11 +13,27 @@ import { AttestationRecord, listByIssuer } from '../services/attestations'
 
 const IssuerDashboard: React.FC = () => {
   const { activeAddress } = useWallet()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [walletModal, setWalletModal] = useState(false)
   const [history, setHistory] = useState<AttestationRecord[]>([])
   const [loading, setLoading] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
   const [prefill, setPrefill] = useState<IssuePrefill | null>(null)
+
+  // QR-code-driven prefill: /issuer?subject=<address> opens the form with
+  // that subject already populated, so an employer scanning a worker's QR
+  // lands ready to issue.
+  useEffect(() => {
+    const subject = searchParams.get('subject')
+    if (subject) {
+      setPrefill({ subject })
+      // Strip the param so the prefill effect doesn't re-fire on every
+      // re-render.
+      const next = new URLSearchParams(searchParams)
+      next.delete('subject')
+      setSearchParams(next, { replace: true })
+    }
+  }, [searchParams, setSearchParams])
 
   const uniqueWorkers = new Set(history.map((a) => a.subject)).size
 

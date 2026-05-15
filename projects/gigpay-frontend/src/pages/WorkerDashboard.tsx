@@ -9,6 +9,8 @@ import AuraCard from '../components/worker/AuraCard'
 import AuraScoreBreakdown from '../components/worker/AuraScoreBreakdown'
 import AttestationsList from '../components/worker/AttestationsList'
 import GrantsManager from '../components/worker/GrantsManager'
+import ShareCard from '../components/worker/ShareCard'
+import TrustGraph from '../components/worker/TrustGraph'
 import { computeAuraScore } from '../services/score'
 import { getWorkerProfile, WorkerProfile } from '../services/registry'
 import { AttestationRecord, listBySubject } from '../services/attestations'
@@ -83,10 +85,12 @@ const WorkerDashboard: React.FC = () => {
     <DashboardLayout title="Worker">
       <div className="space-y-6">
         <AuraCard address={activeAddress} profile={profile} attestations={attestations} />
-        <AuraScoreBreakdown breakdown={computeAuraScore(attestations, profile.registeredAt)} />
-        <WorkerProfileCard address={activeAddress} profile={profile} />
+        <ShareCard address={activeAddress} handle={profile.handle} />
         <AttestationsList attestations={attestations} loading={loading} onRefresh={() => setRefreshKey((k) => k + 1)} />
+        <WorkerProfileCard address={activeAddress} profile={profile} />
         <GrantsManager onChanged={() => setRefreshKey((k) => k + 1)} />
+        <TrustGraph subject={activeAddress} attestations={attestations} />
+        <AuraScoreBreakdown breakdown={computeAuraScore(attestations, profile.registeredAt)} />
       </div>
     </DashboardLayout>
   )

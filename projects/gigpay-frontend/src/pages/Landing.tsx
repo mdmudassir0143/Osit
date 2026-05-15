@@ -120,6 +120,7 @@ const FLOW_STEPS = [
 const CONTRACTS = [
   {
     name: 'WorkerRegistry',
+    appId: import.meta.env.VITE_WORKER_REGISTRY_APP_ID,
     tag: 'IDENTITY',
     desc: 'Maps phone-hash to wallet address. Sybil anchor with zero PII on-chain. Workers register once with a verified phone and connected wallet.',
     methods: ['register_worker', 'update_handle', 'lookup_by_phone_hash', 'get_worker_info'],
@@ -130,6 +131,7 @@ const CONTRACTS = [
   },
   {
     name: 'AttestationLog',
+    appId: import.meta.env.VITE_ATTESTATION_LOG_APP_ID,
     tag: 'ATTESTATIONS',
     desc: 'Canonical attestation entries. Fixed core fields + content pointer to the encrypted off-chain vault. Generic across domains and geographies.',
     methods: ['issue_attestation', 'revoke_attestation', 'get_attestation', 'list_by_subject'],
@@ -140,6 +142,7 @@ const CONTRACTS = [
   },
   {
     name: 'AccessGrants',
+    appId: import.meta.env.VITE_ACCESS_GRANTS_APP_ID,
     tag: 'CONSENT',
     desc: 'Per-consumer access grants from workers. Scope, expiry, query limits. Read API enforces grants on every query — no grant, no data.',
     methods: ['grant_access', 'revoke_access', 'check_grant'],
@@ -279,10 +282,14 @@ const Landing: React.FC = () => {
 
             <div className="flex flex-wrap gap-4">
               <button
-                onClick={() => navigate('/issuer')}
+                onClick={() => {
+                  const demo = import.meta.env.VITE_DEMO_WORKER_ADDRESS as string
+                  if (demo) navigate(`/w/${demo}`)
+                  else navigate('/worker')
+                }}
                 className="nb-btn bg-terra text-cream px-8 py-4 text-sm tracking-wide font-display font-bold uppercase"
               >
-                Issue an Attestation &rarr;
+                Try the Demo &rarr;
               </button>
               <button
                 onClick={() => navigate('/worker')}
@@ -423,8 +430,18 @@ const Landing: React.FC = () => {
                     ))}
                   </div>
 
-                  <div className="pt-3 border-t-2 border-dashed border-charcoal/8">
+                  <div className="pt-3 border-t-2 border-dashed border-charcoal/8 flex items-center justify-between gap-2">
                     <span className="font-mono text-[10px] text-charcoal/35">{contract.storage}</span>
+                    {contract.appId && (
+                      <a
+                        href={`https://testnet.explorer.perawallet.app/application/${contract.appId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-mono text-[10px] text-terra hover:text-terra-dark transition-colors whitespace-nowrap"
+                      >
+                        app {contract.appId} ↗
+                      </a>
+                    )}
                   </div>
                 </div>
               ))}

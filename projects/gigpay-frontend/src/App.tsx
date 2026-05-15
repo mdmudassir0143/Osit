@@ -5,6 +5,7 @@ import Landing from './pages/Landing'
 import WorkerDashboard from './pages/WorkerDashboard'
 import IssuerDashboard from './pages/IssuerDashboard'
 import ConsumerDashboard from './pages/ConsumerDashboard'
+import PublicWorker from './pages/PublicWorker'
 import { getAlgodConfigFromViteEnvironment, getKmdConfigFromViteEnvironment } from './utils/network/getAlgoClientConfigs'
 
 let supportedWallets: SupportedWallet[]
@@ -51,6 +52,7 @@ export default function App() {
             <Route path="/worker" element={<WorkerDashboard />} />
             <Route path="/issuer" element={<IssuerDashboard />} />
             <Route path="/consumer" element={<ConsumerDashboard />} />
+            <Route path="/w/:id" element={<PublicWorker />} />
           </Routes>
         </BrowserRouter>
       </WalletProvider>

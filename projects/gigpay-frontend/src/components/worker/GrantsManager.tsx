@@ -76,7 +76,6 @@ const GrantsManager: React.FC<Props> = ({ onChanged }) => {
   return (
     <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal-sun">
       <div className="mb-5">
-        <span className="nb-tag bg-sun-light text-charcoal border-sun/40 text-[9px] mb-2">Consent</span>
         <h3 className="font-display text-xl font-bold text-charcoal mt-1">Manage access grants</h3>
         <p className="text-charcoal/50 text-sm mt-1">Authorize specific consumers to query your attestations. Revocable any time.</p>
       </div>

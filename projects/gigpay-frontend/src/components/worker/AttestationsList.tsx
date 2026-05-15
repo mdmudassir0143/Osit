@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { AttestationRecord, CATEGORY_LABELS } from '../../services/attestations'
 import { fetchPayload, AttestationPayload } from '../../services/vault'
 import { bytesToHex } from '../../services/vault'
+import { appUrl } from '../../services/explorer'
+import { getAppIds } from '../../services/algorand'
 
 interface Props {
   attestations: AttestationRecord[]
@@ -65,12 +67,22 @@ const AttestationCard: React.FC<{ att: AttestationRecord }> = ({ att }) => {
         <span>weight: {att.weight}</span>
         <span>id: {bytesToHex(att.id).slice(0, 12)}…</span>
       </div>
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="mt-3 text-[11px] font-display font-semibold tracking-wide uppercase text-terra hover:text-terra-dark transition-colors"
-      >
-        {open ? 'Hide claim' : 'View claim'}
-      </button>
+      <div className="flex items-center gap-4 mt-3">
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="text-[11px] font-display font-semibold tracking-wide uppercase text-terra hover:text-terra-dark transition-colors"
+        >
+          {open ? 'Hide claim' : 'View claim'}
+        </button>
+        <a
+          href={appUrl(getAppIds().attestationLog)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[11px] font-display font-semibold tracking-wide uppercase text-charcoal/50 hover:text-charcoal transition-colors"
+        >
+          On-chain ↗
+        </a>
+      </div>
       {open && (
         <div className="mt-3 pt-3 border-t-[1.5px] border-dashed border-charcoal/15">
           {payload ? (
