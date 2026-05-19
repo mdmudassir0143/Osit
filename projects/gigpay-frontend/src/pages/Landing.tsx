@@ -3,21 +3,108 @@ import { useNavigate } from 'react-router-dom'
 import AloraLogo from '../components/shared/AloraLogo'
 
 const TICKER_ITEMS = [
-  'PORTABLE WORK HISTORY',
-  'CRYPTOGRAPHICALLY SIGNED',
-  'WORKER-OWNED RECORDS',
+  'CREDIT BUREAU FOR GIG WORKERS',
+  'VERIFIED INCOME ON-CHAIN',
+  'NBFC-READY DATA',
   'CONSENT-GATED API',
-  'OPEN STANDARD CANDIDATE',
+  'CRYPTOGRAPHICALLY SIGNED',
   'ALGORAND-NATIVE',
-  'ANY DOMAIN, ANY GEOGRAPHY',
-  'NO FINANCIAL CUSTODY',
+  'WORKER-OWNED RECORDS',
+  '300M+ TAM, ZERO CIBIL',
 ]
 
 const STATS = [
-  { value: '2B+', label: 'Informal workers globally', accent: 'bg-sun' },
-  { value: '~80%', label: 'Have no verifiable work record', accent: 'bg-terra' },
-  { value: '0%', label: 'Reputation portable across employers', accent: 'bg-lavender' },
-  { value: 'Lost', label: 'When workers change jobs or borders', accent: 'bg-sage' },
+  { value: '300M+', label: 'Gig workers in India without CIBIL', accent: 'bg-terra' },
+  { value: '₹4.5L Cr', label: 'Untapped credit TAM', accent: 'bg-sun' },
+  { value: '<3s', label: 'Underwriting decision via API', accent: 'bg-sage' },
+  { value: '95%', label: 'Lower cost per underwrite', accent: 'bg-lavender' },
+]
+
+const AURA_LADDER = [
+  {
+    band: 'Building',
+    range: '1–300',
+    unlocks: ['Register on Alora', 'Receive first attestations', 'Build foundation'],
+    accent: 'bg-terra',
+    shadow: 'shadow-brutal-terra',
+    ribbon: 'bg-terra-light text-terra border-terra/40',
+  },
+  {
+    band: 'Fair',
+    range: '301–550',
+    unlocks: ['Salary advance up to ₹10K', 'BNPL eligibility', 'Insurance enrollment'],
+    accent: 'bg-sun',
+    shadow: 'shadow-brutal-sun',
+    ribbon: 'bg-sun-light text-charcoal border-sun/40',
+  },
+  {
+    band: 'Good',
+    range: '551–700',
+    unlocks: ['Personal loan ₹25–50K', 'Two-wheeler EMI at standard rates', 'Rent deposit waivers'],
+    accent: 'bg-sage',
+    shadow: 'shadow-brutal-sage',
+    ribbon: 'bg-sage-light text-sage border-sage/40',
+  },
+  {
+    band: 'Very Good',
+    range: '701–850',
+    unlocks: ['Personal loan ₹1–2L', 'Equipment finance', 'Credit line + lower rates'],
+    accent: 'bg-lavender',
+    shadow: 'shadow-brutal-lavender',
+    ribbon: 'bg-lavender/30 text-charcoal border-lavender/50',
+  },
+  {
+    band: 'Excellent',
+    range: '851–1000',
+    unlocks: ['Mortgage-grade record', 'Premium insurance', 'Cross-border portability'],
+    accent: 'bg-charcoal',
+    shadow: 'shadow-brutal',
+    ribbon: 'bg-charcoal text-cream border-charcoal',
+  },
+]
+
+const FI_DATA_POINTS = [
+  {
+    name: 'Aura Score',
+    type: 'uint16',
+    desc: '1–1000, CIBIL-shaped. Plug-and-play in existing underwriting rules.',
+    replaces: 'CIBIL Score',
+  },
+  {
+    name: 'Verified Monthly Income',
+    type: 'object',
+    desc: 'Derived from payment-proof attestations. Mean, median, 12-month variance, distinct payers.',
+    replaces: 'Salary slip',
+  },
+  {
+    name: 'Income Stability Index',
+    type: 'uint8',
+    desc: 'Composite of recency × diversification × tenure. One number for income reliability.',
+    replaces: 'Form 16 / ITR',
+  },
+  {
+    name: 'Trust Signal Pack',
+    type: 'object',
+    desc: 'Distinct issuers, vouch count, revocation rate, verified-business issuer ratio.',
+    replaces: 'Reference check',
+  },
+  {
+    name: 'Attestation Feed',
+    type: 'array',
+    desc: 'Raw on-chain records, consent-gated. For deep due-diligence on flagged cases.',
+    replaces: 'Employment letter',
+  },
+]
+
+const FI_PARTNERS = [
+  { name: 'Shriram Finance', tag: 'NBFC' },
+  { name: 'Capital Float', tag: 'NBFC' },
+  { name: 'KreditBee', tag: 'NBFC' },
+  { name: 'Lendingkart', tag: 'NBFC' },
+  { name: 'Freo', tag: 'Credit Line' },
+  { name: 'Niyo', tag: 'Neo-bank' },
+  { name: 'Jupiter', tag: 'Neo-bank' },
+  { name: 'Fi Money', tag: 'Neo-bank' },
 ]
 
 const ATTESTATION_CATEGORIES = [
@@ -180,11 +267,14 @@ const Landing: React.FC = () => {
           <a href="#flow" className="text-sm font-medium text-charcoal/50 hover:text-charcoal transition-colors hidden md:block">
             Flow
           </a>
-          <a href="#architecture" className="text-sm font-medium text-charcoal/50 hover:text-charcoal transition-colors hidden md:block">
-            Architecture
+          <a href="#ladder" className="text-sm font-medium text-charcoal/50 hover:text-charcoal transition-colors hidden md:block">
+            Ladder
           </a>
-          <a href="#categories" className="text-sm font-medium text-charcoal/50 hover:text-charcoal transition-colors hidden md:block">
-            Categories
+          <a href="#partners" className="text-sm font-semibold text-terra hover:text-terra-dark transition-colors hidden md:block">
+            For Partners
+          </a>
+          <a href="#architecture" className="text-sm font-medium text-charcoal/50 hover:text-charcoal transition-colors hidden lg:block">
+            Architecture
           </a>
           <div className="relative">
             <button
@@ -263,21 +353,25 @@ const Landing: React.FC = () => {
         <div className="relative grid md:grid-cols-12 gap-10 items-start">
           {/* Left — headline */}
           <div className={`md:col-span-7 ${mounted ? 'animate-fade-up' : 'opacity-0'}`}>
+            <span className="nb-tag bg-terra-light text-terra border-terra/40 text-[10px] tracking-[0.3em] uppercase mb-5 inline-block">
+              The Bureau · For Informal Labor
+            </span>
             <h1 className="font-display text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold leading-[0.95] tracking-tight mb-8">
-              Portable{' '}
+              The{' '}
               <span className="relative inline-block">
-                work history
+                credit bureau
                 <svg className="absolute -bottom-1 left-0 w-full" height="8" viewBox="0 0 200 8" preserveAspectRatio="none">
                   <path d="M0 5 Q50 0 100 5 T200 5" stroke="#c44b2b" strokeWidth="3" fill="none" />
                 </svg>
               </span>
               <br />
-              <span className="font-serif italic text-terra font-normal">for every worker.</span>
+              <span className="font-serif italic text-terra font-normal">the informal economy never had.</span>
             </h1>
 
-            <p className="text-charcoal/55 text-lg md:text-xl max-w-lg leading-relaxed mb-10">
-              The open reputation layer for gig workers, freelancers, and informal labor. Cryptographically signed, worker-owned,
-              consent-gated. Built on Algorand.
+            <p className="text-charcoal/55 text-lg md:text-xl max-w-xl leading-relaxed mb-10">
+              NBFCs and neo-banks query Alora to underwrite the <span className="font-semibold text-charcoal">300M Indians</span>{' '}
+              without salary slips, ITRs, or EPFO numbers. Workers own the record. Lenders pay per query.{' '}
+              <span className="font-semibold text-charcoal">The money flows through partners — we don't touch it.</span>
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -291,11 +385,17 @@ const Landing: React.FC = () => {
               >
                 Try the Demo &rarr;
               </button>
+              <a
+                href="#partners"
+                className="nb-btn bg-charcoal text-cream px-8 py-4 text-sm tracking-wide font-display font-bold uppercase"
+              >
+                For Partners
+              </a>
               <button
                 onClick={() => navigate('/worker')}
                 className="nb-btn bg-cream text-charcoal px-8 py-4 text-sm tracking-wide font-display font-bold uppercase"
               >
-                Worker Dashboard
+                Worker
               </button>
             </div>
           </div>
@@ -308,7 +408,7 @@ const Landing: React.FC = () => {
                 <span className="text-charcoal text-lg">!</span>
               </div>
 
-              <span className="nb-tag bg-terra-light text-terra border-terra/40 text-[9px] mb-6">Why this matters</span>
+              <span className="nb-tag bg-terra-light text-terra border-terra/40 text-[9px] mb-6">The TAM</span>
 
               <div className="grid grid-cols-2 gap-5 mt-6">
                 {STATS.map((stat, i) => (
@@ -323,7 +423,7 @@ const Landing: React.FC = () => {
               <div className="mt-7 pt-5 border-t-2 border-dashed border-charcoal/10">
                 <div className="flex items-center gap-2.5">
                   <div className="w-2 h-2 bg-terra rounded-full animate-pulse" />
-                  <span className="text-xs text-terra font-semibold">Alora gives them a record</span>
+                  <span className="text-xs text-terra font-semibold">Alora is the missing rail</span>
                 </div>
               </div>
             </div>
@@ -548,6 +648,206 @@ const Landing: React.FC = () => {
         </div>
       </section>
 
+      {/* ═══════════ SECTION DIVIDER — LADDER ═══════════ */}
+      <div className="relative z-10 bg-cream">
+        <div className="max-w-6xl mx-auto px-6 md:px-12 lg:px-20">
+          <div className="border-t-[2.5px] border-charcoal/10" />
+        </div>
+        <div className="flex items-center justify-center -mt-4">
+          <div className="bg-cream px-6 flex items-center gap-3">
+            <div className="w-3 h-3 bg-terra rounded-full border-2 border-charcoal" />
+            <span className="font-mono text-[10px] tracking-[0.25em] text-charcoal/30 uppercase font-medium">
+              Financial Ladder
+            </span>
+            <div className="w-3 h-3 bg-terra rounded-full border-2 border-charcoal" />
+          </div>
+        </div>
+      </div>
+
+      {/* ═══════════ AURA LADDER ═══════════ */}
+      <section id="ladder" className="relative z-10 bg-cream px-6 md:px-12 lg:px-20 pt-12 pb-24 md:pb-32">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-4">
+              From invisible to{' '}
+              <span className="font-serif italic text-terra font-normal">bankable.</span>
+            </h2>
+            <p className="text-charcoal/45 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+              The Aura Score is a single number, 1–1000, that lenders underwrite from. Each band unlocks specific financial
+              products. The math is open; the path is concrete.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            {AURA_LADDER.map((tier, i) => (
+              <div
+                key={tier.band}
+                className={`nb-card bg-white rounded-2xl p-5 ${tier.shadow} relative overflow-hidden flex flex-col`}
+              >
+                <div className={`absolute top-0 left-0 right-0 h-1.5 ${tier.accent} rounded-t-2xl`} />
+                <div className="pt-2 mb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-charcoal/35">
+                      Tier {i + 1}
+                    </span>
+                    <span className={`nb-tag ${tier.ribbon} text-[9px] font-mono`}>{tier.range}</span>
+                  </div>
+                  <h3 className="font-display text-xl font-extrabold text-charcoal">{tier.band}</h3>
+                </div>
+                <ul className="space-y-1.5 flex-1">
+                  {tier.unlocks.map((u) => (
+                    <li key={u} className="flex items-start gap-2 text-[12px] text-charcoal/65 leading-relaxed">
+                      <span className={`w-1.5 h-1.5 ${tier.accent} rounded-full border border-charcoal/40 mt-1.5 shrink-0`} />
+                      <span>{u}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 text-center text-[11px] font-mono text-charcoal/40 max-w-2xl mx-auto leading-relaxed">
+            Unlocks shown are reference scenarios negotiated with pilot partners. Each NBFC sets its own thresholds and product
+            mix. Alora exposes the data — they own the decision.
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ SECTION DIVIDER — PARTNERS ═══════════ */}
+      <div className="relative z-10 bg-cream">
+        <div className="max-w-6xl mx-auto px-6 md:px-12 lg:px-20">
+          <div className="border-t-[2.5px] border-charcoal/10" />
+        </div>
+        <div className="flex items-center justify-center -mt-4">
+          <div className="bg-cream px-6 flex items-center gap-3">
+            <div className="w-3 h-3 bg-sage rounded-full border-2 border-charcoal" />
+            <span className="font-mono text-[10px] tracking-[0.25em] text-charcoal/30 uppercase font-medium">For Partners</span>
+            <div className="w-3 h-3 bg-sage rounded-full border-2 border-charcoal" />
+          </div>
+        </div>
+      </div>
+
+      {/* ═══════════ WHAT FIS GET ═══════════ */}
+      <section id="partners" className="relative z-10 bg-cream px-6 md:px-12 lg:px-20 pt-12 pb-24 md:pb-32">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+            <div>
+              <span className="nb-tag bg-sage-light text-sage border-sage/40 text-[10px] tracking-[0.3em] uppercase mb-3 inline-block">
+                For NBFCs · Neo-banks · Insurers
+              </span>
+              <h2 className="font-display text-4xl md:text-5xl font-extrabold tracking-tight mt-2">
+                Five data points,{' '}
+                <span className="font-serif italic text-terra font-normal">one API.</span>
+              </h2>
+            </div>
+            <span className="nb-tag bg-cream text-charcoal/50 border-charcoal/15 font-mono text-[9px]">
+              REST + GraphQL
+            </span>
+          </div>
+          <p className="text-charcoal/55 text-base max-w-2xl leading-relaxed mb-10">
+            Decision-ready data points your underwriting engine can ingest in seconds. Each one replaces a traditional document
+            informal-economy workers can't produce. Consent-gated, queryable per worker, billed per call.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {FI_DATA_POINTS.map((dp, i) => (
+              <div key={dp.name} className="nb-card bg-white rounded-2xl p-5 shadow-brutal relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-1.5 bg-sage rounded-t-2xl" />
+                <div className="flex items-start justify-between mb-3 pt-1">
+                  <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-charcoal/35">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className="font-mono text-[10px] bg-sage-light text-sage px-2 py-0.5 rounded-md border border-sage/30">
+                    {dp.type}
+                  </span>
+                </div>
+                <h3 className="font-display text-lg font-bold text-charcoal mb-2">{dp.name}</h3>
+                <p className="text-charcoal/55 text-[13px] leading-relaxed mb-3">{dp.desc}</p>
+                <div className="pt-3 border-t-2 border-dashed border-charcoal/10">
+                  <div className="font-mono text-[9px] tracking-[0.2em] uppercase text-charcoal/35 mb-0.5">Replaces</div>
+                  <div className="font-mono text-[12px] text-terra font-semibold">{dp.replaces}</div>
+                </div>
+              </div>
+            ))}
+
+            {/* Sample JSON card to round out the grid */}
+            <div className="nb-card bg-charcoal text-cream rounded-2xl p-5 shadow-brutal-terra relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-terra rounded-t-2xl" />
+              <div className="flex items-start justify-between mb-3 pt-1">
+                <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-cream/50">Sample</span>
+                <span className="font-mono text-[10px] bg-cream/10 text-cream/70 px-2 py-0.5 rounded-md border border-cream/15">
+                  GET /v1/score
+                </span>
+              </div>
+              <pre className="font-mono text-[10px] text-cream/75 leading-relaxed overflow-x-auto whitespace-pre">{`{
+  "address": "XXTW...IGFU",
+  "aura_score": 712,
+  "band": "Very Good",
+  "verified_monthly_income": {
+    "mean": 14250,
+    "variance": 0.08,
+    "distinct_payers": 3
+  },
+  "stability_index": 78,
+  "tenure_months": 14
+}`}</pre>
+            </div>
+          </div>
+
+          {/* Pricing strip */}
+          <div className="mt-10 nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal-lg">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">Pricing</span>
+                <h3 className="font-display text-xl font-bold text-charcoal mt-1">Pay-per-query, no take-rate</h3>
+                <p className="text-charcoal/50 text-sm mt-1 max-w-md">
+                  We're a bureau, not a lender. Per-query keeps us out of financial-operator regulation; you keep 100% of the
+                  spread on the loans you write.
+                </p>
+              </div>
+              <div className="grid grid-cols-3 gap-3 shrink-0">
+                {[
+                  { label: 'Pilot', price: 'Free', sub: '100 queries/mo' },
+                  { label: 'Growth', price: '₹20', sub: '/ query' },
+                  { label: 'Enterprise', price: '₹2L+', sub: '/ month' },
+                ].map((t) => (
+                  <div key={t.label} className="border-[1.5px] border-charcoal/15 rounded-lg p-3 text-center bg-cream/30">
+                    <div className="font-mono text-[9px] tracking-[0.2em] uppercase text-charcoal/40 mb-1">{t.label}</div>
+                    <div className="font-display text-lg font-extrabold text-charcoal leading-none">{t.price}</div>
+                    <div className="font-mono text-[10px] text-charcoal/40 mt-1">{t.sub}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Partners strip */}
+          <div className="mt-8">
+            <div className="text-center mb-5">
+              <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-charcoal/40">
+                Pilot Conversations
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {FI_PARTNERS.map((p) => (
+                <div
+                  key={p.name}
+                  className="nb-card bg-white rounded-lg px-4 py-2.5 shadow-brutal-sm flex items-center gap-2"
+                >
+                  <span className="w-2 h-2 bg-terra rounded-full border border-charcoal/40" />
+                  <span className="font-display text-sm font-bold text-charcoal">{p.name}</span>
+                  <span className="font-mono text-[9px] tracking-widest text-charcoal/35 uppercase">· {p.tag}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 text-center text-[11px] font-mono text-charcoal/35 max-w-2xl mx-auto leading-relaxed">
+              Logos shown represent pilot-stage outreach. No formal partnership claimed at this stage — production integrations
+              land alongside the Phase 5 read-API gateway.
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════ WHY ALGORAND ═══════════ */}
       <section className="relative z-10 bg-cream px-6 md:px-12 lg:px-20 py-24 md:py-32">
         <div className="max-w-6xl mx-auto">
@@ -610,24 +910,29 @@ const Landing: React.FC = () => {
         <div className="max-w-3xl mx-auto text-center">
           <div className="w-12 h-1 bg-terra rounded-full mx-auto mb-8" />
           <h2 className="font-display text-4xl md:text-6xl font-extrabold tracking-tight leading-[1.05] mb-6">
-            Build on the open <span className="font-serif italic text-terra font-normal">reputation layer.</span>
+            Underwrite the next{' '}
+            <span className="font-serif italic text-terra font-normal">300 million.</span>
           </h2>
-          <p className="text-charcoal/45 text-lg mb-10 max-w-lg mx-auto text-balance">
-            Issuers attest. Workers own. Consumers query. Alora is the protocol — your products are the application.
+          <p className="text-charcoal/45 text-lg mb-10 max-w-xl mx-auto text-balance">
+            Workers build their record. Employers issue. Lenders query. Alora is the data layer — the loans are yours.
           </p>
 
           <div className="flex flex-wrap justify-center gap-4">
-            <button
-              onClick={() => navigate('/issuer')}
+            <a
+              href="#partners"
               className="nb-btn bg-terra text-cream px-10 py-5 text-sm font-display font-bold tracking-widest uppercase"
             >
-              Issuer Portal &rarr;
-            </button>
+              For Partners &rarr;
+            </a>
             <button
-              onClick={() => navigate('/consumer')}
+              onClick={() => {
+                const demo = import.meta.env.VITE_DEMO_WORKER_ADDRESS as string
+                if (demo) navigate(`/w/${demo}`)
+                else navigate('/worker')
+              }}
               className="nb-btn bg-cream text-charcoal px-10 py-5 text-sm font-display font-bold tracking-widest uppercase"
             >
-              Consumer API
+              See a Worker Record
             </button>
           </div>
         </div>
@@ -638,14 +943,14 @@ const Landing: React.FC = () => {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
           <div className="flex items-center gap-3">
             <AloraLogo size="sm" />
-            <span className="text-charcoal/25 text-xs ml-1">Open Reputation Infrastructure</span>
+            <span className="text-charcoal/25 text-xs ml-1">The Bureau for Informal Labor</span>
           </div>
           <div className="flex flex-wrap items-center gap-4 font-mono text-[10px] text-charcoal/30">
             <span>Built on Algorand</span>
             <span className="w-1.5 h-1.5 bg-charcoal/10 rounded-full" />
             <span>Worker-Owned</span>
             <span className="w-1.5 h-1.5 bg-charcoal/10 rounded-full" />
-            <span>Open Standard Candidate</span>
+            <span>NBFC-Ready</span>
           </div>
         </div>
       </footer>
