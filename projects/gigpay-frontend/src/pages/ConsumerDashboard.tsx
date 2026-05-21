@@ -3,6 +3,12 @@ import { useWallet } from '@txnlab/use-wallet-react'
 import DashboardLayout from '../layouts/DashboardLayout'
 import ConnectWallet from '../components/ConnectWallet'
 import AloraLogo from '../components/shared/AloraLogo'
+import ConsumerHero from '../components/consumer/ConsumerHero'
+import UseCasePersonas from '../components/consumer/UseCasePersonas'
+import DataPointsPanel from '../components/consumer/DataPointsPanel'
+import UnderwritingFlow from '../components/consumer/UnderwritingFlow'
+import WorkerEmpowerment from '../components/consumer/WorkerEmpowerment'
+import PricingPanel from '../components/consumer/PricingPanel'
 import QueryConsole from '../components/consumer/QueryConsole'
 
 const ConsumerDashboard: React.FC = () => {
@@ -18,7 +24,8 @@ const ConsumerDashboard: React.FC = () => {
             <AloraLogo size="lg" />
           </div>
           <p className="text-charcoal/55 text-sm mb-8 leading-relaxed">
-            Connect your wallet to query worker attestations. (V1: free; Phase 5 adds subscription gating via the read-API gateway.)
+            Connect your wallet to query verified worker records. NBFCs, neo-banks, insurers, employers, landlords, and welfare
+            agencies all query the same bureau API.
           </p>
           <button
             onClick={() => setWalletModal(true)}
@@ -38,14 +45,12 @@ const ConsumerDashboard: React.FC = () => {
   return (
     <DashboardLayout title="Consumer">
       <div className="space-y-6">
-        <div className="nb-card bg-charcoal rounded-2xl p-6 md:p-8 shadow-brutal text-cream">
-          <span className="nb-tag bg-cream/10 text-cream/60 border-cream/15 text-[9px] mb-2">Phase 5 stub</span>
-          <h2 className="font-display text-xl font-extrabold mt-2 mb-1">Direct on-chain reads (V1)</h2>
-          <p className="text-cream/55 text-sm leading-relaxed">
-            In V1, queries hit Algorand directly. The hosted read-API gateway with subscription billing arrives in Phase 5. Until then, your
-            wallet IS your API key — just request grants from workers and query below.
-          </p>
-        </div>
+        <ConsumerHero address={activeAddress} />
+        <UseCasePersonas />
+        <DataPointsPanel />
+        <UnderwritingFlow />
+        <WorkerEmpowerment />
+        <PricingPanel />
         <QueryConsole />
       </div>
     </DashboardLayout>
