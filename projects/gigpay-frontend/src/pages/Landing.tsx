@@ -791,7 +791,30 @@ const Landing: React.FC = () => {
   "stability_index": 78,
   "tenure_months": 14
 }`}</pre>
+              <a
+                href="/sandbox"
+                className="mt-3 inline-block font-mono text-[10px] tracking-widest uppercase text-terra hover:text-terra-light transition-colors"
+              >
+                Try this live in the sandbox ↗
+              </a>
             </div>
+          </div>
+
+          {/* Sandbox-prominent CTA */}
+          <div className="mt-6 nb-card bg-charcoal text-cream rounded-2xl p-5 md:p-6 shadow-brutal-terra flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <span className="nb-tag bg-cream/10 text-cream/65 border-cream/15 text-[9px] mb-2">No auth · No signup</span>
+              <h3 className="font-display text-lg md:text-xl font-bold mt-1">Test the bureau API live</h3>
+              <p className="text-cream/55 text-sm mt-1">
+                Paste any worker address. See the JSON your engine will receive. Get curl / Python / JS snippets.
+              </p>
+            </div>
+            <a
+              href="/sandbox"
+              className="nb-btn bg-terra text-cream px-6 py-3 text-sm font-display font-bold tracking-widest uppercase shrink-0"
+            >
+              Open Sandbox →
+            </a>
           </div>
 
           {/* Pricing strip */}

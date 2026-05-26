@@ -46,6 +46,29 @@ const ConsumerDashboard: React.FC = () => {
     <DashboardLayout title="Consumer">
       <div className="space-y-6">
         <ConsumerHero address={activeAddress} />
+
+        {/* Sandbox callout — public API playground */}
+        <div className="nb-card bg-white rounded-2xl p-5 md:p-6 shadow-brutal flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">Try the API</span>
+            <h3 className="font-display text-base md:text-lg font-bold text-charcoal mt-1">
+              No-auth sandbox for your engineering team
+            </h3>
+            <p className="text-charcoal/55 text-[13px] mt-1 max-w-2xl">
+              Share this link with your tech lead. They can paste a worker address and get the full JSON response, with copyable
+              code snippets, in 30 seconds. No signup required.
+            </p>
+          </div>
+          <a
+            href="/sandbox"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nb-btn bg-terra text-cream px-6 py-3 text-xs font-display font-bold tracking-widest uppercase shrink-0"
+          >
+            Open /sandbox ↗
+          </a>
+        </div>
+
         <UseCasePersonas />
         <DataPointsPanel />
         <UnderwritingFlow />
