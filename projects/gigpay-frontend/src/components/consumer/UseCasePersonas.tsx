@@ -65,7 +65,7 @@ const UseCasePersonas: React.FC = () => {
     <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
         <div>
-          <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">Who uses this</span>
+          <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[11px] mb-2">Who uses this</span>
           <h3 className="font-display text-xl md:text-2xl font-bold text-charcoal mt-1">
             Six audiences. One bureau API.
           </h3>
@@ -81,11 +81,11 @@ const UseCasePersonas: React.FC = () => {
           <div key={p.tag} className={`nb-card bg-white rounded-xl p-5 ${p.shadow} relative overflow-hidden`}>
             <div className={`absolute top-0 left-0 right-0 h-1.5 ${p.accent} rounded-t-xl`} />
             <div className="pt-2 mb-3">
-              <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 font-mono text-[9px]">{p.tag}</span>
+              <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 font-mono text-[11px]">{p.tag}</span>
             </div>
             <h4 className="font-display text-sm font-bold text-charcoal mb-2">{p.who}</h4>
             <div className="text-[13px] text-charcoal/70 italic leading-relaxed mb-3">{p.ask}</div>
-            <div className="pt-3 border-t-2 border-dashed border-charcoal/10 text-[12px] text-charcoal/55 leading-relaxed">
+            <div className="pt-3 border-t border-dashed border-charcoal/10 text-[12px] text-charcoal/55 leading-relaxed">
               {p.outcome}
             </div>
           </div>

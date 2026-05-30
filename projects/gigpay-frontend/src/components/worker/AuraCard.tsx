@@ -73,12 +73,12 @@ const AuraCard: React.FC<Props> = ({ address, profile, attestations }) => {
       <div className="relative flex items-start justify-between gap-6 mb-6">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-cream/50">Aura Card</span>
+            <span className="font-mono text-[12px] tracking-[0.1em] uppercase text-cream/50">Aura Card</span>
             <span className="w-1 h-1 bg-terra rounded-full" />
-            <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-cream/50">Alora</span>
+            <span className="font-mono text-[12px] tracking-[0.1em] uppercase text-cream/50">Alora</span>
           </div>
-          <h2 className="font-display text-3xl md:text-4xl font-extrabold leading-none mb-2">@{profile.handle}</h2>
-          <div className="font-mono text-[11px] text-cream/40">{truncate(address, 8, 6)}</div>
+          <h2 className="font-serif text-3xl md:text-4xl font-normal leading-none tracking-[-0.01em] mb-2">@{profile.handle}</h2>
+          <div className="font-mono text-[12px] text-cream/40">{truncate(address, 8, 6)}</div>
         </div>
 
         {/* Circular score gauge */}
@@ -122,14 +122,14 @@ const AuraCard: React.FC<Props> = ({ address, profile, attestations }) => {
             })}
           </svg>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <div className="font-mono text-[9px] tracking-[0.3em] uppercase text-cream/45 mb-1">Aura Score</div>
+            <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-cream/45 mb-1">Aura Score</div>
             <div className="font-display text-5xl font-extrabold leading-none" style={{ color: strokeColor }}>
               {score.total}
             </div>
-            <div className="font-display text-[11px] font-bold tracking-wider uppercase mt-1" style={{ color: strokeColor }}>
+            <div className="font-display text-[12px] font-bold tracking-wider uppercase mt-1" style={{ color: strokeColor }}>
               {score.band}
             </div>
-            <div className="font-mono text-[9px] text-cream/35 mt-1">/ 1000</div>
+            <div className="font-mono text-[11px] text-cream/35 mt-1">/ 1000</div>
           </div>
         </div>
       </div>
@@ -137,26 +137,26 @@ const AuraCard: React.FC<Props> = ({ address, profile, attestations }) => {
       {/* Stats row */}
       <div className="relative grid grid-cols-4 gap-3 mb-6">
         <div className="bg-cream/[0.06] border-[1.5px] border-cream/10 rounded-lg p-3">
-          <div className="font-mono text-[9px] tracking-[0.25em] uppercase text-cream/45 mb-1">Experience</div>
+          <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-cream/45 mb-1">Experience</div>
           <div className="font-display text-xl font-extrabold">{yearsLabel}</div>
         </div>
         <div className="bg-cream/[0.06] border-[1.5px] border-cream/10 rounded-lg p-3">
-          <div className="font-mono text-[9px] tracking-[0.25em] uppercase text-cream/45 mb-1">Active</div>
+          <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-cream/45 mb-1">Active</div>
           <div className="font-display text-xl font-extrabold">{score.activeCount}</div>
         </div>
         <div className="bg-cream/[0.06] border-[1.5px] border-cream/10 rounded-lg p-3">
-          <div className="font-mono text-[9px] tracking-[0.25em] uppercase text-cream/45 mb-1">Issuers</div>
+          <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-cream/45 mb-1">Issuers</div>
           <div className="font-display text-xl font-extrabold">{score.distinctIssuers}</div>
         </div>
         <div className="bg-cream/[0.06] border-[1.5px] border-cream/10 rounded-lg p-3">
-          <div className="font-mono text-[9px] tracking-[0.25em] uppercase text-cream/45 mb-1">Skill Areas</div>
+          <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-cream/45 mb-1">Skill Areas</div>
           <div className="font-display text-xl font-extrabold">{score.distinctCategories}</div>
         </div>
       </div>
 
       {/* Skills row */}
       <div className="relative">
-        <div className="font-mono text-[9px] tracking-[0.25em] uppercase text-cream/45 mb-3">Skill Set</div>
+        <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-cream/45 mb-3">Skill Set</div>
         {skills.length === 0 ? (
           <div className="text-cream/40 text-xs italic">Skills appear here as employers and clients attest to your work.</div>
         ) : (
@@ -164,8 +164,8 @@ const AuraCard: React.FC<Props> = ({ address, profile, attestations }) => {
             {skills.map(([cat, count]) => (
               <div key={cat} className="flex items-center gap-2 bg-cream/[0.08] border-[1.5px] border-cream/15 rounded-md px-3 py-1.5">
                 <span className={`w-2 h-2 ${categoryAccent[cat]} rounded-full border border-charcoal/40`} />
-                <span className="font-mono text-[11px] text-cream/85 font-semibold">{CATEGORY_LABELS[cat]}</span>
-                <span className="font-mono text-[10px] text-cream/45">×{count}</span>
+                <span className="font-mono text-[12px] text-cream/85 font-semibold">{CATEGORY_LABELS[cat]}</span>
+                <span className="font-mono text-[12px] text-cream/45">×{count}</span>
               </div>
             ))}
           </div>
@@ -173,7 +173,7 @@ const AuraCard: React.FC<Props> = ({ address, profile, attestations }) => {
       </div>
 
       {/* Footer */}
-      <div className="relative mt-6 pt-4 border-t-[1.5px] border-cream/10 flex items-center justify-between text-[10px] font-mono text-cream/35">
+      <div className="relative mt-6 pt-4 border-t-[1.5px] border-cream/10 flex items-center justify-between text-[12px] font-mono text-cream/35">
         <span>Portable · On-chain · Worker-owned</span>
         <span>alora.id</span>
       </div>

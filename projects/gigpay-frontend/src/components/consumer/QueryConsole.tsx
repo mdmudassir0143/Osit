@@ -67,7 +67,7 @@ const QueryConsole: React.FC = () => {
   return (
     <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal-lavender">
       <div className="mb-5">
-        <span className="nb-tag bg-lavender/30 text-charcoal border-lavender/50 text-[9px] mb-2">Query</span>
+        <span className="nb-tag bg-lavender/30 text-charcoal border-lavender/50 text-[11px] mb-2">Query</span>
         <h3 className="font-display text-xl font-bold text-charcoal mt-1">Query a worker's attestations</h3>
         <p className="text-charcoal/50 text-sm mt-1">
           The worker must grant your wallet access first. Without a grant, you'll see attestation metadata but not the encrypted claims.
@@ -80,7 +80,7 @@ const QueryConsole: React.FC = () => {
           value={subjectInput}
           onChange={(e) => setSubjectInput(e.target.value)}
           placeholder="Worker wallet address or phone"
-          className="flex-1 px-3 py-2 border-[2px] border-charcoal/15 focus:border-charcoal rounded-lg bg-cream font-mono text-xs focus:outline-none"
+          className="flex-1 px-3 py-2 border border-charcoal/15 focus:border-charcoal/15 rounded-lg bg-cream font-mono text-xs focus:outline-none"
         />
         <button
           onClick={onQuery}
@@ -91,7 +91,7 @@ const QueryConsole: React.FC = () => {
         </button>
       </div>
 
-      {error && <div className="border-[2px] border-terra/30 bg-terra-light text-terra text-xs px-3 py-2 rounded-lg mb-4">{error}</div>}
+      {error && <div className="border border-terra/30 bg-terra-light text-terra text-xs px-3 py-2 rounded-lg mb-4">{error}</div>}
 
       {grant && results && (
         <div className="space-y-3">
@@ -120,13 +120,13 @@ const QueryConsole: React.FC = () => {
                 return (
                   <div key={Array.from(row.att.id).join('')} className="nb-card bg-white rounded-xl p-4 shadow-brutal-sm">
                     <div className="flex items-start justify-between mb-2">
-                      <div className="text-[10px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold">
+                      <div className="text-[12px] tracking-[0.08em] uppercase text-charcoal/40 font-display font-semibold">
                         {CATEGORY_LABELS[row.att.category]}
                       </div>
                       {!row.accessible && (
-                        <span className="nb-tag bg-charcoal/10 text-charcoal/55 border-charcoal/15 text-[9px]">No Access</span>
+                        <span className="nb-tag bg-charcoal/10 text-charcoal/55 border-charcoal/15 text-[11px]">No Access</span>
                       )}
-                      {row.att.revoked && <span className="nb-tag bg-terra-light text-terra border-terra/40 text-[9px]">Revoked</span>}
+                      {row.att.revoked && <span className="nb-tag bg-terra-light text-terra border-terra/40 text-[11px]">Revoked</span>}
                     </div>
                     <div className="text-xs text-charcoal/55 font-mono mb-1">Issuer: {truncate(row.att.issuer, 8, 6)}</div>
                     <div className="text-xs text-charcoal/45 font-mono mb-2">{issued.toLocaleString()}</div>
@@ -142,7 +142,7 @@ const QueryConsole: React.FC = () => {
                     ) : (
                       <div className="text-xs text-charcoal/40 italic">Payload not in local vault stub.</div>
                     )}
-                    <div className="text-[10px] text-charcoal/35 font-mono mt-2">id: {bytesToHex(row.att.id).slice(0, 12)}…</div>
+                    <div className="text-[12px] text-charcoal/35 font-mono mt-2">id: {bytesToHex(row.att.id).slice(0, 12)}…</div>
                   </div>
                 )
               })}

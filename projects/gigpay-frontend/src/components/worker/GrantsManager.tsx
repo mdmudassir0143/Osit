@@ -82,7 +82,7 @@ const GrantsManager: React.FC<Props> = ({ onChanged }) => {
 
       <div className="space-y-4">
         <div>
-          <label className="block text-[10px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-2">
+          <label className="block text-[12px] tracking-[0.08em] uppercase text-charcoal/40 font-display font-semibold mb-2">
             Consumer wallet
           </label>
           <input
@@ -90,12 +90,12 @@ const GrantsManager: React.FC<Props> = ({ onChanged }) => {
             value={consumer}
             onChange={(e) => setConsumer(e.target.value.trim())}
             placeholder="58-character Algorand address"
-            className="w-full px-3 py-2 border-[2px] border-charcoal/15 focus:border-charcoal rounded-lg bg-cream font-mono text-xs focus:outline-none"
+            className="w-full px-3 py-2 border border-charcoal/15 focus:border-charcoal/15 rounded-lg bg-cream font-mono text-xs focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-[10px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-2">
+          <label className="block text-[12px] tracking-[0.08em] uppercase text-charcoal/40 font-display font-semibold mb-2">
             Categories accessible
           </label>
           <div className="flex flex-wrap gap-2">
@@ -104,7 +104,7 @@ const GrantsManager: React.FC<Props> = ({ onChanged }) => {
                 key={cat}
                 type="button"
                 onClick={() => toggleScope(cat)}
-                className={`px-3 py-1.5 rounded-md text-[11px] font-mono font-semibold border-[1.5px] transition-colors ${
+                className={`px-3 py-1.5 rounded-md text-[12px] font-mono font-semibold border-[1.5px] transition-colors ${
                   scope.includes(cat) ? 'bg-sage-light text-sage border-sage/50' : 'bg-cream text-charcoal/45 border-charcoal/15'
                 }`}
               >
@@ -124,27 +124,27 @@ const GrantsManager: React.FC<Props> = ({ onChanged }) => {
       </div>
 
       <div className="mt-6 pt-5 border-t-[1.5px] border-dashed border-charcoal/15">
-        <div className="text-[10px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-2">Revoke</div>
+        <div className="text-[12px] tracking-[0.08em] uppercase text-charcoal/40 font-display font-semibold mb-2">Revoke</div>
         <div className="flex gap-2">
           <input
             type="text"
             value={revokeAddr}
             onChange={(e) => setRevokeAddr(e.target.value.trim())}
             placeholder="Consumer to revoke"
-            className="flex-1 px-3 py-2 border-[2px] border-charcoal/15 focus:border-charcoal rounded-lg bg-cream font-mono text-xs focus:outline-none"
+            className="flex-1 px-3 py-2 border border-charcoal/15 focus:border-charcoal/15 rounded-lg bg-cream font-mono text-xs focus:outline-none"
           />
           <button
             onClick={onRevoke}
             disabled={!revokeValid || submitting}
-            className="nb-btn bg-charcoal text-cream px-4 py-2 text-[11px] font-display font-bold tracking-widest uppercase disabled:opacity-50"
+            className="nb-btn bg-charcoal text-cream px-4 py-2 text-[12px] font-display font-bold tracking-widest uppercase disabled:opacity-50"
           >
             Revoke
           </button>
         </div>
       </div>
 
-      {error && <div className="mt-4 border-[2px] border-terra/30 bg-terra-light text-terra text-xs px-3 py-2 rounded-lg">{error}</div>}
-      {success && <div className="mt-4 border-[2px] border-sage/40 bg-sage-light text-sage text-xs px-3 py-2 rounded-lg">{success}</div>}
+      {error && <div className="mt-4 border border-terra/30 bg-terra-light text-terra text-xs px-3 py-2 rounded-lg">{error}</div>}
+      {success && <div className="mt-4 border border-sage/40 bg-sage-light text-sage text-xs px-3 py-2 rounded-lg">{success}</div>}
     </div>
   )
 }

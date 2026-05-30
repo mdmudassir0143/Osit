@@ -84,7 +84,7 @@ const BenefitsPanel: React.FC<Props> = ({ workerCount, onIssue }) => {
     <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal">
       <div className="flex items-start justify-between mb-6 gap-4">
         <div>
-          <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">Benefits & Compliance</span>
+          <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[11px] mb-2">Benefits & Compliance</span>
           <h3 className="font-display text-xl font-bold text-charcoal mt-1">
             Bring formal-economy benefits to gig workers
           </h3>
@@ -95,7 +95,7 @@ const BenefitsPanel: React.FC<Props> = ({ workerCount, onIssue }) => {
           </p>
         </div>
         <div className="text-right shrink-0">
-          <div className="font-mono text-[9px] tracking-[0.25em] uppercase text-charcoal/35 mb-1">In Roster</div>
+          <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-charcoal/35 mb-1">In Roster</div>
           <div className="font-display text-3xl font-extrabold text-charcoal leading-none">{workerCount}</div>
         </div>
       </div>
@@ -105,19 +105,19 @@ const BenefitsPanel: React.FC<Props> = ({ workerCount, onIssue }) => {
           <div key={b.key} className={`nb-card bg-white rounded-xl p-5 ${b.shadow} relative overflow-hidden`}>
             <div className={`absolute top-0 left-0 right-0 h-1.5 ${b.accent} rounded-t-xl`} />
             <div className="flex items-start justify-between mb-3 pt-1">
-              <span className={`nb-tag ${b.ribbon} text-[9px] tracking-[0.25em]`}>{b.badge}</span>
-              <span className="font-mono text-[9px] uppercase tracking-widest text-charcoal/35">{b.cadence}</span>
+              <span className={`nb-tag ${b.ribbon} text-[11px] tracking-[0.1em]`}>{b.badge}</span>
+              <span className="font-mono text-[11px] uppercase tracking-widest text-charcoal/35">{b.cadence}</span>
             </div>
             <h4 className="font-display text-base font-bold text-charcoal mb-1">{b.title}</h4>
             <p className="text-charcoal/55 text-xs leading-relaxed mb-3">{b.desc}</p>
             <div className="flex items-center justify-between pt-3 border-t-[1.5px] border-dashed border-charcoal/10">
               <div>
-                <div className="font-mono text-[9px] tracking-[0.2em] uppercase text-charcoal/35 mb-0.5">Rate</div>
+                <div className="font-mono text-[11px] tracking-[0.08em] uppercase text-charcoal/35 mb-0.5">Rate</div>
                 <div className="font-mono text-xs font-semibold text-charcoal">{b.amount}</div>
               </div>
               <button
                 onClick={() => onIssue({ subject: '', ...b.prefill })}
-                className="nb-btn bg-charcoal text-cream px-3 py-1.5 text-[10px] font-display font-bold tracking-widest uppercase"
+                className="nb-btn bg-charcoal text-cream px-3 py-1.5 text-[12px] font-display font-bold tracking-widest uppercase"
               >
                 {b.ctaLabel}
               </button>
@@ -126,7 +126,7 @@ const BenefitsPanel: React.FC<Props> = ({ workerCount, onIssue }) => {
         ))}
       </div>
 
-      <div className="mt-5 pt-4 border-t-[1.5px] border-dashed border-charcoal/15 text-[11px] font-mono text-charcoal/40 leading-relaxed">
+      <div className="mt-5 pt-4 border-t-[1.5px] border-dashed border-charcoal/15 text-[12px] font-mono text-charcoal/40 leading-relaxed">
         Alora records the attestation. Money flow stays with your existing PF/ESI rails or payroll provider. The chain becomes the
         worker's portable proof — usable at any future employer, NBFC, or housing application.
       </div>

@@ -50,7 +50,7 @@ const ConsumerDashboard: React.FC = () => {
         {/* Sandbox callout — public API playground */}
         <div className="nb-card bg-white rounded-2xl p-5 md:p-6 shadow-brutal flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">Try the API</span>
+            <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[11px] mb-2">Try the API</span>
             <h3 className="font-display text-base md:text-lg font-bold text-charcoal mt-1">
               No-auth sandbox for your engineering team
             </h3>

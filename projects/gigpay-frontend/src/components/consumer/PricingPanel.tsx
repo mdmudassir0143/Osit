@@ -47,8 +47,8 @@ const PricingPanel: React.FC = () => {
     <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
         <div>
-          <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">Pricing</span>
-          <h3 className="font-display text-xl md:text-2xl font-bold text-charcoal mt-1">
+          <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[11px] mb-2">Pricing</span>
+          <h3 className="font-serif text-2xl md:text-3xl font-normal text-charcoal tracking-[-0.01em] mt-1">
             Pay per query.{' '}
             <span className="font-serif italic text-terra font-normal">No take-rate.</span>
           </h3>
@@ -69,16 +69,16 @@ const PricingPanel: React.FC = () => {
           >
             <div className={`absolute top-0 left-0 right-0 h-1.5 ${t.accent} rounded-t-2xl`} />
             <div className="pt-2 mb-4 flex items-start justify-between">
-              <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 font-mono text-[9px]">{t.name}</span>
+              <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 font-mono text-[11px]">{t.name}</span>
               {t.highlight && (
-                <span className="nb-tag bg-terra text-cream border-terra font-mono text-[9px]">Recommended</span>
+                <span className="nb-tag bg-terra text-cream border-terra font-mono text-[11px]">Recommended</span>
               )}
             </div>
             <div className="mb-2">
               <span className="font-display text-3xl font-extrabold text-charcoal">{t.price}</span>
-              <span className="font-mono text-[10px] text-charcoal/40 ml-1.5">{t.unit}</span>
+              <span className="font-mono text-[12px] text-charcoal/40 ml-1.5">{t.unit}</span>
             </div>
-            <div className="text-[11px] text-charcoal/55 mb-4 leading-relaxed">{t.best}</div>
+            <div className="text-[12px] text-charcoal/55 mb-4 leading-relaxed">{t.best}</div>
             <ul className="space-y-1.5 pt-3 border-t-[1.5px] border-dashed border-charcoal/10">
               {t.features.map((f) => (
                 <li key={f} className="flex items-start gap-2 text-[12px] text-charcoal/65 leading-snug">
@@ -91,7 +91,7 @@ const PricingPanel: React.FC = () => {
         ))}
       </div>
 
-      <div className="mt-5 pt-4 border-t-[1.5px] border-dashed border-charcoal/15 flex flex-col md:flex-row md:items-center justify-between gap-3 text-[11px] font-mono text-charcoal/45">
+      <div className="mt-5 pt-4 border-t-[1.5px] border-dashed border-charcoal/15 flex flex-col md:flex-row md:items-center justify-between gap-3 text-[12px] font-mono text-charcoal/45">
         <span>All tiers: DPDP-compliant · per-worker consent enforced on every read</span>
         <a
           href="mailto:partners@alora.id"

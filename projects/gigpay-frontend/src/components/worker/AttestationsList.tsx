@@ -48,29 +48,29 @@ const AttestationCard: React.FC<{ att: AttestationRecord }> = ({ att }) => {
           <div
             className={`inline-flex items-center gap-2 px-2 py-1 rounded-md ${categoryAccent(
               att.category,
-            )}/20 text-charcoal text-[10px] font-mono font-semibold uppercase tracking-wider`}
+            )}/20 text-charcoal text-[12px] font-mono font-semibold uppercase tracking-wider`}
           >
             <span className={`w-2 h-2 rounded-full ${categoryAccent(att.category)} border border-charcoal/40`} />
             {CATEGORY_LABELS[att.category] || 'Unknown'}
           </div>
         </div>
         <div className="flex flex-col items-end gap-1">
-          {att.revoked && <span className="nb-tag bg-terra-light text-terra border-terra/40 text-[9px]">Revoked</span>}
+          {att.revoked && <span className="nb-tag bg-terra-light text-terra border-terra/40 text-[11px]">Revoked</span>}
           {isExpired && !att.revoked && (
-            <span className="nb-tag bg-charcoal/10 text-charcoal/60 border-charcoal/20 text-[9px]">Expired</span>
+            <span className="nb-tag bg-charcoal/10 text-charcoal/60 border-charcoal/20 text-[11px]">Expired</span>
           )}
         </div>
       </div>
       <div className="text-xs text-charcoal/45 font-mono mb-1">Issued by {truncate(att.issuer, 8, 6)}</div>
       <div className="text-xs text-charcoal/45 font-mono mb-3">{issuedDate.toLocaleString()}</div>
-      <div className="flex items-center gap-3 text-[11px] text-charcoal/40">
+      <div className="flex items-center gap-3 text-[12px] text-charcoal/40">
         <span>weight: {att.weight}</span>
         <span>id: {bytesToHex(att.id).slice(0, 12)}…</span>
       </div>
       <div className="flex items-center gap-4 mt-3">
         <button
           onClick={() => setOpen((v) => !v)}
-          className="text-[11px] font-display font-semibold tracking-wide uppercase text-terra hover:text-terra-dark transition-colors"
+          className="text-[12px] font-display font-semibold tracking-wide uppercase text-terra hover:text-terra-dark transition-colors"
         >
           {open ? 'Hide claim' : 'View claim'}
         </button>
@@ -78,7 +78,7 @@ const AttestationCard: React.FC<{ att: AttestationRecord }> = ({ att }) => {
           href={appUrl(getAppIds().attestationLog)}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[11px] font-display font-semibold tracking-wide uppercase text-charcoal/50 hover:text-charcoal transition-colors"
+          className="text-[12px] font-display font-semibold tracking-wide uppercase text-charcoal/50 hover:text-charcoal transition-colors"
         >
           On-chain ↗
         </a>
@@ -104,12 +104,12 @@ const AttestationsList: React.FC<Props> = ({ attestations, loading, onRefresh })
     <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal">
       <div className="flex items-center justify-between mb-5">
         <div>
-          <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">Attestations Received</span>
+          <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[11px] mb-2">Attestations Received</span>
           <h3 className="font-display text-xl font-bold text-charcoal mt-1">Your work history</h3>
         </div>
         <button
           onClick={onRefresh}
-          className="text-[11px] font-display font-semibold tracking-wide uppercase text-charcoal/55 hover:text-charcoal transition-colors"
+          className="text-[12px] font-display font-semibold tracking-wide uppercase text-charcoal/55 hover:text-charcoal transition-colors"
         >
           Refresh
         </button>

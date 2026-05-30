@@ -23,21 +23,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, title }) =>
       <div className="noise-overlay" />
 
       {/* Header */}
-      <nav className="bg-white border-b-[2.5px] border-charcoal px-6 md:px-10 py-3.5 flex items-center justify-between relative z-10">
+      <nav className="sticky top-0 z-40 bg-cream/85 backdrop-blur-md border-b border-charcoal/10 px-6 md:px-10 py-3.5 flex items-center justify-between">
         <div className="flex items-center gap-5">
           <Link to="/" className="hover:opacity-80 transition-opacity">
             <AloraLogo size="md" />
           </Link>
 
-          <div className="h-6 w-[2px] bg-charcoal/20" />
+          <div className="h-5 w-px bg-charcoal/15" />
 
           <span className="font-display text-sm font-semibold text-charcoal/60 tracking-wide">{title}</span>
 
-          {isAdmin && (
-            <span className="nb-tag bg-terra text-white border-charcoal">
-              Admin
-            </span>
-          )}
+          {isAdmin && <span className="nb-tag bg-terra text-cream border-transparent">Admin</span>}
         </div>
 
         <div className="flex items-center gap-3">
@@ -45,10 +41,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, title }) =>
           {isAdmin ? (
             <Link
               to="/platform"
-              className={`font-display text-sm font-semibold px-4 py-2 border-2 border-charcoal rounded-lg transition-all ${
+              className={`font-display text-sm font-semibold px-4 py-2 rounded-full transition-all ${
                 location.pathname === '/platform'
-                  ? 'bg-charcoal text-white shadow-brutal-sm'
-                  : 'bg-transparent text-charcoal hover:bg-charcoal hover:text-white'
+                  ? 'bg-charcoal text-cream'
+                  : 'border border-charcoal/18 text-charcoal hover:bg-charcoal hover:text-cream hover:border-charcoal'
               }`}
             >
               Platform
@@ -56,10 +52,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, title }) =>
           ) : (
             <Link
               to="/worker"
-              className={`font-display text-sm font-semibold px-4 py-2 border-2 border-charcoal rounded-lg transition-all ${
+              className={`font-display text-sm font-semibold px-4 py-2 rounded-full transition-all ${
                 location.pathname === '/worker'
-                  ? 'bg-charcoal text-white shadow-brutal-sm'
-                  : 'bg-transparent text-charcoal hover:bg-charcoal hover:text-white'
+                  ? 'bg-charcoal text-cream'
+                  : 'border border-charcoal/18 text-charcoal hover:bg-charcoal hover:text-cream hover:border-charcoal'
               }`}
             >
               Worker

@@ -23,11 +23,11 @@ const ConsumerHero: React.FC<Props> = ({ address }) => {
       <div className="relative grid md:grid-cols-2 gap-6 items-center">
         <div>
           <div className="flex items-center gap-2 mb-3">
-            <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-cream/50">Consumer · Bureau API</span>
+            <span className="font-mono text-[12px] tracking-[0.1em] uppercase text-cream/50">Consumer · Bureau API</span>
             <span className="w-1 h-1 bg-terra rounded-full" />
-            <span className="font-mono text-[10px] tracking-[0.3em] uppercase text-cream/50">Alora</span>
+            <span className="font-mono text-[12px] tracking-[0.1em] uppercase text-cream/50">Alora</span>
           </div>
-          <h2 className="font-display text-3xl md:text-4xl font-extrabold leading-tight mb-3">
+          <h2 className="font-serif text-4xl md:text-5xl font-normal leading-tight tracking-[-0.01em] mb-3">
             Underwrite the next{' '}
             <span className="text-terra italic font-serif font-normal">300 million.</span>
           </h2>
@@ -46,15 +46,15 @@ const ConsumerHero: React.FC<Props> = ({ address }) => {
             { label: 'Data Freshness', value: 'Real-time', sub: 'On-chain reads' },
           ].map((s) => (
             <div key={s.label} className="bg-cream/[0.06] border-[1.5px] border-cream/10 rounded-lg p-3">
-              <div className="font-mono text-[9px] tracking-[0.25em] uppercase text-cream/45 mb-1">{s.label}</div>
+              <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-cream/45 mb-1">{s.label}</div>
               <div className="font-display text-2xl font-extrabold leading-none text-cream">{s.value}</div>
-              <div className="font-mono text-[10px] text-cream/40 mt-1">{s.sub}</div>
+              <div className="font-mono text-[12px] text-cream/40 mt-1">{s.sub}</div>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="relative mt-6 pt-5 border-t-[1.5px] border-cream/10 flex flex-col md:flex-row md:items-center justify-between gap-3 text-[11px] font-mono">
+      <div className="relative mt-6 pt-5 border-t-[1.5px] border-cream/10 flex flex-col md:flex-row md:items-center justify-between gap-3 text-[12px] font-mono">
         <div className="text-cream/45">
           Consumer wallet: <span className="text-cream/85">{truncate(address, 8, 6)}</span>
         </div>

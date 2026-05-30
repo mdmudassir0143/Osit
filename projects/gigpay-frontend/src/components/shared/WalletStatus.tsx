@@ -11,12 +11,12 @@ const WalletStatus: React.FC = () => {
     <>
       {activeAddress ? (
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-2 text-xs font-mono border-2 border-charcoal rounded-lg px-3 py-1.5 bg-cream">
+          <span className="inline-flex items-center gap-2 text-xs font-mono border border-charcoal/15 rounded-lg px-3 py-1.5 bg-cream">
             <span className="w-2 h-2 bg-sage rounded-full" />
             {ellipseAddress(activeAddress)}
           </span>
           <button
-            className="nb-btn-ghost !py-1.5 !px-3 !text-[10px]"
+            className="nb-btn-ghost !py-1.5 !px-3 !text-[12px]"
             onClick={() => setOpenModal(true)}
           >
             Switch

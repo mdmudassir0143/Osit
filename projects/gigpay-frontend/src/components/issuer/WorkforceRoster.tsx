@@ -51,7 +51,7 @@ const WorkforceRoster: React.FC<Props> = ({ history, loading, onIssue }) => {
     <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal-sage">
       <div className="flex items-start justify-between mb-5 gap-4">
         <div>
-          <span className="nb-tag bg-sage-light text-sage border-sage/40 text-[9px] mb-2">Workforce</span>
+          <span className="nb-tag bg-sage-light text-sage border-sage/40 text-[11px] mb-2">Workforce</span>
           <h3 className="font-display text-xl font-bold text-charcoal mt-1">Your roster</h3>
           <p className="text-charcoal/50 text-sm mt-1">
             Every worker you've attested to, grouped. Issue follow-up records, see their on-chain timeline, refer them to capital
@@ -59,7 +59,7 @@ const WorkforceRoster: React.FC<Props> = ({ history, loading, onIssue }) => {
           </p>
         </div>
         <div className="text-right shrink-0">
-          <div className="font-mono text-[9px] tracking-[0.25em] uppercase text-charcoal/35 mb-1">Workers</div>
+          <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-charcoal/35 mb-1">Workers</div>
           <div className="font-display text-3xl font-extrabold text-charcoal leading-none">{groups.length}</div>
         </div>
       </div>
@@ -83,20 +83,20 @@ const WorkforceRoster: React.FC<Props> = ({ history, loading, onIssue }) => {
                   className="w-full px-4 py-3 flex items-center justify-between hover:bg-cream/60 transition-colors text-left"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 bg-sage rounded-lg border-2 border-charcoal flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 bg-sage rounded-lg border border-charcoal/15 flex items-center justify-center shrink-0">
                       <span className="text-cream text-sm font-display font-bold">
                         {g.subject.slice(0, 1)}
                       </span>
                     </div>
                     <div>
                       <div className="font-mono text-xs text-charcoal font-semibold">{truncate(g.subject, 8, 6)}</div>
-                      <div className="font-mono text-[10px] text-charcoal/45 mt-0.5">
+                      <div className="font-mono text-[12px] text-charcoal/45 mt-0.5">
                         Last engaged {lastDate.toLocaleDateString()} · {CATEGORY_LABELS[g.topCategory]}
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3 shrink-0">
-                    <span className="nb-tag bg-sage-light text-sage border-sage/30 text-[9px]">{g.attestations.length} att</span>
+                    <span className="nb-tag bg-sage-light text-sage border-sage/30 text-[11px]">{g.attestations.length} att</span>
                     <span className="text-charcoal/30 text-xs">{isOpen ? '▾' : '▸'}</span>
                   </div>
                 </button>
@@ -112,10 +112,10 @@ const WorkforceRoster: React.FC<Props> = ({ history, loading, onIssue }) => {
                               <span className="font-mono text-charcoal/70 font-semibold">{CATEGORY_LABELS[a.category]}</span>
                               <span className="font-mono text-charcoal/35">{issued.toLocaleDateString()}</span>
                               {a.revoked && (
-                                <span className="nb-tag bg-terra-light text-terra border-terra/30 text-[8px]">Revoked</span>
+                                <span className="nb-tag bg-terra-light text-terra border-terra/30 text-[11px]">Revoked</span>
                               )}
                             </div>
-                            <span className="font-mono text-[10px] text-charcoal/35">{bytesToHex(a.id).slice(0, 10)}…</span>
+                            <span className="font-mono text-[12px] text-charcoal/35">{bytesToHex(a.id).slice(0, 10)}…</span>
                           </div>
                         )
                       })}
@@ -123,19 +123,19 @@ const WorkforceRoster: React.FC<Props> = ({ history, loading, onIssue }) => {
                     <div className="flex flex-wrap gap-2 mt-3 pt-3 border-t-[1.5px] border-dashed border-charcoal/10">
                       <button
                         onClick={() => onIssue({ subject: g.subject })}
-                        className="nb-btn bg-terra text-cream px-3 py-1.5 text-[10px] font-display font-bold tracking-widest uppercase"
+                        className="nb-btn bg-terra text-cream px-3 py-1.5 text-[12px] font-display font-bold tracking-widest uppercase"
                       >
                         Issue New
                       </button>
                       <button
                         onClick={() => onIssue({ subject: g.subject, category: 3, claim: 'Salary disbursement — ' })}
-                        className="nb-btn bg-charcoal text-cream px-3 py-1.5 text-[10px] font-display font-bold tracking-widest uppercase"
+                        className="nb-btn bg-charcoal text-cream px-3 py-1.5 text-[12px] font-display font-bold tracking-widest uppercase"
                       >
                         Record Salary
                       </button>
                       <button
                         onClick={() => onIssue({ subject: g.subject, category: 2, claim: 'Skill verified — ' })}
-                        className="nb-btn bg-cream text-charcoal px-3 py-1.5 text-[10px] font-display font-bold tracking-widest uppercase"
+                        className="nb-btn bg-cream text-charcoal px-3 py-1.5 text-[12px] font-display font-bold tracking-widest uppercase"
                       >
                         Verify Skill
                       </button>

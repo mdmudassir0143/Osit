@@ -34,12 +34,12 @@ const IssuanceHistory: React.FC<Props> = ({ history, loading, onChanged }) => {
     <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal">
       <div className="flex items-center justify-between mb-5">
         <div>
-          <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">Issuance History</span>
+          <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[11px] mb-2">Issuance History</span>
           <h3 className="font-display text-xl font-bold text-charcoal mt-1">Attestations you've issued</h3>
         </div>
         <button
           onClick={onChanged}
-          className="text-[11px] font-display font-semibold tracking-wide uppercase text-charcoal/55 hover:text-charcoal transition-colors"
+          className="text-[12px] font-display font-semibold tracking-wide uppercase text-charcoal/55 hover:text-charcoal transition-colors"
         >
           Refresh
         </button>
@@ -59,14 +59,14 @@ const IssuanceHistory: React.FC<Props> = ({ history, loading, onChanged }) => {
             return (
               <div key={Array.from(att.id).join('')} className="nb-card bg-white rounded-xl p-5 shadow-brutal-sm">
                 <div className="flex items-start justify-between mb-2">
-                  <div className="text-[10px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold">
+                  <div className="text-[12px] tracking-[0.08em] uppercase text-charcoal/40 font-display font-semibold">
                     {CATEGORY_LABELS[att.category] || 'Unknown'}
                   </div>
-                  {att.revoked && <span className="nb-tag bg-terra-light text-terra border-terra/40 text-[9px]">Revoked</span>}
+                  {att.revoked && <span className="nb-tag bg-terra-light text-terra border-terra/40 text-[11px]">Revoked</span>}
                 </div>
                 <div className="text-xs text-charcoal/60 font-mono mb-1">Subject: {truncate(att.subject, 8, 6)}</div>
                 <div className="text-xs text-charcoal/45 font-mono mb-3">{issued.toLocaleString()}</div>
-                <div className="flex items-center gap-3 text-[11px] text-charcoal/40 mb-3">
+                <div className="flex items-center gap-3 text-[12px] text-charcoal/40 mb-3">
                   <span>weight: {att.weight}</span>
                   <span>id: {bytesToHex(att.id).slice(0, 12)}…</span>
                 </div>
@@ -74,14 +74,14 @@ const IssuanceHistory: React.FC<Props> = ({ history, loading, onChanged }) => {
                   href={appUrl(getAppIds().attestationLog)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[11px] font-display font-semibold tracking-wide uppercase text-charcoal/50 hover:text-charcoal transition-colors mr-4"
+                  className="text-[12px] font-display font-semibold tracking-wide uppercase text-charcoal/50 hover:text-charcoal transition-colors mr-4"
                 >
                   On-chain ↗
                 </a>
                 {!att.revoked && (
                   <button
                     onClick={() => onRevoke(att.id)}
-                    className="text-[11px] font-display font-semibold tracking-wide uppercase text-terra hover:text-terra-dark transition-colors"
+                    className="text-[12px] font-display font-semibold tracking-wide uppercase text-terra hover:text-terra-dark transition-colors"
                   >
                     Revoke
                   </button>

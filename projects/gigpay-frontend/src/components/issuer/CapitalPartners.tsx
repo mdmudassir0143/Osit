@@ -70,7 +70,7 @@ const CapitalPartners: React.FC = () => {
 
       <div className="relative flex items-start justify-between mb-6 gap-4">
         <div>
-          <span className="nb-tag bg-cream/10 text-cream/65 border-cream/15 text-[9px] mb-2">Capital Partners</span>
+          <span className="nb-tag bg-cream/10 text-cream/65 border-cream/15 text-[11px] mb-2">Capital Partners</span>
           <h3 className="font-display text-xl font-bold mt-1">Connect workers to credit</h3>
           <p className="text-cream/50 text-sm mt-1 max-w-2xl">
             Refer workers to NBFCs and lenders that underwrite using Alora records. Partner pulls the on-chain history with the
@@ -88,10 +88,10 @@ const CapitalPartners: React.FC = () => {
           >
             <div className={`absolute top-0 left-0 right-0 h-1.5 ${p.accent} rounded-t-xl`} />
             <div className="flex items-start justify-between mb-3 pt-1">
-              <div className={`w-9 h-9 ${p.accent} rounded-lg border-2 border-charcoal flex items-center justify-center`}>
+              <div className={`w-9 h-9 ${p.accent} rounded-lg border border-charcoal/15 flex items-center justify-center`}>
                 <span className="text-charcoal text-sm font-display font-extrabold">{p.name.slice(0, 1)}</span>
               </div>
-              <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px]">Partner</span>
+              <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[11px]">Partner</span>
             </div>
             <h4 className="font-display text-base font-bold mb-1">{p.name}</h4>
             <p className="text-charcoal/55 text-xs leading-relaxed mb-3">{p.tagline}</p>
@@ -100,7 +100,7 @@ const CapitalPartners: React.FC = () => {
               {p.products.map((prod) => (
                 <span
                   key={prod}
-                  className="font-mono text-[10px] bg-cream text-charcoal/65 px-2 py-0.5 rounded-md border-[1.5px] border-charcoal/10"
+                  className="font-mono text-[12px] bg-cream text-charcoal/65 px-2 py-0.5 rounded-md border-[1.5px] border-charcoal/10"
                 >
                   {prod}
                 </span>
@@ -108,11 +108,11 @@ const CapitalPartners: React.FC = () => {
             </div>
 
             <div className="pt-3 border-t-[1.5px] border-dashed border-charcoal/10">
-              <div className="font-mono text-[9px] tracking-[0.2em] uppercase text-charcoal/35 mb-0.5">Eligibility</div>
-              <div className="font-mono text-[11px] text-charcoal/65 mb-3">{p.threshold}</div>
+              <div className="font-mono text-[11px] tracking-[0.08em] uppercase text-charcoal/35 mb-0.5">Eligibility</div>
+              <div className="font-mono text-[12px] text-charcoal/65 mb-3">{p.threshold}</div>
               <button
                 onClick={() => handleConnect(p)}
-                className="nb-btn bg-terra text-cream w-full px-3 py-2 text-[10px] font-display font-bold tracking-widest uppercase"
+                className="nb-btn bg-terra text-cream w-full px-3 py-2 text-[12px] font-display font-bold tracking-widest uppercase"
               >
                 Refer Worker →
               </button>
@@ -121,7 +121,7 @@ const CapitalPartners: React.FC = () => {
         ))}
       </div>
 
-      <div className="relative mt-5 pt-4 border-t-[1.5px] border-cream/10 text-[10px] font-mono text-cream/40 leading-relaxed">
+      <div className="relative mt-5 pt-4 border-t-[1.5px] border-cream/10 text-[12px] font-mono text-cream/40 leading-relaxed">
         Partner names shown for demo. Alora does not have formal partnerships at this stage. Real integrations land in Phase 5
         with the read-API gateway and consent-routing for partner queries.
       </div>

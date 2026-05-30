@@ -30,7 +30,7 @@ const tokenize = (text: string): React.ReactNode[] => {
 const JsonViewer: React.FC<{ data: unknown }> = ({ data }) => {
   const text = JSON.stringify(data, null, 2)
   return (
-    <pre className="font-mono text-[12px] leading-relaxed text-cream/85 overflow-x-auto whitespace-pre p-5 bg-charcoal rounded-xl border-[2.5px] border-charcoal">
+    <pre className="font-mono text-[12px] leading-relaxed text-cream/85 overflow-x-auto whitespace-pre p-5 bg-charcoal rounded-xl border border-charcoal/15">
       <code>{tokenize(text)}</code>
     </pre>
   )
@@ -100,7 +100,7 @@ const CodeSnippet: React.FC<{ address: string }> = ({ address }) => {
             <button
               key={t.id}
               onClick={() => setLang(t.id)}
-              className={`font-mono text-[11px] tracking-widest uppercase px-3 py-1.5 rounded-md transition-colors ${
+              className={`font-mono text-[12px] tracking-widest uppercase px-3 py-1.5 rounded-md transition-colors ${
                 lang === t.id ? 'bg-terra text-cream' : 'bg-cream/[0.06] text-cream/60 hover:text-cream/85'
               }`}
             >
@@ -110,12 +110,12 @@ const CodeSnippet: React.FC<{ address: string }> = ({ address }) => {
         </div>
         <button
           onClick={copy}
-          className="font-mono text-[10px] tracking-widest uppercase text-cream/55 hover:text-cream transition-colors"
+          className="font-mono text-[12px] tracking-widest uppercase text-cream/55 hover:text-cream transition-colors"
         >
           {copied ? 'Copied ✓' : 'Copy'}
         </button>
       </div>
-      <pre className="font-mono text-[11px] leading-relaxed text-cream/85 overflow-x-auto whitespace-pre">
+      <pre className="font-mono text-[12px] leading-relaxed text-cream/85 overflow-x-auto whitespace-pre">
         <code>{code}</code>
       </pre>
     </div>
@@ -151,7 +151,7 @@ const FIELD_REF: FieldRow[] = [
 const FieldReference: React.FC = () => (
   <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal">
     <div className="mb-5">
-      <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">Field reference</span>
+      <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[11px] mb-2">Field reference</span>
       <h3 className="font-display text-xl font-bold text-charcoal mt-1">Every field, documented.</h3>
       <p className="text-charcoal/50 text-sm mt-1 max-w-2xl">
         For each field — the type your underwriting engine receives, what it represents, and the traditional document it
@@ -162,10 +162,10 @@ const FieldReference: React.FC = () => (
       <table className="w-full text-left font-mono text-[12px]">
         <thead>
           <tr className="border-b-[2px] border-charcoal/10">
-            <th className="py-2 pr-4 font-display text-[10px] uppercase tracking-widest text-charcoal/45">Path</th>
-            <th className="py-2 pr-4 font-display text-[10px] uppercase tracking-widest text-charcoal/45">Type</th>
-            <th className="py-2 pr-4 font-display text-[10px] uppercase tracking-widest text-charcoal/45">Description</th>
-            <th className="py-2 font-display text-[10px] uppercase tracking-widest text-charcoal/45">Replaces</th>
+            <th className="py-2 pr-4 font-display text-[12px] uppercase tracking-widest text-charcoal/45">Path</th>
+            <th className="py-2 pr-4 font-display text-[12px] uppercase tracking-widest text-charcoal/45">Type</th>
+            <th className="py-2 pr-4 font-display text-[12px] uppercase tracking-widest text-charcoal/45">Description</th>
+            <th className="py-2 font-display text-[12px] uppercase tracking-widest text-charcoal/45">Replaces</th>
           </tr>
         </thead>
         <tbody>
@@ -229,12 +229,12 @@ const Sandbox: React.FC = () => {
       <div className="noise-overlay" />
 
       {/* Slim public nav */}
-      <nav className="relative z-50 flex items-center justify-between px-6 md:px-12 lg:px-20 py-5 border-b-[2.5px] border-charcoal bg-cream">
+      <nav className="relative z-50 flex items-center justify-between px-6 md:px-12 lg:px-20 py-5 border-b-[2.5px] border-charcoal/15 bg-cream">
         <Link to="/" className="hover:opacity-80 transition-opacity">
           <AloraLogo size="md" />
         </Link>
         <div className="flex items-center gap-4">
-          <span className="hidden md:inline font-mono text-[10px] tracking-[0.25em] uppercase text-charcoal/45">
+          <span className="hidden md:inline font-mono text-[12px] tracking-[0.1em] uppercase text-charcoal/45">
             Bureau API · Sandbox
           </span>
           <a href="mailto:partners@alora.id" className="nb-btn bg-terra text-cream px-5 py-2.5 text-sm font-display font-bold uppercase">
@@ -255,7 +255,7 @@ const Sandbox: React.FC = () => {
             }}
           />
           <div className="relative">
-            <h1 className="font-display text-3xl md:text-5xl font-extrabold leading-tight mb-3">
+            <h1 className="font-serif text-4xl md:text-6xl font-normal leading-tight tracking-[-0.01em] mb-3">
               Test the Alora bureau API <span className="text-terra italic font-serif font-normal">live.</span>
             </h1>
             <p className="text-cream/55 text-sm md:text-base max-w-2xl leading-relaxed">
@@ -269,13 +269,13 @@ const Sandbox: React.FC = () => {
         <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal">
           <div className="flex items-end justify-between gap-4 mb-3 flex-wrap">
             <div>
-              <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">Step 1</span>
+              <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[11px] mb-2">Step 1</span>
               <h3 className="font-display text-xl font-bold text-charcoal mt-1">Pick a worker address</h3>
             </div>
             {demoWorker && (
               <button
                 onClick={useDemo}
-                className="font-mono text-[11px] tracking-widest uppercase text-terra hover:text-terra-dark transition-colors"
+                className="font-mono text-[12px] tracking-widest uppercase text-terra hover:text-terra-dark transition-colors"
               >
                 Use demo worker ↗
               </button>
@@ -287,7 +287,7 @@ const Sandbox: React.FC = () => {
               value={address}
               onChange={(e) => setAddress(e.target.value.trim())}
               placeholder="Algorand wallet address (58 chars)"
-              className="flex-1 px-4 py-3 border-[2.5px] border-charcoal/15 focus:border-charcoal rounded-lg bg-cream font-mono text-xs focus:outline-none"
+              className="flex-1 px-4 py-3 border border-charcoal/15 focus:border-charcoal/15 rounded-lg bg-cream font-mono text-xs focus:outline-none"
             />
             <button
               onClick={run}
@@ -298,10 +298,10 @@ const Sandbox: React.FC = () => {
             </button>
           </div>
           {address && !addressValid && (
-            <div className="mt-2 text-[11px] text-terra">Address must be 58 characters of valid Algorand base32.</div>
+            <div className="mt-2 text-[12px] text-terra">Address must be 58 characters of valid Algorand base32.</div>
           )}
           {error && (
-            <div className="mt-3 border-[2px] border-terra/30 bg-terra-light text-terra text-xs px-3 py-2 rounded-lg">{error}</div>
+            <div className="mt-3 border border-terra/30 bg-terra-light text-terra text-xs px-3 py-2 rounded-lg">{error}</div>
           )}
         </div>
 
@@ -312,29 +312,29 @@ const Sandbox: React.FC = () => {
             <div className="nb-card bg-white rounded-2xl p-5 shadow-brutal-sm">
               <div className="flex flex-wrap items-center gap-4">
                 <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 bg-sage rounded-full border-[1.5px] border-charcoal" />
-                  <span className="font-mono text-[11px] uppercase tracking-widest text-charcoal/55">
+                  <span className="w-2.5 h-2.5 bg-sage rounded-full border-[1.5px] border-charcoal/15" />
+                  <span className="font-mono text-[12px] uppercase tracking-widest text-charcoal/55">
                     {response.status === 'ok' ? 'HTTP 200 · OK' : `HTTP 404 · ${response.status}`}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-charcoal/35">Latency</span>
+                  <span className="font-mono text-[12px] uppercase tracking-widest text-charcoal/35">Latency</span>
                   <span className="font-mono text-[12px] font-bold text-charcoal">{response.meta.latency_ms}ms</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-charcoal/35">Score</span>
+                  <span className="font-mono text-[12px] uppercase tracking-widest text-charcoal/35">Score</span>
                   <span className="font-mono text-[12px] font-bold text-charcoal">
                     {response.aura_score} / 1000 · {response.band}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-charcoal/35">Address</span>
+                  <span className="font-mono text-[12px] uppercase tracking-widest text-charcoal/35">Address</span>
                   <span className="font-mono text-[12px] font-bold text-charcoal">{truncate(response.address, 6, 4)}</span>
                 </div>
                 <div className="ml-auto flex gap-1">
                   <button
                     onClick={() => setShape('native')}
-                    className={`font-mono text-[10px] tracking-widest uppercase px-3 py-1.5 rounded-md transition-colors ${
+                    className={`font-mono text-[12px] tracking-widest uppercase px-3 py-1.5 rounded-md transition-colors ${
                       shape === 'native' ? 'bg-charcoal text-cream' : 'bg-cream text-charcoal/55 hover:text-charcoal'
                     }`}
                   >
@@ -342,7 +342,7 @@ const Sandbox: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setShape('aa')}
-                    className={`font-mono text-[10px] tracking-widest uppercase px-3 py-1.5 rounded-md transition-colors ${
+                    className={`font-mono text-[12px] tracking-widest uppercase px-3 py-1.5 rounded-md transition-colors ${
                       shape === 'aa' ? 'bg-charcoal text-cream' : 'bg-cream text-charcoal/55 hover:text-charcoal'
                     }`}
                   >
@@ -356,10 +356,10 @@ const Sandbox: React.FC = () => {
             <div className="nb-card bg-white rounded-2xl p-5 md:p-6 shadow-brutal">
               <div className="flex items-center justify-between mb-3">
                 <div>
-                  <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">Step 2</span>
+                  <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[11px] mb-2">Step 2</span>
                   <h3 className="font-display text-lg font-bold text-charcoal mt-1">Response body</h3>
                 </div>
-                <span className="font-mono text-[10px] text-charcoal/35">
+                <span className="font-mono text-[12px] text-charcoal/35">
                   {shape === 'native' ? 'application/json' : 'application/vnd.aa-2.0+json'}
                 </span>
               </div>
@@ -369,7 +369,7 @@ const Sandbox: React.FC = () => {
             {/* Code snippets */}
             <div>
               <div className="mb-3">
-                <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">Step 3</span>
+                <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[11px] mb-2">Step 3</span>
                 <h3 className="font-display text-xl font-bold text-charcoal mt-1">Run it from your stack</h3>
                 <p className="text-charcoal/50 text-sm mt-1">
                   The hosted endpoint lands with the Phase 5 read-API gateway. The contracts that back it are already on chain
@@ -388,7 +388,7 @@ const Sandbox: React.FC = () => {
         <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal-sage">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             <div>
-              <span className="nb-tag bg-sage-light text-sage border-sage/40 text-[9px] mb-2">Auth</span>
+              <span className="nb-tag bg-sage-light text-sage border-sage/40 text-[11px] mb-2">Auth</span>
               <h4 className="font-display text-base font-bold text-charcoal mt-1 mb-1">API key + worker consent</h4>
               <p className="text-charcoal/55 text-[12px] leading-relaxed">
                 Bearer token issued at partner onboarding. Every query also verifies an on-chain grant from the worker — no
@@ -396,14 +396,14 @@ const Sandbox: React.FC = () => {
               </p>
             </div>
             <div>
-              <span className="nb-tag bg-sun-light text-charcoal border-sun/40 text-[9px] mb-2">Rate limits</span>
+              <span className="nb-tag bg-sun-light text-charcoal border-sun/40 text-[11px] mb-2">Rate limits</span>
               <h4 className="font-display text-base font-bold text-charcoal mt-1 mb-1">100 req/min · burst 500</h4>
               <p className="text-charcoal/55 text-[12px] leading-relaxed">
                 Per API key. Enterprise tiers raise to 10k req/min with bulk-batch endpoints. Standard 429 backoff semantics.
               </p>
             </div>
             <div>
-              <span className="nb-tag bg-lavender/30 text-charcoal border-lavender/50 text-[9px] mb-2">SLA</span>
+              <span className="nb-tag bg-lavender/30 text-charcoal border-lavender/50 text-[11px] mb-2">SLA</span>
               <h4 className="font-display text-base font-bold text-charcoal mt-1 mb-1">99.9% uptime · &lt;3s p99</h4>
               <p className="text-charcoal/55 text-[12px] leading-relaxed">
                 Production SLA on the Growth tier. Enterprise: 99.99% with on-prem read-replica option.
@@ -414,7 +414,7 @@ const Sandbox: React.FC = () => {
 
         {/* Final CTA */}
         <div className="nb-card bg-charcoal text-cream rounded-2xl p-6 md:p-8 shadow-brutal text-center">
-          <h3 className="font-display text-2xl md:text-3xl font-extrabold mb-2">Ready to integrate?</h3>
+          <h3 className="font-serif text-3xl md:text-4xl font-normal tracking-[-0.01em] mb-2">Ready to integrate?</h3>
           <p className="text-cream/55 text-sm max-w-xl mx-auto mb-5">
             Two engineer-weeks on your side. We provide the integration spec, the MoU draft, and a sandbox key on the kickoff
             call.

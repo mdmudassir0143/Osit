@@ -57,7 +57,7 @@ const TrustGraph: React.FC<Props> = ({ subject, attestations }) => {
     <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal">
       <div className="flex items-start justify-between gap-4 mb-5">
         <div>
-          <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">Trust Graph</span>
+          <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[11px] mb-2">Trust Graph</span>
           <h3 className="font-display text-xl font-bold text-charcoal mt-1">Who vouches for you</h3>
           <p className="text-charcoal/50 text-sm mt-1 max-w-2xl">
             Each line is a signed attestation. Distinct issuers around the ring = breadth. Line thickness = number of attestations
@@ -65,7 +65,7 @@ const TrustGraph: React.FC<Props> = ({ subject, attestations }) => {
           </p>
         </div>
         <div className="text-right shrink-0">
-          <div className="font-mono text-[9px] tracking-[0.25em] uppercase text-charcoal/35 mb-1">Issuers</div>
+          <div className="font-mono text-[11px] tracking-[0.1em] uppercase text-charcoal/35 mb-1">Issuers</div>
           <div className="font-display text-3xl font-extrabold text-charcoal leading-none">{issuers.length}</div>
         </div>
       </div>
@@ -181,15 +181,15 @@ const TrustGraph: React.FC<Props> = ({ subject, attestations }) => {
             .map((cat) => (
               <div key={cat} className="flex items-center gap-2">
                 <span
-                  className="w-3 h-3 rounded-full border-2 border-charcoal"
+                  className="w-3 h-3 rounded-full border border-charcoal/15"
                   style={{ backgroundColor: palette[cat] ?? '#22231f' }}
                 />
-                <span className="font-mono text-[10px] text-charcoal/55 uppercase tracking-wider">
+                <span className="font-mono text-[12px] text-charcoal/55 uppercase tracking-wider">
                   {CATEGORY_LABELS[cat] ?? '—'}
                 </span>
               </div>
             ))}
-          <div className="ml-auto font-mono text-[10px] text-charcoal/35">
+          <div className="ml-auto font-mono text-[12px] text-charcoal/35">
             line thickness ∝ log(attestations)
           </div>
         </div>

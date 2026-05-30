@@ -95,14 +95,14 @@ const IssueAttestationForm: React.FC<Props> = ({ onIssued, prefill }) => {
   return (
     <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal-terra">
       <div className="mb-5">
-        <span className="nb-tag bg-terra-light text-terra border-terra/40 text-[9px] mb-2">Issue</span>
+        <span className="nb-tag bg-terra-light text-terra border-terra/40 text-[11px] mb-2">Issue</span>
         <h3 className="font-display text-xl font-bold text-charcoal mt-1">Attest to a worker's history</h3>
         <p className="text-charcoal/50 text-sm mt-1">Sign a claim on-chain. The worker owns the record from then on.</p>
       </div>
 
       <form ref={formRef} onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-[10px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-2">
+          <label className="block text-[12px] tracking-[0.08em] uppercase text-charcoal/40 font-display font-semibold mb-2">
             Subject — wallet address or phone
           </label>
           <input
@@ -110,20 +110,20 @@ const IssueAttestationForm: React.FC<Props> = ({ onIssued, prefill }) => {
             value={subjectInput}
             onChange={(e) => setSubjectInput(e.target.value.trim())}
             placeholder="58-char address or phone like +91…"
-            className="w-full px-3 py-2 border-[2px] border-charcoal/15 focus:border-charcoal rounded-lg bg-cream font-mono text-xs focus:outline-none"
+            className="w-full px-3 py-2 border border-charcoal/15 focus:border-charcoal/15 rounded-lg bg-cream font-mono text-xs focus:outline-none"
           />
-          {subjectInput && !subjectValid && <div className="text-[11px] text-terra mt-1">Doesn't look like a valid address or phone</div>}
+          {subjectInput && !subjectValid && <div className="text-[12px] text-terra mt-1">Doesn't look like a valid address or phone</div>}
         </div>
 
         <div>
-          <label className="block text-[10px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-2">Category</label>
+          <label className="block text-[12px] tracking-[0.08em] uppercase text-charcoal/40 font-display font-semibold mb-2">Category</label>
           <div className="flex flex-wrap gap-2">
             {Object.entries(CATEGORY_LABELS).map(([id, label]) => (
               <button
                 key={id}
                 type="button"
                 onClick={() => setCategory(Number(id))}
-                className={`px-3 py-1.5 rounded-md text-[11px] font-mono font-semibold border-[1.5px] transition-colors ${
+                className={`px-3 py-1.5 rounded-md text-[12px] font-mono font-semibold border-[1.5px] transition-colors ${
                   category === Number(id) ? 'bg-terra-light text-terra border-terra/40' : 'bg-cream text-charcoal/45 border-charcoal/15'
                 }`}
               >
@@ -134,19 +134,19 @@ const IssueAttestationForm: React.FC<Props> = ({ onIssued, prefill }) => {
         </div>
 
         <div>
-          <label className="block text-[10px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-2">Claim</label>
+          <label className="block text-[12px] tracking-[0.08em] uppercase text-charcoal/40 font-display font-semibold mb-2">Claim</label>
           <textarea
             value={claim}
             onChange={(e) => setClaim(e.target.value)}
             rows={3}
             placeholder='e.g. "Worked night shift 2026-04-29, 8 hours, hotel cleaning"'
-            className="w-full px-3 py-2 border-[2px] border-charcoal/15 focus:border-charcoal rounded-lg bg-cream font-mono text-xs focus:outline-none resize-none"
+            className="w-full px-3 py-2 border border-charcoal/15 focus:border-charcoal/15 rounded-lg bg-cream font-mono text-xs focus:outline-none resize-none"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-[10px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-2">
+            <label className="block text-[12px] tracking-[0.08em] uppercase text-charcoal/40 font-display font-semibold mb-2">
               Rating (optional)
             </label>
             <input
@@ -157,24 +157,24 @@ const IssueAttestationForm: React.FC<Props> = ({ onIssued, prefill }) => {
               value={rating}
               onChange={(e) => setRating(e.target.value)}
               placeholder="0–5"
-              className="w-full px-3 py-2 border-[2px] border-charcoal/15 focus:border-charcoal rounded-lg bg-cream font-mono text-xs focus:outline-none"
+              className="w-full px-3 py-2 border border-charcoal/15 focus:border-charcoal/15 rounded-lg bg-cream font-mono text-xs focus:outline-none"
             />
           </div>
           <div>
-            <label className="block text-[10px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-2">
+            <label className="block text-[12px] tracking-[0.08em] uppercase text-charcoal/40 font-display font-semibold mb-2">
               Expires (optional)
             </label>
             <input
               type="date"
               value={validUntilDate}
               onChange={(e) => setValidUntilDate(e.target.value)}
-              className="w-full px-3 py-2 border-[2px] border-charcoal/15 focus:border-charcoal rounded-lg bg-cream font-mono text-xs focus:outline-none"
+              className="w-full px-3 py-2 border border-charcoal/15 focus:border-charcoal/15 rounded-lg bg-cream font-mono text-xs focus:outline-none"
             />
           </div>
         </div>
 
-        {error && <div className="border-[2px] border-terra/30 bg-terra-light text-terra text-xs px-3 py-2 rounded-lg">{error}</div>}
-        {success && <div className="border-[2px] border-sage/40 bg-sage-light text-sage text-xs px-3 py-2 rounded-lg">{success}</div>}
+        {error && <div className="border border-terra/30 bg-terra-light text-terra text-xs px-3 py-2 rounded-lg">{error}</div>}
+        {success && <div className="border border-sage/40 bg-sage-light text-sage text-xs px-3 py-2 rounded-lg">{success}</div>}
 
         <button
           type="submit"

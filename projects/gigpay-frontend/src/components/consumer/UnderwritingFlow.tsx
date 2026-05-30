@@ -47,7 +47,7 @@ const UnderwritingFlow: React.FC = () => {
   return (
     <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal">
       <div className="mb-6">
-        <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">Underwriting Flow</span>
+        <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[11px] mb-2">Underwriting Flow</span>
         <h3 className="font-display text-xl md:text-2xl font-bold text-charcoal mt-1">
           From grant to disbursement in four steps.
         </h3>
@@ -63,7 +63,7 @@ const UnderwritingFlow: React.FC = () => {
             <div className={`nb-card bg-white rounded-xl p-5 ${s.shadow} h-full relative overflow-hidden`}>
               <div className={`absolute top-0 left-0 right-0 h-1.5 ${s.accent} rounded-t-xl`} />
               <div className="pt-1 mb-3">
-                <span className={`w-10 h-10 ${s.accent} rounded-lg border-2 border-charcoal flex items-center justify-center font-mono text-sm font-bold text-charcoal`}>
+                <span className={`w-10 h-10 ${s.accent} rounded-lg border border-charcoal/15 flex items-center justify-center font-mono text-sm font-bold text-charcoal`}>
                   {s.num}
                 </span>
               </div>
@@ -71,7 +71,7 @@ const UnderwritingFlow: React.FC = () => {
               <p className="text-charcoal/55 text-[12px] leading-relaxed">{s.detail}</p>
             </div>
             {i < STEPS.length - 1 && (
-              <div className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-10 w-6 h-6 bg-cream border-2 border-charcoal/15 rounded-full items-center justify-center">
+              <div className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 z-10 w-6 h-6 bg-cream border border-charcoal/15 rounded-full items-center justify-center">
                 <span className="text-terra text-xs font-bold">&rarr;</span>
               </div>
             )}

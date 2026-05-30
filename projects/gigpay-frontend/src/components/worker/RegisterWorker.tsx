@@ -43,8 +43,8 @@ const RegisterWorker: React.FC<Props> = ({ onRegistered }) => {
   return (
     <div className="max-w-lg mx-auto mt-12">
       <div className="nb-card bg-white p-8 shadow-brutal-lg">
-        <span className="nb-tag bg-sage-light text-sage border-sage/40 text-[9px] mb-4">Step 1 of 1</span>
-        <h2 className="font-display text-2xl font-extrabold text-charcoal mb-2">Register your worker identity</h2>
+        <span className="nb-tag bg-sage-light text-sage border-sage/40 text-[11px] mb-4">Step 1 of 1</span>
+        <h2 className="font-serif text-3xl font-normal text-charcoal tracking-[-0.01em] mb-2">Register your worker identity</h2>
         <p className="text-charcoal/55 text-sm leading-relaxed mb-6">
           Choose a public handle and verify your phone. The phone is hashed locally — Alora never sees the number itself, just a 32-byte
           fingerprint that lets future employers find your record.
@@ -52,33 +52,33 @@ const RegisterWorker: React.FC<Props> = ({ onRegistered }) => {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-[10px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-2">Handle</label>
+            <label className="block text-[12px] tracking-[0.08em] uppercase text-charcoal/40 font-display font-semibold mb-2">Handle</label>
             <input
               type="text"
               value={handle}
               onChange={(e) => setHandle(e.target.value)}
               maxLength={30}
               placeholder="e.g. ravi_freelance"
-              className="w-full px-4 py-3 border-[2.5px] border-charcoal/15 focus:border-charcoal rounded-lg bg-cream focus:outline-none transition-colors font-mono text-sm"
+              className="w-full px-4 py-3 border border-charcoal/15 focus:border-charcoal/15 rounded-lg bg-cream focus:outline-none transition-colors font-mono text-sm"
             />
-            <div className="text-[11px] text-charcoal/40 mt-1">4–30 characters. Visible to anyone who queries your record.</div>
+            <div className="text-[12px] text-charcoal/40 mt-1">4–30 characters. Visible to anyone who queries your record.</div>
           </div>
 
           <div>
-            <label className="block text-[10px] tracking-[0.2em] uppercase text-charcoal/40 font-display font-semibold mb-2">Phone</label>
+            <label className="block text-[12px] tracking-[0.08em] uppercase text-charcoal/40 font-display font-semibold mb-2">Phone</label>
             <input
               type="tel"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+91 98765 43210"
-              className="w-full px-4 py-3 border-[2.5px] border-charcoal/15 focus:border-charcoal rounded-lg bg-cream focus:outline-none transition-colors font-mono text-sm"
+              className="w-full px-4 py-3 border border-charcoal/15 focus:border-charcoal/15 rounded-lg bg-cream focus:outline-none transition-colors font-mono text-sm"
             />
-            <div className="text-[11px] text-charcoal/40 mt-1">
+            <div className="text-[12px] text-charcoal/40 mt-1">
               Hashed locally before submission. V1 stub — real OTP verification ships in Phase 7.
             </div>
           </div>
 
-          {error && <div className="border-[2px] border-terra/30 bg-terra-light text-terra text-xs px-3 py-2 rounded-lg">{error}</div>}
+          {error && <div className="border border-terra/30 bg-terra-light text-terra text-xs px-3 py-2 rounded-lg">{error}</div>}
 
           <button
             type="submit"

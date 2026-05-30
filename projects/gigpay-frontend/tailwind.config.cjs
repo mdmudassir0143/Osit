@@ -31,14 +31,16 @@ module.exports = {
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       boxShadow: {
-        'brutal-sm': '3px 3px 0px #1a1a1a',
-        'brutal': '4px 4px 0px #1a1a1a',
-        'brutal-lg': '6px 6px 0px #1a1a1a',
-        'brutal-xl': '8px 8px 0px #1a1a1a',
-        'brutal-terra': '4px 4px 0px #c44b2b',
-        'brutal-sage': '4px 4px 0px #7a8b6f',
-        'brutal-sun': '4px 4px 0px #FFD43B',
-        'brutal-lavender': '4px 4px 0px #B197FC',
+        // Soft, diffuse shadows (modern, matches the landing aesthetic).
+        // Names kept for backwards-compat with existing dashboard markup.
+        'brutal-sm': '0 4px 16px -8px rgba(26,26,26,0.20)',
+        'brutal': '0 12px 30px -16px rgba(26,26,26,0.28)',
+        'brutal-lg': '0 24px 50px -28px rgba(26,26,26,0.35)',
+        'brutal-xl': '0 32px 64px -32px rgba(26,26,26,0.4)',
+        'brutal-terra': '0 16px 36px -18px rgba(196,75,43,0.42)',
+        'brutal-sage': '0 16px 36px -18px rgba(122,139,111,0.42)',
+        'brutal-sun': '0 16px 36px -18px rgba(255,212,59,0.5)',
+        'brutal-lavender': '0 16px 36px -18px rgba(177,151,252,0.5)',
       },
       animation: {
         'ticker': 'ticker 30s linear infinite',

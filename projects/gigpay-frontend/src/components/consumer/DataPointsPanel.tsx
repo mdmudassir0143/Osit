@@ -51,13 +51,13 @@ const DataPointsPanel: React.FC = () => {
     <div className="nb-card bg-white rounded-2xl p-6 md:p-8 shadow-brutal">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
         <div>
-          <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[9px] mb-2">The API surface</span>
+          <span className="nb-tag bg-cream text-charcoal/60 border-charcoal/15 text-[11px] mb-2">The API surface</span>
           <h3 className="font-display text-xl md:text-2xl font-bold text-charcoal mt-1">Five decision-ready fields.</h3>
           <p className="text-charcoal/50 text-sm mt-1 max-w-2xl">
             One API call, one JSON response. Every field replaces a traditional document gig workers can't produce.
           </p>
         </div>
-        <span className="nb-tag bg-cream text-charcoal/50 border-charcoal/15 font-mono text-[9px]">GET /v1/score</span>
+        <span className="nb-tag bg-cream text-charcoal/50 border-charcoal/15 font-mono text-[11px]">GET /v1/score</span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -65,14 +65,14 @@ const DataPointsPanel: React.FC = () => {
           <div key={f.name} className="border-[1.5px] border-charcoal/10 rounded-xl bg-cream/30 p-4">
             <div className="flex items-start justify-between gap-2 mb-1">
               <div className="font-mono text-sm text-terra font-bold">{f.name}</div>
-              <span className="nb-tag bg-cream text-charcoal/55 border-charcoal/15 font-mono text-[9px]">{f.type}</span>
+              <span className="nb-tag bg-cream text-charcoal/55 border-charcoal/15 font-mono text-[11px]">{f.type}</span>
             </div>
             <div className="text-[12px] text-charcoal/55 leading-relaxed mb-3">{f.desc}</div>
-            <div className="pt-3 border-t-2 border-dashed border-charcoal/10 flex items-center justify-between gap-3">
-              <div className="font-mono text-[10px] text-charcoal/45">
+            <div className="pt-3 border-t border-dashed border-charcoal/10 flex items-center justify-between gap-3">
+              <div className="font-mono text-[12px] text-charcoal/45">
                 replaces: <span className="text-terra font-semibold">{f.replaces}</span>
               </div>
-              <div className="font-mono text-[10px] text-charcoal/55 truncate">{f.example}</div>
+              <div className="font-mono text-[12px] text-charcoal/55 truncate">{f.example}</div>
             </div>
           </div>
         ))}
@@ -81,12 +81,12 @@ const DataPointsPanel: React.FC = () => {
         <div className="nb-card bg-charcoal text-cream rounded-xl p-4 shadow-brutal-terra relative overflow-hidden">
           <div className="absolute top-0 left-0 right-0 h-1.5 bg-terra rounded-t-xl" />
           <div className="pt-1 flex items-start justify-between mb-3">
-            <span className="font-mono text-[9px] tracking-[0.2em] uppercase text-cream/50">Sample Response</span>
-            <span className="font-mono text-[10px] bg-cream/10 text-cream/70 px-2 py-0.5 rounded-md border border-cream/15">
+            <span className="font-mono text-[11px] tracking-[0.08em] uppercase text-cream/50">Sample Response</span>
+            <span className="font-mono text-[12px] bg-cream/10 text-cream/70 px-2 py-0.5 rounded-md border border-cream/15">
               200 OK
             </span>
           </div>
-          <pre className="font-mono text-[10px] text-cream/75 leading-relaxed overflow-x-auto whitespace-pre">{`{
+          <pre className="font-mono text-[12px] text-cream/75 leading-relaxed overflow-x-auto whitespace-pre">{`{
   "address": "XXTW...IGFU",
   "aura_score": 712,
   "band": "Very Good",

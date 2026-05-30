@@ -23,7 +23,7 @@ const ConnectWallet = ({ openModal, closeModal }: ConnectWalletInterface) => {
           <h3 className="font-display text-2xl font-bold text-charcoal">Connect Wallet</h3>
           <button
             onClick={closeModal}
-            className="w-8 h-8 flex items-center justify-center border-2 border-charcoal rounded-lg hover:bg-charcoal hover:text-white transition-colors text-sm font-bold"
+            className="w-8 h-8 flex items-center justify-center border border-charcoal/15 rounded-lg hover:bg-charcoal hover:text-white transition-colors text-sm font-bold"
           >
             ✕
           </button>
@@ -41,7 +41,7 @@ const ConnectWallet = ({ openModal, closeModal }: ConnectWalletInterface) => {
             {wallets?.map((wallet) => (
               <button
                 data-test-id={`${wallet.id}-connect`}
-                className="w-full flex items-center gap-3 px-4 py-3.5 border-2 border-charcoal rounded-lg font-display font-semibold text-sm text-charcoal hover:bg-charcoal hover:text-white transition-all hover:shadow-brutal-sm"
+                className="w-full flex items-center gap-3 px-4 py-3.5 border border-charcoal/15 rounded-lg font-display font-semibold text-sm text-charcoal hover:bg-charcoal hover:text-white transition-all hover:shadow-brutal-sm"
                 key={`provider-${wallet.id}`}
                 onClick={() => wallet.connect()}
               >
@@ -58,7 +58,7 @@ const ConnectWallet = ({ openModal, closeModal }: ConnectWalletInterface) => {
           </div>
         )}
 
-        <div className="flex items-center gap-3 mt-6 pt-5 border-t-2 border-charcoal/10">
+        <div className="flex items-center gap-3 mt-6 pt-5 border-t border-charcoal/10">
           {activeAddress && (
             <button
               className="nb-btn-ghost flex-1 !border-terra !text-terra hover:!bg-terra hover:!text-white"
